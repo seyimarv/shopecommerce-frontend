@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-interface VariantOption {
+export interface VariantOption {
   name: string;
   value: string;
   className?: string; // Optional for non-color variants

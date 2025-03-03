@@ -4,7 +4,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { IoChevronDownSharp } from "react-icons/io5";
 
-interface AccordionItem {
+export interface AccordionItem {
   id: number;
   title: string;
   content: string;
