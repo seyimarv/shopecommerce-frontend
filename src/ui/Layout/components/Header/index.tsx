@@ -1,0 +1,136 @@
+"use client";
+import Link from "next/link";
+import { useState, useEffect, useRef } from "react";
+import { usePathname } from "next/navigation";
+import { motion } from "framer-motion";
+import navItems from "@/lib/utils/nav-items";
+import LinkDropdown from "../LinkDropdown";
+import { CiUser, CiSearch, CiShoppingCart } from "react-icons/ci";
+import CurrencyPicker from "@/ui/common/components/Currency-picker";
+import Image from "next/image";
+import CartDrawer from "../../../cart/cart-drawer";
+import ProductSearch from "@/ui/product/products-search";
+
+const Header: React.FC = () => {
+  const [headerStatus, setHeaderStatus] = useState<
+    "initial" | "sticky" | "hidden"
+  >("initial");
+  const [isSearchOpen, setSearchOpen] = useState(false);
+  const lastScrollY = useRef(0);
+  const initialScrollThreshold = useRef(102); // The threshold for considering initial position
+  const pathname = usePathname();
+  const isHomePage = pathname === "/";
+  const [openCart, setOpenCart] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+
+      // If at the top of the page (or within threshold), always show as initial
+      if (currentScrollY <= initialScrollThreshold.current) {
+        setHeaderStatus("initial");
+      } else {
+        // If scrolling back up and not in initial position
+        if (currentScrollY < lastScrollY.current) {
+          setHeaderStatus("sticky");
+        } else {
+          // If scrolling down, hide the header
+          setHeaderStatus("hidden");
+        }
+      }
+
+      lastScrollY.current = currentScrollY;
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  return (
+    <>
+      <motion.header
+        initial={{ y: 0, opacity: 1 }}
+        animate={{
+          y: headerStatus === "hidden" ? -70 : 0,
+          opacity: headerStatus === "hidden" ? 0 : 1,
+        }}
+        transition={{ duration: 0.3, ease: "easeInOut" }}
+        className={`h-[3.875rem] w-full z-50 bg-background transition-all duration-300 ${
+          headerStatus === "sticky"
+            ? "sticky top-0 shadow-lg border-b border-gray-200"
+            : ""
+        } ${
+          !isHomePage && headerStatus === "initial"
+            ? "border-b border-gray-300"
+            : ""
+        }`}
+        id="header"
+      >
+        <nav className="h-full flex justify-between w-full gap-4 items-center container">
+          <div className="w-30">
+            <Link href="/">
+              <Image src="/logo.png" alt="logo" width={120} height={40} />
+            </Link>
+          </div>
+          <ul className="flex gap-16 w-full justify-center items-center text-sm">
+            {navItems.map(({ title, path, hasDropdown, dropdown }, i) => (
+              <li key={i} className="uppercase">
+                {hasDropdown ? (
+                  <LinkDropdown title={title} path={path} links={dropdown} />
+                ) : (
+                  <Link href={path} className="uppercase">
+                    {title}
+                  </Link>
+                )}
+              </li>
+            ))}
+            <CurrencyPicker />
+          </ul>
+          {/* Icons (Search, Profile, Cart) */}
+          <ul className="flex gap-6 flex-1 justify-end text-md">
+            <li>
+              <button
+                onClick={() => setSearchOpen(true)}
+                className="cursor-pointer"
+              >
+                <CiSearch size={20} />
+              </button>
+            </li>
+            <li>
+              <Link href="/profile">
+                <CiUser className="text-lg" size={20} />
+              </Link>
+            </li>
+            <li>
+              <CiShoppingCart
+                size={20}
+                className="cursor-pointer"
+                onClick={() => setOpenCart(true)}
+              />
+            </li>
+          </ul>
+        </nav>
+      </motion.header>
+      <CartDrawer isOpen={openCart} onClose={() => setOpenCart(false)} />
+      {/* Search Modal Animation */}
+      {/* <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
+          >
+            <SearchModal setIsOpen={setIsOpen} />
+          </motion.div>
+        )}
+      </AnimatePresence> */}
+      <ProductSearch
+        isOpen={isSearchOpen}
+        onClose={() => setSearchOpen(false)}
+      />
+    </>
+  );
+};
+
+export default Header;
