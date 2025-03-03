@@ -24,10 +24,12 @@ export default function Home() {
           viewMore
           hideButtons={false}
         />
-        <CollectionList
-          title="Collections"
-          collections={mockProducts}
-          className="grid-cols-2 md:grid-cols-4"
+        <ProductList
+          title="New Arrivals"
+          products={mockProducts}
+          href="/shop"
+          viewMore
+          hideButtons={false}
         />
         <Testimonials />
         <ValuesList />
