@@ -59,7 +59,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
     {
       name: "White",
       value: "white",
-      className: "bg-white border border-gray-300 w-3 h-3 rounded-full",
+      className: "bg-white border w-3 h-3 rounded-full",
     },
   ];
 
@@ -79,15 +79,15 @@ const ProductModal: React.FC<ProductModalProps> = ({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      className="h-[calc(100%-6.25rem)] max-h-[800px] w-full max-w-[1000px]"
+      className="h-[calc(100%-6.25rem)] max-h-[544px] w-full max-w-[800px]"
     >
-      <div className="flex h-full">
-        <div className="relative w-full flex-1 h-full">
+      <div className="flex flex-1 h-full">
+        <div className="relative w-full h-full">
           <Image
             src={imageSrc}
             alt={title}
             fill
-            className="absolute inset-0 object-cover object-center"
+            className="absolute object-cover object-center rounded-l-lg"
           />
         </div>
         <div className="p-12 py-10 flex flex-1 flex-col gap-5 w-1/2">
@@ -96,7 +96,6 @@ const ProductModal: React.FC<ProductModalProps> = ({
             <h3 className="text-xl uppercase">{title}</h3>
           </div>
           <div className="flex items-center gap-x-0.5">
-            <span className="text-lg">$</span>
             <PreviewPrice size="lg" price={price} />
           </div>
           <VariantSelector
@@ -116,11 +115,11 @@ const ProductModal: React.FC<ProductModalProps> = ({
               initial={quantity}
               onChange={setQuantity}
             />
-            <Button variant="outline" className="w-full" size="large">
+            <Button variant="outline" className="w-full">
               ADD TO cart
             </Button>
           </div>
-          <Link href={""} className="text-center text-lg uppercase mt-auto">
+          <Link href={""} className="text-center uppercase mt-auto">
             View full details
           </Link>
         </div>

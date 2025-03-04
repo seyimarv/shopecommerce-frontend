@@ -27,7 +27,7 @@ export const Filter: React.FC<FilterProps> = ({
       <SelectTriggerBase
         title={label}
         onClick={() => setOpen((prev) => !prev)}
-        className="border-none"
+        className="border-none !min-w-[4rem]"
         open={open}
       />
       <AnimatePresence mode="wait">

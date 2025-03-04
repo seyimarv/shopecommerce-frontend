@@ -16,9 +16,13 @@ export default function PreviewPrice({
   const textSize = size === "lg" ? "text-lg" : "text-md";
 
   return price.price_type === "sale" ? (
-    <div className={`flex gap-2 ${textSize}`}>
-      <span className="text-tertiary">{price.calculated_price}</span>
-      <span className="line-through">{price.original_price}</span>
+    <div className={`flex gap-2 ${textSize} `}>
+      <span className={`text-red-500 ${size === "lg" ? "font-bold" : ""}`}>
+        ${price.calculated_price}
+      </span>
+      <span className="line-through  text-gray-500">
+        {price.original_price}
+      </span>
     </div>
   ) : (
     <span className={textSize}>{price.calculated_price}</span>

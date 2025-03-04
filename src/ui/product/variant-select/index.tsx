@@ -42,7 +42,7 @@ const VariantSelector: React.FC<VariantSelectorProps> = ({
             key={option.value}
             className={`transition border-2 flex items-center justify-center ${
               selected === option.value
-                ? "border-black scale-105 shadow-md"
+                ? "border-black scale-105"
                 : "border-gray-300"
             } ${
               isColor

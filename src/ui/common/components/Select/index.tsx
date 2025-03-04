@@ -162,7 +162,7 @@ export const SelectContentBase = ({ children, className }: SelectContentProps) =
         ease: "easeInOut",
         exit: { duration: 1, ease: "easeInOut", delay: 0.15 }, // Delay only on exit
       }}
-      className={`absolute left-0 bg-white border border-gray-300 shadow-sm z-50 overflow-y-scroll w-full ${className}`}
+      className={`absolute left-0 bg-white border border-gray-300 shadow-sm z-50 overflow-y-auto w-full no-scrollbar ${className}`}
     >
       {children}
     </motion.div>

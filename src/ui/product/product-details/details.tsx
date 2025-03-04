@@ -7,6 +7,7 @@ import VariantSelector, { VariantOption } from "../variant-select";
 import PreviewPrice from "@/ui/common/components/Card/PreviewPrice";
 import Accordion, { AccordionItem } from "@/ui/common/components/Accordion";
 import { Product } from "../product-list";
+import { GrFavorite } from "react-icons/gr";
 
 interface DetailsProps extends Product {
   colors: VariantOption[];
@@ -25,14 +26,9 @@ const Details = ({
   const [selectedQuantity, setSelectedQuantity] = useState(quantity);
 
   return (
-    <div className="p-12 py-10 flex flex-1 flex-col gap-5 w-1/2">
-      <div>
-        <p className="text-xs font-extralight uppercase mb-2">ShopHaul</p>
-        <h3 className="text-xl uppercase">{title}</h3>
-      </div>
-
-      <div className="flex items-center gap-x-0.5">
-        <span className="text-lg">$</span>
+    <div className="py-10 flex flex-1 flex-col">
+      <h3 className="text-2xl uppercase">{title}</h3>
+      <div className="flex items-center gap-2 my-4">
         <PreviewPrice size="lg" price={price} />
         {price.price_type === "sale" && (
           <span className="bg-red-100 text-red-600 px-2 py-1 ml-1 text-xs rounded">
@@ -55,11 +51,11 @@ const Details = ({
         sed do eiusmod tempor incididunt ut lorem. Lorem ipsum dolor sit amet,
         conlore, sed do eiusmod tempor incid
       </p>
-      <div className="mt-5">
+      <div className="my-8">
         <Accordion items={accordionItems} allowMultiple={true} />
       </div>
 
-      <div className="flex gap-6 items-center">
+      <div className="flex gap-8 items-center">
         <QuantitySelector
           min={1}
           max={10}
@@ -69,6 +65,7 @@ const Details = ({
         <Button variant="outline" className="w-full" size="large">
           ADD TO CART
         </Button>
+        <GrFavorite size={25} />
       </div>
     </div>
   );
