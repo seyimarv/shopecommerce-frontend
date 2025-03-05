@@ -1,11 +1,16 @@
+"use client";
+
 import HeroSection from "@/ui/Landing/Hero";
 import ProductList from "@/ui/product/product-list";
 import { mockProducts } from "@/lib/mock-data";
 import Testimonials from "@/ui/Landing/Testimonials";
 import ValuesList from "@/ui/Landing/Values";
-import CollectionList from "@/ui/collections/collection-list";
+import { useQuery } from "@tanstack/react-query";
+import { retrieveAnnouncements } from "@/lib/data/announcements";
+// import CollectionList from "@/ui/collections/collection-list";
 
 export default function Home() {
+ 
   return (
     <>
       <HeroSection />

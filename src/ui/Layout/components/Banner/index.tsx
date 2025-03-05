@@ -9,12 +9,15 @@ import {
   FaPause,
   FaPlay,
 } from "react-icons/fa6";
+import { useQuery } from "@tanstack/react-query";
+import { retrieveAnnouncements } from "@/lib/data/announcements";
 
-interface BannerProps {
-  announcements: string[];
-}
-
-const Banner: React.FC<BannerProps> = ({ announcements }) => {
+const Banner: React.FC = () => {
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["announcements"],
+    queryFn: retrieveAnnouncements,
+  });
+  console.log(data, isLoading, error);
   const splideRef = useRef<SplideRef>(null);
   const [autoPlay, setAutoPlay] = useState(true);
 
@@ -51,13 +54,15 @@ const Banner: React.FC<BannerProps> = ({ announcements }) => {
           }}
           className="flex-1"
         >
-          {announcements.map((announcement, index) => (
-            <SplideSlide key={index}>
-              <p className="text-xs font-light tracking-widest">
-                {announcement}
-              </p>
-            </SplideSlide>
-          ))}
+          {data?.announcements?.map(
+            (announcement: { id: number; message: string }) => (
+              <SplideSlide key={announcement?.id}>
+                <p className="text-xs font-light tracking-widest">
+                  {announcement?.message}
+                </p>
+              </SplideSlide>
+            )
+          )}
         </Splide>
         <div className="flex gap-4 text-sm font-light">
           <button className="cursor-pointer" onClick={goPrev}>
