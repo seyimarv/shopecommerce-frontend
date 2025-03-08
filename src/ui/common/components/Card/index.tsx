@@ -13,8 +13,17 @@ import { getProductPrice, subtractPrices } from "@/lib/utils/prices";
 import { isProductSoldOut } from "@/lib/utils/soldout";
 import { checkHasVariants } from "@/lib/utils/variants";
 
+interface Collection {
+  id: string;
+  title: string;
+  metadata?: {
+    cover_image: string;
+  };
+}
+
 interface CardProps {
-  product: HttpTypes.StoreProduct;
+  product?: HttpTypes.StoreProduct;
+  collection?: Collection;
   hideButtons?: boolean;
   variety?: "collections" | "default";
   className?: string;
@@ -28,16 +37,28 @@ const Card: React.FC<CardProps> = (data) => {
 
   const {
     product,
+    collection,
     hideButtons = false,
     variety = "default",
     className = "",
   } = data;
 
-  const hasVariants = checkHasVariants(product);
-  const soldOut = isProductSoldOut(product);
+  // Determine if it's a collection or a product
+  const isCollection = !!collection;
+  const title = isCollection ? collection.title : product?.title;
+  const thumbnail = isCollection
+    ? collection.metadata?.cover_image
+    : product?.thumbnail;
+
+  // Handle product-related logic
+  const hasVariants = product ? checkHasVariants(product) : false;
+  const soldOut = product ? isProductSoldOut(product) : false;
+  const { cheapestPrice } = product ? getProductPrice({ product }) : {};
 
   const addToCart = () => {
-    openCart();
+    if (product) {
+      openCart();
+    }
   };
 
   const handleClickButton = () => {
@@ -52,12 +73,6 @@ const Card: React.FC<CardProps> = (data) => {
     setIsModalOpen(false);
   };
 
-  const { cheapestPrice } = getProductPrice({
-    product,
-  });
-
-  console.log(cheapestPrice);
-
   return (
     <>
       <motion.div
@@ -67,12 +82,13 @@ const Card: React.FC<CardProps> = (data) => {
       >
         <div className="overflow-hidden">
           <Thumbnail
-            image={product?.thumbnail}
-            sale={cheapestPrice?.price_type === "sale"}
+            image={thumbnail}
             className={className}
             isHovered={isHovered}
           />
-          {cheapestPrice?.price_type === "sale" && (
+
+          {/* Sale tag (only for products) */}
+          {cheapestPrice?.price_type === "sale" && product && (
             <div className="absolute top-4 left-4 z-1 text-white bg-tertiary px-3 py-0.1 rounded-sm">
               <span className="text-sm uppercase tracking-wide">
                 Save{" "}
@@ -84,15 +100,15 @@ const Card: React.FC<CardProps> = (data) => {
             </div>
           )}
         </div>
-        {!hideButtons && (
+
+        {/* Product Buttons (only if it's a product and not hidden) */}
+        {!hideButtons && product && (
           <motion.div
             initial={
-              isProductSoldOut(product)
-                ? {}
-                : { opacity: 0, y: 20, pointerEvents: "none" }
+              soldOut ? {} : { opacity: 0, y: 20, pointerEvents: "none" }
             }
             animate={
-              isProductSoldOut(product)
+              soldOut
                 ? {}
                 : {
                     opacity: isHovered ? 1 : 0,
@@ -101,22 +117,17 @@ const Card: React.FC<CardProps> = (data) => {
                   }
             }
             transition={
-              isProductSoldOut(product)
-                ? { duration: 0 }
-                : { duration: 0.3, ease: "easeOut" }
+              soldOut ? { duration: 0 } : { duration: 0.3, ease: "easeOut" }
             }
             className="absolute bottom-18 min-w-auto left-1/2 transform -translate-x-1/2 w-[80%]"
           >
             <Button
-              onClick={() => {
-                handleClickButton();
-                setIsHovered(false);
-              }}
+              onClick={handleClickButton}
               size="small"
-              disabled={isProductSoldOut(product)}
+              disabled={soldOut}
               className="w-full"
             >
-              {isProductSoldOut(product)
+              {soldOut
                 ? "Sold Out"
                 : hasVariants
                 ? "Choose options"
@@ -124,21 +135,29 @@ const Card: React.FC<CardProps> = (data) => {
             </Button>
           </motion.div>
         )}
-        <ProductModal
-          isOpen={isModalOpen}
-          onClose={handleCloseModal}
-          title={product.title}
-          imageSrc={product?.thumbnail || ""}
-          price={cheapestPrice}
-        />
+
+        {/* Product Modal (only if it's a product) */}
+        {product && (
+          <ProductModal
+            isOpen={isModalOpen}
+            onClose={handleCloseModal}
+            title={product.title}
+            imageSrc={thumbnail || ""}
+            price={cheapestPrice}
+          />
+        )}
+
+        {/* Title & Price */}
         <div className="pt-2 flex flex-col px-1 font-light">
           <span className="tracking-wider text-md flex items-center gap-1">
-            {product.title}{" "}
-            {variety === "collections" && <GrLinkNext size={16} />}
+            {title} {variety === "collections" && <GrLinkNext size={16} />}
           </span>
-          {variety !== "collections" && <PreviewPrice price={cheapestPrice} />}
+          {variety !== "collections" && product && (
+            <PreviewPrice price={cheapestPrice} />
+          )}
         </div>
       </motion.div>
+
       <CartDrawer isOpen={isOpen} onClose={closeCart} />
     </>
   );

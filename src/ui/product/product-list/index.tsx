@@ -33,7 +33,7 @@ const ProductTitle: React.FC<ProductTitleProps> = ({
 );
 
 interface ProductItemsProps {
-  products: HttpTypes.StoreProduct[];
+  products?: HttpTypes.StoreProduct[];
   className?: string;
   hideButtons?: boolean;
   variety?: "collections" | "default";
@@ -45,9 +45,9 @@ const ProductItems: React.FC<ProductItemsProps> = ({
   className = "",
 }) => (
   <div
-    className={`grid ${"grid-cols-2 md:grid-cols-4"} gap-4 gap-y-20 ${className}`}
+    className={`grid grid-cols-2 md:grid-cols-4 gap-4 gap-y-20 ${className}`}
   >
-    {products.map((product) => (
+    {products?.map((product) => (
       <ProductPreview
         key={product.id}
         product={product}
@@ -76,7 +76,7 @@ const ViewMoreLink: React.FC<ViewMoreLinkProps> = ({
 
 interface ProductListProps {
   title?: string;
-  products: HttpTypes.StoreProduct[];
+  products?: HttpTypes.StoreProduct[];
   href?: string;
   className?: string;
   viewMore?: boolean;

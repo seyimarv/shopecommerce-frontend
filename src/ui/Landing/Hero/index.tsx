@@ -8,14 +8,11 @@ import { AnimatePresence, motion } from "framer-motion";
 import Button from "@/ui/common/components/button";
 import ProgressBar from "./progress-bar";
 
-// const images = [
-//   "/picture1.jpg",
-//   "/picture1.jpg",
-//   "/picture1.jpg",
-//   "/picture1.jpg",
-// ];
+interface HeroProps {
+  collections: any;
+}
 
-const HeroSection: React.FC = ({ data }: any) => {
+const HeroSection: React.FC<HeroProps> = ({ collections }) => {
   const [activeIndex, setActiveIndex] = useState<number>(0);
   const splideRef = useRef<Splide | null>(null);
 
@@ -47,7 +44,7 @@ const HeroSection: React.FC = ({ data }: any) => {
         onMounted={() => setActiveIndex(0)}
       >
         <SplideTrack>
-          {data?.collections?.map(({ title, metadata }: any, index: number) => (
+          {collections?.map(({ title, metadata }: any, index: number) => (
             <SplideSlide key={index}>
               <div className="relative w-full h-[calc(100vh-6.375rem)] overflow-hidden">
                 <AnimatePresence mode="wait">
@@ -84,7 +81,7 @@ const HeroSection: React.FC = ({ data }: any) => {
 
       {/* Navigation Dots */}
       <div className="flex gap-2 w-full justify-center absolute z-10 bottom-8 items-end">
-        {data?.collections?.map((_: any, index: number) => (
+        {collections?.map((_: any, index: number) => (
           <button
             key={index}
             className={`cursor-pointer bg-gray-100 transition-all duration-300 ${

@@ -94,6 +94,7 @@ export const listProductsWithSort = async ({
   queryParams?: HttpTypes.FindParams & HttpTypes.StoreProductParams;
 }> => {
   const limit = queryParams?.limit || 4;
+  console.log(sortBy)
 
   const {
     response: { products, count },
@@ -101,14 +102,13 @@ export const listProductsWithSort = async ({
     pageParam: 0,
     queryParams: {
       ...queryParams,
+      order: sortBy,
       limit,
     },
     countryCode,
   });
 
   const sortedProducts = sortProducts(products, sortBy);
-  console.log(sortedProducts);
-  console.log(page);
 
   const pageParam = (page - 1) * limit;
 
@@ -149,7 +149,7 @@ export const useListProducts = ({
 export const useListProductsWithSort = ({
   page = 1,
   queryParams,
-  sortBy = "created_at",
+  sortBy = "-created_at",
   countryCode,
 }: {
   page?: number;
