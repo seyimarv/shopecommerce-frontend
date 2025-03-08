@@ -1,6 +1,7 @@
 import React from "react";
 import ProductPreview from "../../common/components/Card";
 import Button from "@/ui/common/components/button";
+import { HttpTypes } from "@medusajs/types";
 
 export interface Product {
   id: string;
@@ -32,10 +33,10 @@ const ProductTitle: React.FC<ProductTitleProps> = ({
 );
 
 interface ProductItemsProps {
-  products: Product[];
+  products: HttpTypes.StoreProduct[];
   className?: string;
   hideButtons?: boolean;
-  type?: "collections" | "default";
+  variety?: "collections" | "default";
 }
 
 const ProductItems: React.FC<ProductItemsProps> = ({
@@ -49,7 +50,7 @@ const ProductItems: React.FC<ProductItemsProps> = ({
     {products.map((product) => (
       <ProductPreview
         key={product.id}
-        {...product}
+        product={product}
         hideButtons={hideButtons}
         className="h-90"
       />
@@ -75,7 +76,7 @@ const ViewMoreLink: React.FC<ViewMoreLinkProps> = ({
 
 interface ProductListProps {
   title?: string;
-  products: Product[];
+  products: HttpTypes.StoreProduct[];
   href?: string;
   className?: string;
   viewMore?: boolean;

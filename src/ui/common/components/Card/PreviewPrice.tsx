@@ -1,9 +1,15 @@
+"use client"
+
 interface PreviewPriceProps {
-  price?: {
-    price_type: "sale" | "default";
-    original_price?: number;
-    calculated_price?: number;
-  };
+  price: {
+    calculated_price_number: number;
+    calculated_price: string;
+    original_price_number: number;
+    original_price: string;
+    currency_code: string;
+    price_type: string;
+    percentage_diff: string;
+  } | null;
   size?: "md" | "lg"; // New prop for text size
 }
 
@@ -18,7 +24,7 @@ export default function PreviewPrice({
   return price.price_type === "sale" ? (
     <div className={`flex gap-2 ${textSize} `}>
       <span className={`text-red-500 ${size === "lg" ? "font-bold" : ""}`}>
-        ${price.calculated_price}
+        {price.calculated_price}
       </span>
       <span className="line-through  text-gray-500">
         {price.original_price}

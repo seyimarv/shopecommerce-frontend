@@ -1,20 +1,21 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import Image from "next/image";
 import { useState, useRef, SetStateAction } from "react";
 import { SplideTrack, Splide, SplideSlide } from "@splidejs/react-splide";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import Button from "@/ui/common/components/button";
 import ProgressBar from "./progress-bar";
 
-const images = [
-  "/picture1.jpg",
-  "/picture1.jpg",
-  "/picture1.jpg",
-  "/picture1.jpg",
-];
+// const images = [
+//   "/picture1.jpg",
+//   "/picture1.jpg",
+//   "/picture1.jpg",
+//   "/picture1.jpg",
+// ];
 
-const HeroSection: React.FC = () => {
+const HeroSection: React.FC = ({ data }: any) => {
   const [activeIndex, setActiveIndex] = useState<number>(0);
   const splideRef = useRef<Splide | null>(null);
 
@@ -46,30 +47,30 @@ const HeroSection: React.FC = () => {
         onMounted={() => setActiveIndex(0)}
       >
         <SplideTrack>
-          {images.map((image, index) => (
+          {data?.collections?.map(({ title, metadata }: any, index: number) => (
             <SplideSlide key={index}>
               <div className="relative w-full h-[calc(100vh-6.375rem)] overflow-hidden">
-                <motion.div
-                  key={activeIndex}
-                  initial={{ scale: activeIndex === index ? 1.05 : 1 }}
-                  animate={{ scale: 1 }}
-                  transition={{ duration: 3, ease: "easeOut" }}
-                  className="absolute inset-0 w-full h-full"
-                >
-                  <Image
-                    src={image}
-                    alt={`Slide ${index}`}
-                    fill
-                    priority
-                    className="object-cover object-center"
-                  />
-                </motion.div>
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={activeIndex} // 🔥 Forces re-mount when index changes
+                    initial={{ scale: 1.05 }}
+                    animate={{ scale: 1 }}
+                    transition={{ duration: 3, ease: "easeOut" }}
+                    className="absolute inset-0 w-full h-full"
+                  >
+                    <Image
+                      src={metadata?.cover_image || "/fallback.jpg"}
+                      alt={`Slide ${index}`}
+                      fill
+                      priority
+                      className="object-cover object-center"
+                    />
+                  </motion.div>
+                </AnimatePresence>
                 <div className="absolute inset-0 bg-white opacity-3"></div>
                 <div className="container">
                   <div className="absolute bottom-40 flex flex-col gap-8 items-start">
-                    <h4 className="text-5xl uppercase font-normal">
-                      Enamel Pins
-                    </h4>
+                    <h4 className="text-5xl uppercase font-normal">{title}</h4>
                     <Button className="py-3 min-w-[14rem]" variant="secondary">
                       Shop Now
                     </Button>
@@ -83,7 +84,7 @@ const HeroSection: React.FC = () => {
 
       {/* Navigation Dots */}
       <div className="flex gap-2 w-full justify-center absolute z-10 bottom-8 items-end">
-        {images.map((_, index) => (
+        {data?.collections?.map((_: any, index: number) => (
           <button
             key={index}
             className={`cursor-pointer bg-gray-100 transition-all duration-300 ${
