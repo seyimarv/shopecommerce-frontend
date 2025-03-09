@@ -6,25 +6,24 @@ import Testimonials from "@/ui/Landing/Testimonials";
 import ValuesList from "@/ui/Landing/Values";
 import { useFetchCollections } from "@/lib/data/collections";
 // import CollectionList from "@/ui/collections/collection-list";
-import { Suspense } from "react";
 import { useListProducts, useListProductsWithSort } from "@/lib/data/products";
 import Card from "@/ui/common/components/Card";
+import HeroSkeleton from "@/ui/common/components/Skeleton/hero-skeleton";
 
 export default function Home() {
   const { data, isLoading } = useFetchCollections();
   const {
     data: saleItems,
     isLoading: saleItemsLoading,
-    error
+    error,
   } = useListProductsWithSort();
   console.log(saleItems);
   console.log(data);
-  if (saleItemsLoading) return <p>Loading collections...</p>;
   return (
     <>
-      <Suspense fallback={<p>Loading...</p>}>
+      <HeroSkeleton isLoading={isLoading}>
         <HeroSection collections={data?.collections} />
-      </Suspense>
+      </HeroSkeleton>
       <div className="flex flex-col gap-22 pt-22 pb-22 container">
         <ProductList
           title="New Arrivals"
@@ -32,6 +31,7 @@ export default function Home() {
           href="/shop"
           viewMore
           hideButtons={false}
+          isLoading={isLoading}
         />
         <section>
           <h2 className={`text-2xl pb-8 tracking-widest uppercase`}>

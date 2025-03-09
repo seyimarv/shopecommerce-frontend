@@ -2,7 +2,7 @@
 
 import { useFetchCollections } from "@/lib/data/collections";
 import CollectionList from "@/ui/collections/collection-list";
-import { Pagination } from "@/ui/pagination";
+import { Pagination } from "@/ui/common/components/pagination";
 
 const Collections = () => {
   const { data, isLoading, error } = useFetchCollections();

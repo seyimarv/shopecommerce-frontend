@@ -3,7 +3,6 @@ import Card from "@/ui/common/components/Card";
 import { HttpTypes } from "@medusajs/types";
 import WithSkeleton from "@/ui/common/components/Skeleton/with-skeleton";
 import CollectionsSkeleton from "@/ui/common/components/Skeleton/collection-skeleton";
-
 interface CollectionListProps {
   collections?: HttpTypes.StoreCollection[];
   title: string;
@@ -17,7 +16,6 @@ const CollectionList: React.FC<CollectionListProps> = ({
   className,
   isLoading
 }) => {
-  console.log(collections);
   return (
     <>
       <h2 className={`text-4xl pb-8 tracking-widest uppercase`}>{title}</h2>

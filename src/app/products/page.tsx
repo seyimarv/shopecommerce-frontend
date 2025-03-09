@@ -2,7 +2,7 @@
 
 import { PRODUCT_LIMIT } from "@/lib/data/constants";
 import { useListProducts } from "@/lib/data/products";
-import { Pagination } from "@/ui/pagination";
+import { Pagination } from "@/ui/common/components/pagination";
 import ProductList from "@/ui/product/product-list";
 import { useSearchParams } from "next/navigation";
 

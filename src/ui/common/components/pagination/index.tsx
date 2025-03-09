@@ -98,6 +98,10 @@ export function Pagination({
     return buttons;
   };
 
+  if (!totalPages || totalPages <= 1) {
+    return;
+  }
+
   return (
     <nav
       className="flex justify-center items-center gap-2 pt-12"
