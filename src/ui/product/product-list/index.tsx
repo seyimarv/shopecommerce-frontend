@@ -2,6 +2,8 @@ import React from "react";
 import ProductPreview from "../../common/components/Card";
 import Button from "@/ui/common/components/button";
 import { HttpTypes } from "@medusajs/types";
+import WithSkeleton from "@/ui/common/components/Skeleton/with-skeleton";
+import ProductsSkeleton from "@/ui/common/components/Skeleton/products-skeleton";
 
 export interface Product {
   id: string;
@@ -81,6 +83,7 @@ interface ProductListProps {
   className?: string;
   viewMore?: boolean;
   hideButtons?: boolean;
+  isLoading: boolean;
 }
 
 const ProductList: React.FC<ProductListProps> = ({
@@ -90,11 +93,14 @@ const ProductList: React.FC<ProductListProps> = ({
   className = "",
   viewMore = false,
   hideButtons = false,
+  isLoading,
 }) => {
   return (
     <section className={` ${className}`}>
       {title && <ProductTitle title={title} />}
-      <ProductItems products={products} hideButtons={hideButtons} />
+      <WithSkeleton isLoading={isLoading} skeleton={<ProductsSkeleton />}>
+        <ProductItems products={products} hideButtons={hideButtons} />
+      </WithSkeleton>
       {viewMore && href && <ViewMoreLink href={href} />}
     </section>
   );

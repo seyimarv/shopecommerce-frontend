@@ -94,7 +94,7 @@ export const listProductsWithSort = async ({
   queryParams?: HttpTypes.FindParams & HttpTypes.StoreProductParams;
 }> => {
   const limit = queryParams?.limit || 4;
-  console.log(sortBy)
+  console.log(sortBy);
 
   const {
     response: { products, count },
@@ -139,7 +139,7 @@ export const useListProducts = ({
   regionId?: string;
 } = {}) => {
   const { data, isLoading, error } = useQuery({
-    queryKey: ["products"],
+    queryKey: ["products", pageParam],
     queryFn: () =>
       listProducts({ pageParam, queryParams, countryCode, regionId }),
   });

@@ -2,7 +2,6 @@
 
 import HeroSection from "@/ui/Landing/Hero";
 import ProductList from "@/ui/product/product-list";
-import { mockProducts } from "@/lib/mock-data";
 import Testimonials from "@/ui/Landing/Testimonials";
 import ValuesList from "@/ui/Landing/Values";
 import { useFetchCollections } from "@/lib/data/collections";
@@ -16,7 +15,7 @@ export default function Home() {
   const {
     data: saleItems,
     isLoading: saleItemsLoading,
-    error: saleItemsError,
+    error
   } = useListProductsWithSort();
   console.log(saleItems);
   console.log(data);
