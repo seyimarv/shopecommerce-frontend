@@ -78,48 +78,118 @@ export const listProducts = async ({
   };
 };
 
+interface FilterConditions {
+  filter?: {
+    variants?: {
+      prices?: {
+        amount?: {
+          $gt?: number;
+          $lt?: number;
+        };
+      };
+    };
+  };
+}
+
 export const listProductsWithSort = async ({
   page = 1,
   queryParams,
   sortBy = "-created_at",
   countryCode,
+  filters,
+  collectionId,
 }: {
   page?: number;
   queryParams?: HttpTypes.FindParams & HttpTypes.StoreProductParams;
   sortBy?: SortOptions;
   countryCode?: string;
+  collectionId?: string;
+  filters?: {
+    availability?: string[];
+    minPrice?: number | null;
+    maxPrice?: number | null;
+  };
 }): Promise<{
   response: { products: HttpTypes.StoreProduct[]; count: number };
   nextPage: number | null;
   queryParams?: HttpTypes.FindParams & HttpTypes.StoreProductParams;
 }> => {
   const limit = queryParams?.limit || 4;
-  console.log(sortBy);
 
+  const filterConditions: FilterConditions = {};
+
+  if (filters?.minPrice !== null && filters?.minPrice !== undefined) {
+    filterConditions.filter = {
+      variants: {
+        prices: {
+          amount: {
+            $gt: filters.minPrice,
+          },
+        },
+      },
+    };
+  }
+
+  if (filters?.maxPrice !== null && filters?.maxPrice !== undefined) {
+    filterConditions.filter = {
+      variants: {
+        prices: {
+          amount: {
+            ...filterConditions.filter?.variants?.prices?.amount,
+            $lt: filters.maxPrice,
+          },
+        },
+      },
+    };
+  }
+
+  if (filters?.availability?.length) {
+    if (filters.availability.includes("in_stock")) {
+      filterConditions.filter = {
+        variants: {
+          prices: {
+            amount: {
+              ...filterConditions.filter?.variants?.prices?.amount,
+            },
+          },
+        },
+      };
+    }
+    if (filters.availability.includes("out_of_stock")) {
+      filterConditions.filter = {
+        ...filterConditions.filter,
+        variants: {
+          ...filterConditions.filter?.variants,
+          prices: {
+            amount: {
+              ...filterConditions.filter?.variants?.prices?.amount,
+            },
+          },
+        },
+      };
+    }
+  }
   const {
     response: { products, count },
   } = await listProducts({
-    pageParam: 0,
+    pageParam: page,
     queryParams: {
       ...queryParams,
       order: sortBy,
       limit,
+      ...(collectionId ? { collection_id: [collectionId] } : {}),
+      ...filterConditions,
     },
     countryCode,
   });
 
   const sortedProducts = sortProducts(products, sortBy);
 
-  const pageParam = (page - 1) * limit;
-
-  const nextPage = count > pageParam + limit ? pageParam + limit : null;
-  const pageLimit = pageParam + limit;
-
-  const paginatedProducts = sortedProducts.slice(pageParam, pageLimit);
+  const nextPage = count > page * limit ? page + 1 : null;
 
   return {
     response: {
-      products: paginatedProducts,
+      products: sortedProducts,
       count,
     },
     nextPage,
@@ -151,16 +221,25 @@ export const useListProductsWithSort = ({
   queryParams,
   sortBy = "-created_at",
   countryCode,
+  filters,
+  collectionId,
 }: {
   page?: number;
   queryParams?: HttpTypes.FindParams & HttpTypes.StoreProductParams;
   sortBy?: SortOptions;
   countryCode?: string;
+  collectionId?: string;
+  filters?: {
+    availability?: string[];
+    minPrice?: number | null;
+    maxPrice?: number | null;
+  };
 } = {}) => {
+  console.log("sortBy", sortBy);
   const { data, isLoading, error } = useQuery({
-    queryKey: ["sorted-products"],
+    queryKey: ["sorted-products", sortBy, filters, page, collectionId],
     queryFn: () =>
-      listProductsWithSort({ page, queryParams, sortBy, countryCode }),
+      listProductsWithSort({ page, queryParams, sortBy, countryCode, filters, collectionId }),
   });
   return { data, isLoading, error };
 };

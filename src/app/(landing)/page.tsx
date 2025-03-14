@@ -47,6 +47,7 @@ export default function Home() {
                   }}
                   className="h-90"
                   variety="collections"
+                  href={`/collections/${id}`}
                 />
               </div>
             ))}

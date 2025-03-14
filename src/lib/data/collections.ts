@@ -18,12 +18,30 @@ const fetchCollections = async (
   });
 };
 
+const fetchCollection = async (id: string): Promise<HttpTypes.StoreCollection> => {
+  const { collection } = await sdk.client.fetch<{
+    collection: HttpTypes.StoreCollection;
+  }>(`/store/collections/${id}`, {
+    query: { fields: "id,handle,title,metadata" },
+  });
+  return collection;
+};
+
 export const useFetchCollections = (
   queryParams: fetchCollectionsParams = {}
 ) => {
   const { data, isLoading, error } = useQuery({
     queryKey: ["collections"],
     queryFn: () => fetchCollections(queryParams),
+  });
+
+  return { data, isLoading, error };
+};
+
+export const useFetchCollection = (id: string) => {
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["collection", id],
+    queryFn: () => fetchCollection(id),
   });
 
   return { data, isLoading, error };

@@ -1,27 +1,19 @@
-import { mockProducts } from "@/lib/mock-data";
-import ProductList from "@/ui/product/product-list";
-import { AvailabiltyFilter, PriceFilter } from "@/ui/product/products-filter";
-import SortBy from "@/ui/product/products-filter/sort";
+"use client";
+
+import { useFetchCollection } from "@/lib/data/collections";
+import ProductsFilter from "@/ui/product/products-filter";
+import { useParams } from "next/navigation";
 
 const Page = () => {
+  const { id } = useParams();
+  const { data: collection, isLoading } = useFetchCollection(id as string);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
   return (
-    <>
-      <div>
-        <h2 className={`text-4xl pb-8 tracking-widest uppercase`}>Products</h2>
-        <div className="flex justify-between items-center mt-3 mb-5">
-          <div className="flex items-center gap-4">
-            <span className="text-sm">Filter:</span>
-            <AvailabiltyFilter />
-            <PriceFilter />
-          </div>
-          <div className="flex items-center gap-4">
-            <SortBy />
-            <span className="text-sm text-gray-600">400 products</span>
-          </div>
-        </div>
-      </div>
-      <ProductList products={mockProducts} />
-    </>
+    <ProductsFilter title={collection?.title} collectionId={id as string} />
   );
 };
 

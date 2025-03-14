@@ -1,6 +1,14 @@
 import { HttpTypes } from "@medusajs/types";
 
-export type SortOptions = "price_asc" | "price_desc" | "created_at"| "-created_at";
+export type SortOptions =
+  | "price_asc"
+  | "price_desc"
+  | "created_at"
+  | "-created_at"
+  | "variants.calculated_price"
+  | "-variants.calculated_price"
+  | "title"
+  | "-title";
 
 interface MinPricedProduct extends HttpTypes.StoreProduct {
   _minPrice?: number;
@@ -39,10 +47,18 @@ export function sortProducts(
     });
   }
 
-  if (sortBy === "created_at") {
+  if (sortBy === "-created_at") {
     sortedProducts.sort((a, b) => {
       return (
         new Date(b.created_at!).getTime() - new Date(a.created_at!).getTime()
+      );
+    });
+  }
+
+  if (sortBy === "created_at") {
+    sortedProducts.sort((a, b) => {
+      return (
+        new Date(a.created_at!).getTime() - new Date(b.created_at!).getTime()
       );
     });
   }
