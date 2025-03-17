@@ -39,9 +39,9 @@ const VariantSelector: React.FC<VariantSelectorProps> = ({
       <div className="flex gap-2">
         {options.map((option) => (
           <button
-            key={option.value}
+            key={option.id}
             className={`transition border-2 flex items-center justify-center ${
-              selected === option.value
+              selected === option.id
                 ? "border-black scale-105"
                 : "border-gray-300"
             } ${
@@ -49,13 +49,13 @@ const VariantSelector: React.FC<VariantSelectorProps> = ({
                 ? `w-8 h-8 rounded-full ${option.className}` 
                 : "px-4 py-2 rounded-md text-sm font-medium"
             }`}
-            onClick={() => handleSelect(option.value)}
-            aria-label={`Select ${option.name}`}
+            onClick={() => handleSelect(option.id)}
+            aria-label={`Select ${option.title}`}
           >
-            {isColor && selected === option.value && (
+            {isColor && selected === option.id && (
               <div className="w-3 h-3 rounded-full bg-white" />
             )}
-            {!isColor && option.name}
+            {!isColor && option.title}
           </button>
         ))}
       </div>

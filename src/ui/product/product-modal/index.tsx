@@ -2,48 +2,31 @@
 
 import Image from "next/image";
 import Modal from "@/ui/common/components/Modal";
-import PreviewPrice from "../../common/components/Card/PreviewPrice";
-import VariantSelector from "../variant-select";
-import Accordion from "@/ui/common/components/Accordion";
 import { useState } from "react";
-import QuantitySelector from "@/ui/common/components/quantityselector";
-import Button from "@/ui/common/components/button";
-import Link from "next/link";
-
-const accordionItems = [
-  {
-    id: 1,
-    title: "details",
-    content: "You can return any item within 30 days of purchase.",
-  },
-  {
-    id: 2,
-    title: "description",
-    content: "Shipping typically takes 5-7 business days.",
-  },
-];
+import { useListProducts } from "@/lib/data/products";
+import ProductActions from "../product-actions";
 
 interface ProductModalProps {
+  productId: string;
   isOpen: boolean;
   onClose: () => void;
-  title: string;
-  imageSrc: string;
-  price?: {
-    price_type: "sale" | "default";
-    original_price?: number;
-    calculated_price?: number;
-  };
 }
 
 const ProductModal: React.FC<ProductModalProps> = ({
   isOpen,
   onClose,
-  title,
-  imageSrc,
-  price,
+  productId
 }) => {
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
   const [quantity, setQuantity] = useState(1);
+  console.log(productId)
+  const { data, isLoading, error } = useListProducts({
+    queryParams: {
+      id: productId
+    }
+  });
+  
+  const product = data?.response.products[0]
 
   const colors = [
     {
@@ -63,18 +46,6 @@ const ProductModal: React.FC<ProductModalProps> = ({
     },
   ];
 
-  // const sizes = [
-  //   { name: "S", value: "small" },
-  //   { name: "M", value: "medium" },
-  //   { name: "L", value: "large" },
-  // ];
-
-  // const materials = [
-  //   { name: "Cotton", value: "cotton" },
-  //   { name: "Polyester", value: "polyester" },
-  //   { name: "Silk", value: "silk" },
-  // ];
-
   return (
     <Modal
       isOpen={isOpen}
@@ -84,8 +55,8 @@ const ProductModal: React.FC<ProductModalProps> = ({
       <div className="flex flex-1 h-full">
         <div className="relative w-full h-full">
           <Image
-            src={imageSrc}
-            alt={title}
+            src={product?.thumbnail || ""}
+            alt={product?.title || "Product"}
             fill
             className="absolute object-cover object-center rounded-l-lg"
           />
@@ -93,35 +64,9 @@ const ProductModal: React.FC<ProductModalProps> = ({
         <div className="p-12 py-10 flex flex-1 flex-col gap-5 w-1/2">
           <div>
             <p className="text-xs font-extralight uppercase mb-2">ShopHaul</p>
-            <h3 className="text-xl uppercase">{title}</h3>
+            <h3 className="text-xl uppercase">{product?.title}</h3>
           </div>
-          <div className="flex items-center gap-x-0.5">
-            <PreviewPrice size="lg" price={price} />
-          </div>
-          <VariantSelector
-            label="Color"
-            options={colors}
-            onSelect={setSelectedColor}
-            isColor
-            defaultValue={colors[0].value}
-          />
-          <div className="mt-5">
-            <Accordion items={accordionItems} allowMultiple={true} />
-          </div>
-          <div className="flex gap-6 items-center">
-            <QuantitySelector
-              min={1}
-              max={10}
-              initial={quantity}
-              onChange={setQuantity}
-            />
-            <Button variant="outline" className="w-full">
-              ADD TO cart
-            </Button>
-          </div>
-          <Link href={""} className="text-center uppercase mt-auto">
-            View full details
-          </Link>
+          <ProductActions product={product} />
         </div>
       </div>
     </Modal>

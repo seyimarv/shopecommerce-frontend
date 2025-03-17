@@ -55,7 +55,7 @@ const Modal: React.FC<ModalProps> = ({
             <div className="relative">
               <button
                 onClick={onClose}
-                className="absolute top-2 right-2 shadow-lg w-10 h-10 rounded-full font-thin text-4xl hover:text-gray-700"
+                className="absolute top-2 right-2 shadow-lg w-10 h-10 rounded-full font-thin text-4xl hover:text-gray-700 cursor-pointer"
               >
                 &times;
               </button>

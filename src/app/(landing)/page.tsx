@@ -5,8 +5,7 @@ import ProductList from "@/ui/product/product-list";
 import Testimonials from "@/ui/Landing/Testimonials";
 import ValuesList from "@/ui/Landing/Values";
 import { useFetchCollections } from "@/lib/data/collections";
-// import CollectionList from "@/ui/collections/collection-list";
-import { useListProducts, useListProductsWithSort } from "@/lib/data/products";
+import { useListProductsWithSort } from "@/lib/data/products";
 import Card from "@/ui/common/components/Card";
 import HeroSkeleton from "@/ui/common/components/Skeleton/hero-skeleton";
 
@@ -15,8 +14,11 @@ export default function Home() {
   const {
     data: saleItems,
     isLoading: saleItemsLoading,
-    error,
-  } = useListProductsWithSort();
+  } = useListProductsWithSort({
+    queryParams: {
+      limit: 4,
+    },
+  });
   console.log(saleItems);
   console.log(data);
   return (

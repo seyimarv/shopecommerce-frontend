@@ -8,7 +8,7 @@ import {
   Option,
 } from "@/ui/common/components/Select";
 
-const sortingOptions = [
+export const sortingOptions = [
   // { value: "featured", label: "Featured" },
   // { value: "best-selling", label: "Best selling" },
   { value: "alpha-asc", label: "Alphabetically, A-Z" },

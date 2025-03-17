@@ -62,6 +62,7 @@ const Card: React.FC<CardProps> = (data) => {
   };
 
   const handleClickButton = () => {
+    setIsHovered(false)
     if (hasVariants) {
       setIsModalOpen(true);
     } else {
@@ -104,10 +105,10 @@ const Card: React.FC<CardProps> = (data) => {
             soldOut
               ? {}
               : {
-                  opacity: isHovered ? 1 : 0,
-                  y: isHovered ? 0 : 20,
-                  pointerEvents: isHovered ? "auto" : "none",
-                }
+                opacity: isHovered ? 1 : 0,
+                y: isHovered ? 0 : 20,
+                pointerEvents: isHovered ? "auto" : "none",
+              }
           }
           transition={
             soldOut ? { duration: 0 } : { duration: 0.3, ease: "easeOut" }
@@ -123,23 +124,17 @@ const Card: React.FC<CardProps> = (data) => {
             {soldOut
               ? "Sold Out"
               : hasVariants
-              ? "Choose options"
-              : "Add to cart"}
+                ? "Choose options"
+                : "Add to cart"}
           </Button>
         </motion.div>
       )}
       {product && (
         <ProductModal
+          id={product?.id}
           isOpen={isModalOpen}
           onClose={handleCloseModal}
-          title={product.title}
-          imageSrc={thumbnail || ""}
-          price={{
-            price_type: cheapestPrice?.price_type || "default",
-            original_price: cheapestPrice?.original_price_number,
-            calculated_price: cheapestPrice?.calculated_price_number,
-          }}
-        />
+          />
       )}
       <div className="pt-2 flex flex-col px-1 font-light">
         <span className="tracking-wider text-md flex items-center gap-1">

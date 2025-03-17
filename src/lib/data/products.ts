@@ -114,7 +114,7 @@ export const listProductsWithSort = async ({
   nextPage: number | null;
   queryParams?: HttpTypes.FindParams & HttpTypes.StoreProductParams;
 }> => {
-  const limit = queryParams?.limit || 4;
+  const limit = queryParams?.limit || 12;
 
   const filterConditions: FilterConditions = {};
 
@@ -208,8 +208,14 @@ export const useListProducts = ({
   countryCode?: string;
   regionId?: string;
 } = {}) => {
+  // Create a stable query key that includes the product ID if present
+  const queryKey = ["products", pageParam, queryParams, countryCode, regionId];
+  // if (queryParams && 'id' in queryParams && typeof queryParams.id === 'string') {
+  //   queryKey.push(queryParams.id);
+  // }
+
   const { data, isLoading, error } = useQuery({
-    queryKey: ["products", pageParam],
+    queryKey,
     queryFn: () =>
       listProducts({ pageParam, queryParams, countryCode, regionId }),
   });
