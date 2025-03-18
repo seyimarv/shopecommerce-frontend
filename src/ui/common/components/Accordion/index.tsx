@@ -7,7 +7,7 @@ import { IoChevronDownSharp } from "react-icons/io5";
 export interface AccordionItem {
   id: number;
   title: string;
-  content: string;
+  content: string | null;
 }
 
 interface AccordionProps {

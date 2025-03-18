@@ -49,13 +49,13 @@ const VariantSelector: React.FC<VariantSelectorProps> = ({
                 ? `w-8 h-8 rounded-full ${option.className}` 
                 : "px-4 py-2 rounded-md text-sm font-medium"
             }`}
-            onClick={() => handleSelect(option.id)}
-            aria-label={`Select ${option.title}`}
+            onClick={() => handleSelect(option.value)}
+            aria-label={`Select ${option.name}`}
           >
-            {isColor && selected === option.id && (
+            {isColor && selected === option.value && (
               <div className="w-3 h-3 rounded-full bg-white" />
             )}
-            {!isColor && option.title}
+            {!isColor && option.name}
           </button>
         ))}
       </div>

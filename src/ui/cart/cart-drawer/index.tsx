@@ -50,7 +50,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
       wrapperClassName={drawerClassName}
     >
       <div className="flex flex-col h-full">
-        <div className="h-[80%] overflow-y-scroll p-4">
+        {/* <div className="h-[80%] overflow-y-scroll p-4">
           {mockProducts.map((item) => (
             <CartProduct
               key={item.id}
@@ -59,7 +59,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
               onQuantityChange={handleQuantityChange}
             />
           ))}
-        </div>
+        </div> */}
         <button
           className="w-full mb-4 p-2 border-t border-b border-gray-400 tracking-wider uppercase text-sm flex items-center justify-center gap-2 cursor-pointer"
           onClick={() => setOpenNote(true)}
