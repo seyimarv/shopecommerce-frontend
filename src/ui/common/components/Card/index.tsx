@@ -13,6 +13,7 @@ import { getProductPrice, subtractPrices } from "@/lib/utils/prices";
 import { isProductSoldOut } from "@/lib/utils/soldout";
 import { checkHasVariants } from "@/lib/utils/variants";
 import Link from "next/link";
+import { useAddToCart } from "@/lib/data/cart";
 
 interface Collection {
   id: string;
@@ -55,15 +56,30 @@ const Card: React.FC<CardProps> = (data) => {
   const soldOut = product ? isProductSoldOut(product) : false;
   const { cheapestPrice } = product ? getProductPrice({ product }) : {};
 
+  const { mutate: addToCartMutation, isPending, error } = useAddToCart();
+
   const addToCart = () => {
-    if (product) {
-      openCart();
+    if (product && product.variants) {
+      const variantId = product.variants[0].id;
+      addToCartMutation(
+        {
+          variantId,
+          quantity: 1,
+          countryCode: 'gb'
+        },
+        {
+          onSuccess: () => {
+            openCart();
+            setIsHovered(false)
+          }
+        }
+      );
     }
   };
 
   const handleClickButton = () => {
-    setIsHovered(false)
     if (hasVariants) {
+      setIsHovered(false)
       setIsModalOpen(true);
     } else {
       addToCart();
@@ -120,6 +136,7 @@ const Card: React.FC<CardProps> = (data) => {
             size="small"
             disabled={soldOut}
             className="w-full"
+            isLoading={isPending}
           >
             {soldOut
               ? "Sold Out"
@@ -134,7 +151,7 @@ const Card: React.FC<CardProps> = (data) => {
           id={product?.id}
           isOpen={isModalOpen}
           onClose={handleCloseModal}
-          />
+        />
       )}
       <div className="pt-2 flex flex-col px-1 font-light">
         <span className="tracking-wider text-md flex items-center gap-1">

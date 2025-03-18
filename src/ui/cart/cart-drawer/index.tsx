@@ -1,11 +1,13 @@
 import { useInView } from "@/lib/hooks/useInView";
 import { Drawer } from "../../Layout/components/Drawer";
-import { mockProducts } from "@/lib/mock-data";
 import CartProduct from "@/ui/product/cart-product";
 import Button from "@/ui/common/components/button";
 import { useState } from "react";
 import TextArea from "@/ui/common/components/text-area";
 import { GoPencil } from "react-icons/go";
+import { useRetrieveCart, useUpdateCart } from "@/lib/data/cart";
+import { convertToLocale } from "@/lib/utils/money";
+import { HttpTypes } from "@medusajs/types";
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -17,6 +19,8 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
   const { isInView: isHeaderInView } = useInView({ id: "header" });
   const [openNote, setOpenNote] = useState(false);
   const [note, setNote] = useState("");
+
+  const { data: cart, isLoading, error } = useRetrieveCart();
 
   const handleRemove = (id: string) => {
     console.log("Removing item with id:", id);
@@ -31,8 +35,9 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
     isBannerInView && isHeaderInView
       ? "top-[6.375rem] h-[calc(100vh-6.375rem)]"
       : isHeaderInView
-      ? "top-[3.875rem] h-[calc(100vh-3.875rem)]"
-      : "h-full";
+        ? "top-[3.875rem] h-[calc(100vh-3.875rem)]"
+        : "h-full";
+
 
   return (
     <Drawer
@@ -50,16 +55,18 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
       wrapperClassName={drawerClassName}
     >
       <div className="flex flex-col h-full">
-        {/* <div className="h-[80%] overflow-y-scroll p-4">
-          {mockProducts.map((item) => (
+        <div className="h-[80%] overflow-y-scroll p-4">
+          {cart?.items?.map((item: any) => (
             <CartProduct
               key={item.id}
-              {...item}
-              onRemove={handleRemove}
-              onQuantityChange={handleQuantityChange}
+              id={item.id}
+              title={item.title || item.variant?.product?.title || ""}
+              price={item.unit_price || 0}
+              quantity={item.quantity}
+              thumbnail={item.thumbnail || ""}
             />
           ))}
-        </div> */}
+        </div>
         <button
           className="w-full mb-4 p-2 border-t border-b border-gray-400 tracking-wider uppercase text-sm flex items-center justify-center gap-2 cursor-pointer"
           onClick={() => setOpenNote(true)}
@@ -74,11 +81,27 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
               Shipping calculated at checkout
             </span>
           </p>
-          <span className="text-lg">30USD</span>
+          <span className="text-lg">
+            {cart && cart.region ? convertToLocale({
+              amount: (cart.subtotal || 0) / 100,
+              currency_code: cart.region.currency_code || "usd"
+            }) : "0"}
+          </span>
         </div>
         <div className="flex w-full justify-between mt-4 px-4 pb-4">
-          <Button>check out</Button>
-          <Button variant="outline">view all</Button>
+          <Button
+            href={cart?.id ? `/checkout/${cart.id}` : '#'}
+            disabled={!cart?.id || isLoading || cart?.items?.length === 0}
+          >
+            check out
+          </Button>
+          <Button
+            variant="outline"
+            href="/cart"
+            disabled={isLoading || cart?.items?.length === 0}
+          >
+            view cart
+          </Button>
         </div>
       </div>
       <Drawer

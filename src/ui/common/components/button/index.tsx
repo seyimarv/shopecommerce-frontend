@@ -4,6 +4,7 @@ import * as React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import clsx from "clsx";
 import Link from "next/link";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 const buttonVariants = cva(
   "rounded-md cursor-pointer tracking-widest min-w-[12rem] text-button uppercase",
@@ -20,7 +21,7 @@ const buttonVariants = cva(
         outline: "border border-gray-500 text-gray-900 bg-transparent",
       },
       disabled: {
-        true: "opacity-40 cursor-not-allowed bg-gray-300 text-gray-500",
+        true: "opacity-80 cursor-not-allowed bg-gray-300 text-gray-500",
         false: "",
       },
     },
@@ -59,7 +60,7 @@ const ButtonContent: React.FC<{
       </span>
     )}
     <span className="text-inherit">{children}</span>
-    {isLoading && <span className="ml-2 animate-spin">⏳</span>}
+    {isLoading && <span className="ml-2 animate-spin"><AiOutlineLoading3Quarters /></span>}
   </span>
 );
 

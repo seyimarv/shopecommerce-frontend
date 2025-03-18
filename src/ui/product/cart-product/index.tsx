@@ -1,10 +1,15 @@
 import React from "react";
 import { MdOutlineCancel } from "react-icons/md";
 import QuantitySelector from "@/ui/common/components/quantityselector";
-import { Product } from "../product-list";
 import Thumbnail from "../Thumbnail";
+import { convertToLocale } from "@/lib/utils/money";
 
-interface CartProductProps extends Product {
+interface CartProductProps {
+  id: string;
+  title: string;
+  thumbnail?: string;
+  price: number;
+  quantity?: number;
   onRemove?: (id: string) => void;
   onQuantityChange?: (id: string, quantity: number) => void;
 }
@@ -12,8 +17,9 @@ interface CartProductProps extends Product {
 const CartProduct: React.FC<CartProductProps> = ({
   id,
   title,
-  imgSrc,
+  thumbnail,
   price,
+  quantity = 1,
   onRemove,
   onQuantityChange,
 }) => {
@@ -32,7 +38,7 @@ const CartProduct: React.FC<CartProductProps> = ({
   return (
     <div className="py-6 w-full border-b border-b-gray-200 last:border-b-0">
       <div className="flex gap-4">
-        <Thumbnail image={imgSrc} size="square" className="w-25 h-20 !rounded-none" />
+        <Thumbnail image={thumbnail} size="square" className="w-25 h-20 !rounded-none" />
         <div className="flex flex-col w-full">
           <div className="flex justify-between items-center w-full">
             <span className="font-medium">{title}</span>
@@ -52,7 +58,7 @@ const CartProduct: React.FC<CartProductProps> = ({
               onChange={handleQuantityChange}
             />
             <span className="text-lg font-medium">
-              ${price?.calculated_price?.toFixed(2) || "N/A"}
+              {convertToLocale({ amount: price, currency_code: "usd" })}
             </span>
           </div>
         </div>

@@ -24,7 +24,7 @@ export const getCacheOptions = (tag: string): { tags: string[] } | {} => {
         if (!cacheTag) {
             return {};
         }
-        return { tags: [`${cacheTag}`] };
+        return { tags: [cacheTag] };
     }
     return {};
 };
@@ -49,7 +49,8 @@ export const removeCartId = () => {
     removeCookie("_medusa_cart_id");
 };
 
-const getCookie = (name: string): string | undefined => {
+export const getCookie = (name: string): string | undefined => {
+    if (typeof document === "undefined") return undefined;
     const value = `; ${document.cookie}`;
     const parts = value.split(`; ${name}=`);
     if (parts.length === 2) {
@@ -60,10 +61,14 @@ const getCookie = (name: string): string | undefined => {
 };
 
 const setCookie = (name: string, value: string, maxAge: number) => {
+    if (typeof document === "undefined") return;
+
     const expires = new Date(Date.now() + maxAge * 1000).toUTCString();
     document.cookie = `${name}=${value}; expires=${expires}; path=/; sameSite=strict; secure=${process.env.NODE_ENV === "production"}`;
 };
 
 const removeCookie = (name: string) => {
+    if (typeof document === "undefined") return;
+
     document.cookie = `${name}=; max-age=-1; path=/;`;
 };

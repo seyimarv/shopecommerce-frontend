@@ -9,9 +9,11 @@ import Button from "@/ui/common/components/button";
 import QuantitySelector from "@/ui/common/components/quantityselector";
 import Link from "next/link";
 import OptionSelect from "./variant-select";
+import { useAddToCart } from "@/lib/data/cart";
 
 interface ProductActionsProps {
     product: HttpTypes.StoreProduct;
+    onCartOpen: () => void;
 }
 
 const optionsAsKeymap = (
@@ -23,12 +25,12 @@ const optionsAsKeymap = (
     }, {});
 };
 
-const ProductActions = ({ product }: ProductActionsProps) => {
+const ProductActions = ({ product, onCartOpen }: ProductActionsProps) => {
     const [quantity, setQuantity] = useState(1);
     const [options, setOptions] = useState<Record<string, string | undefined>>(
         {}
     );
-    const [isAdding, setIsAdding] = useState(false);
+    const { mutate: addToCartMutation, isPending, error } = useAddToCart();
     const countryCode = useParams().countryCode as string;
 
     // If there is only 1 variant, preselect the options
@@ -98,15 +100,18 @@ const ProductActions = ({ product }: ProductActionsProps) => {
     const handleAddToCart = async () => {
         if (!selectedVariant?.id) return null;
 
-        setIsAdding(true);
-
-        // await addToCart({
-        //     variantId: selectedVariant.id,
-        //     quantity: 1,
-        //     countryCode,
-        // })
-
-        setIsAdding(false);
+        addToCartMutation(
+            {
+                variantId: selectedVariant.id,
+                quantity,
+                countryCode: 'gb'
+            },
+            {
+                onSuccess: () => {
+                    onCartOpen();
+                }
+            }
+        );
     };
 
     const accordionItems = [
@@ -116,8 +121,6 @@ const ProductActions = ({ product }: ProductActionsProps) => {
             content: product?.description,
         },
     ];
-
-    console.log(selectedVariant, options)
 
     return (
         <>
@@ -135,7 +138,7 @@ const ProductActions = ({ product }: ProductActionsProps) => {
                                     updateOption={setOptionValue}
                                     title={option.title ?? ""}
                                     data-testid="product-options"
-                                    disabled={isAdding}
+                                    disabled={isPending}
                                 />
                             </div>
                         );
@@ -152,7 +155,7 @@ const ProductActions = ({ product }: ProductActionsProps) => {
                     initial={quantity}
                     onChange={setQuantity}
                 />
-                <Button variant="outline" className="w-full">
+                <Button variant="outline" className="w-full" isLoading={isPending} onClick={handleAddToCart}>
                     {!selectedVariant || Object.keys(options).length === 0
                         ? "Select variant"
                         : !inStock || !isValidVariant
