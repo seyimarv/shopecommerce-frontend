@@ -8,6 +8,7 @@ import { GoPencil } from "react-icons/go";
 import { useRetrieveCart, useUpdateCart } from "@/lib/data/cart";
 import { convertToLocale } from "@/lib/utils/money";
 import { HttpTypes } from "@medusajs/types";
+import { checkHasVariants } from "@/lib/utils/variants";
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -21,6 +22,8 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
   const [note, setNote] = useState("");
 
   const { data: cart, isLoading, error } = useRetrieveCart();
+
+  console.log(cart)
 
   const handleRemove = (id: string) => {
     console.log("Removing item with id:", id);
@@ -60,7 +63,8 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
             <CartProduct
               key={item.id}
               id={item.id}
-              title={item.title || item.variant?.product?.title || ""}
+              title={checkHasVariants(item?.product) ? (item.title || item?.product?.title || "") : ""}
+              productTitle={item?.product?.title || ""}
               price={item.unit_price || 0}
               quantity={item.quantity}
               thumbnail={item.thumbnail || ""}

@@ -12,6 +12,7 @@ interface CartProductProps {
   quantity?: number;
   onRemove?: (id: string) => void;
   onQuantityChange?: (id: string, quantity: number) => void;
+  productTitle?: string
 }
 
 const CartProduct: React.FC<CartProductProps> = ({
@@ -22,6 +23,7 @@ const CartProduct: React.FC<CartProductProps> = ({
   quantity = 1,
   onRemove,
   onQuantityChange,
+  productTitle
 }) => {
   const handleQuantityChange = (quantity: number) => {
     if (onQuantityChange) {
@@ -41,7 +43,7 @@ const CartProduct: React.FC<CartProductProps> = ({
         <Thumbnail image={thumbnail} size="square" className="w-25 h-20 !rounded-none" />
         <div className="flex flex-col w-full">
           <div className="flex justify-between items-center w-full">
-            <span className="font-medium">{title}</span>
+            <span className="font-medium">{productTitle} - {title}</span>
             <button
               className="text-gray-500 text-lg hover:text-gray-700 transition-colors"
               onClick={handleRemove}
