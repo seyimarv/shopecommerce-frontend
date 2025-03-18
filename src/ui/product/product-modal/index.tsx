@@ -27,7 +27,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
 
   return (
     <Modal
-      isOpen={true}
+      isOpen={isOpen}
       onClose={onClose}
       className="h-[calc(100%-6.25rem)] max-h-[544px] w-full max-w-[800px]"
     >
