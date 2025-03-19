@@ -52,13 +52,23 @@ const ProductActions = ({ product, onCartOpen }: ProductActionsProps) => {
         });
     }, [product.variants, options]);
 
+    useEffect(() => {
+        const inventoryQuantity = selectedVariant?.inventory_quantity ?? Infinity;
+        if (inventoryQuantity < quantity) {
+            setQuantity(Math.max(1, inventoryQuantity));
+        }
+    }, [selectedVariant?.inventory_quantity, quantity]);
+
     // update the options when a variant is selected
     const setOptionValue = (optionId: string, value: string) => {
         setOptions((prev) => ({
             ...prev,
             [optionId]: value,
         }));
+        setQuantity(1)
     };
+
+    console.log(quantity)
 
     //check if the selected options produce a valid variant
     const isValidVariant = useMemo(() => {
@@ -87,23 +97,15 @@ const ProductActions = ({ product, onCartOpen }: ProductActionsProps) => {
         ) {
             return true;
         }
-
-        // Otherwise, we can't add to cart
         return false;
     }, [selectedVariant]);
-
-    const actionsRef = useRef<HTMLDivElement>(null);
-
-    // const inView = useIntersection(actionsRef, "0px")
-
-    // add the selected variant to the cart
     const handleAddToCart = async () => {
         if (!selectedVariant?.id) return null;
 
         addToCartMutation(
             {
                 variantId: selectedVariant.id,
-                quantity,
+                quantity: quantity,
                 countryCode: 'gb'
             },
             {
@@ -151,8 +153,8 @@ const ProductActions = ({ product, onCartOpen }: ProductActionsProps) => {
             <div className="flex gap-6 items-center">
                 <QuantitySelector
                     min={1}
-                    max={selectedVariant?.inventory_quantity || 1}
-                    initial={quantity}
+                    max={selectedVariant?.inventory_quantity || Infinity}
+                    quantity={quantity}
                     onChange={setQuantity}
                 />
                 <Button variant="outline" className="w-full" isLoading={isPending} onClick={handleAddToCart}>

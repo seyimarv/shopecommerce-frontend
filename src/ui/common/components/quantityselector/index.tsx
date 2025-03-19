@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useCallback } from "react";
 
 interface QuantityButtonProps {
   onClick: () => void;
@@ -23,18 +23,15 @@ const QuantityButton: React.FC<QuantityButtonProps> = ({ onClick, disabled, aria
 interface QuantitySelectorProps {
   min: number;
   max: number;
-  initial: number;
-  onChange?: (value: number) => void;
+  onChange: (value: number) => void;
+  quantity: number;
 }
 
-const QuantitySelector: React.FC<QuantitySelectorProps> = ({ min, max, initial, onChange }) => {
-  const [quantity, setQuantity] = useState<number>(initial);
-
+const QuantitySelector: React.FC<QuantitySelectorProps> = ({ min, max, onChange, quantity }) => {
   const updateQuantity = useCallback(
     (newQuantity: number) => {
       if (newQuantity >= min && newQuantity <= max) {
-        setQuantity(newQuantity);
-        onChange?.(newQuantity);
+        onChange(newQuantity);
       }
     },
     [min, max, onChange]
@@ -55,10 +52,10 @@ const QuantitySelector: React.FC<QuantitySelectorProps> = ({ min, max, initial, 
         value={quantity}
         onChange={(e) => {
           const value = e.target.value;
-          setQuantity(value === "" ? min : Number(value));
+          onChange(value === "" ? min : Number(value));
         }}
         onBlur={() => {
-          if (quantity < min || isNaN(quantity)) setQuantity(min);
+          if (quantity < min || isNaN(quantity)) onChange(min);
         }}
         className="w-8 text-center text-sm font-light outline-none bg-transparent appearance-none 
                    [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"

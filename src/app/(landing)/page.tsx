@@ -8,7 +8,6 @@ import { useFetchCollections } from "@/lib/data/collections";
 import { useListProductsWithSort } from "@/lib/data/products";
 import Card from "@/ui/common/components/Card";
 import HeroSkeleton from "@/ui/common/components/Skeleton/hero-skeleton";
-import { getCookie } from "@/lib/data/cookies";
 
 export default function Home() {
   const { data, isLoading } = useFetchCollections();
