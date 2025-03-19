@@ -10,6 +10,7 @@ import CurrencyPicker from "@/ui/common/components/Currency-picker";
 import Image from "next/image";
 import CartDrawer from "../../../cart/cart-drawer";
 import ProductSearch from "@/ui/product/products-search";
+import { useRetrieveCart } from "@/lib/data/cart";
 
 const Header: React.FC = () => {
   const [headerStatus, setHeaderStatus] = useState<
@@ -46,6 +47,8 @@ const Header: React.FC = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const { data: cart, isLoading, error } = useRetrieveCart()
+
   return (
     <>
       <motion.header
@@ -55,15 +58,13 @@ const Header: React.FC = () => {
           opacity: headerStatus === "hidden" ? 0 : 1,
         }}
         transition={{ duration: 0.3, ease: "easeInOut" }}
-        className={`h-[3.875rem] w-full z-50 bg-background transition-all duration-300 ${
-          headerStatus === "sticky"
-            ? "sticky top-0 shadow-lg border-b border-gray-200"
-            : ""
-        } ${
-          !isHomePage && headerStatus === "initial"
+        className={`h-[3.875rem] w-full z-50 bg-background transition-all duration-300 ${headerStatus === "sticky"
+          ? "sticky top-0 shadow-lg border-b border-gray-200"
+          : ""
+          } ${!isHomePage && headerStatus === "initial"
             ? "border-b border-gray-300"
             : ""
-        }`}
+          }`}
         id="header"
       >
         <nav className="h-full flex justify-between w-full gap-4 items-center container">
@@ -102,11 +103,21 @@ const Header: React.FC = () => {
               </Link>
             </li>
             <li>
-              <CiShoppingCart
-                size={20}
-                className="cursor-pointer"
-                onClick={() => setOpenCart(true)}
-              />
+              <div className="relative cursor-pointer">
+                <CiShoppingCart
+                  size={20}
+                  onClick={() => setOpenCart(true)}
+                />
+                {
+                  cart && cart.items && cart.items.length > 0 && (
+                    <span className="absolute -top-1 -right-2 bg-gray-800 text-white w-4 h-4 flex items-center justify-center rounded-full text-xs font-medium">
+                      {
+                        cart.items.reduce((total, item) => total + (item.quantity || 0), 0)
+                      }
+                    </span>
+                  )
+                }
+              </div>
             </li>
           </ul>
         </nav>

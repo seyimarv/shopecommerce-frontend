@@ -13,7 +13,7 @@ import { getProductPrice, subtractPrices } from "@/lib/utils/prices";
 import { isProductSoldOut } from "@/lib/utils/soldout";
 import { checkHasVariants } from "@/lib/utils/variants";
 import Link from "next/link";
-import { useAddToCart } from "@/lib/data/cart";
+import { useAddToCart, useRetrieveCart } from "@/lib/data/cart";
 
 interface Collection {
   id: string;
@@ -58,6 +58,8 @@ const Card: React.FC<CardProps> = (data) => {
 
   const { mutate: addToCartMutation, isPending, error } = useAddToCart();
 
+  const { data: cart, isLoading, isFetching } = useRetrieveCart();
+
   const addToCart = () => {
     if (product && product.variants) {
       const variantId = product.variants[0].id;
@@ -71,6 +73,7 @@ const Card: React.FC<CardProps> = (data) => {
           onSuccess: () => {
             openCart();
             setIsHovered(false)
+
           }
         }
       );
@@ -136,7 +139,7 @@ const Card: React.FC<CardProps> = (data) => {
             size="small"
             disabled={soldOut}
             className="w-full"
-            isLoading={isPending}
+            isLoading={isPending || isFetching}
           >
             {soldOut
               ? "Sold Out"
@@ -167,7 +170,7 @@ const Card: React.FC<CardProps> = (data) => {
   return (
     <>
       {href ? <Link href={href}>{CardContent}</Link> : CardContent}
-      <CartDrawer isOpen={isOpen} onClose={closeCart} />
+      <CartDrawer isOpen={isOpen && !isFetching} onClose={closeCart} />
     </>
   );
 };

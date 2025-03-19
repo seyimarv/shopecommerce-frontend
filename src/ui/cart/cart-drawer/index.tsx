@@ -32,7 +32,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
         ? "top-[3.875rem] h-[calc(100vh-3.875rem)]"
         : "h-full";
 
-
+  
   return (
     <Drawer
       isOpen={isOpen}

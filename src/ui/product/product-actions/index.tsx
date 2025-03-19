@@ -9,7 +9,7 @@ import Button from "@/ui/common/components/button";
 import QuantitySelector from "@/ui/common/components/quantityselector";
 import Link from "next/link";
 import OptionSelect from "./variant-select";
-import { useAddToCart } from "@/lib/data/cart";
+import { useAddToCart, useRetrieveCart } from "@/lib/data/cart";
 
 interface ProductActionsProps {
     product: HttpTypes.StoreProduct;
@@ -32,6 +32,8 @@ const ProductActions = ({ product, onCartOpen }: ProductActionsProps) => {
     );
     const { mutate: addToCartMutation, isPending, error } = useAddToCart();
     const countryCode = useParams().countryCode as string;
+
+    const { isFetching } = useRetrieveCart()
 
     // If there is only 1 variant, preselect the options
     useEffect(() => {
@@ -67,8 +69,6 @@ const ProductActions = ({ product, onCartOpen }: ProductActionsProps) => {
         }));
         setQuantity(1)
     };
-
-    console.log(quantity)
 
     //check if the selected options produce a valid variant
     const isValidVariant = useMemo(() => {
@@ -157,7 +157,7 @@ const ProductActions = ({ product, onCartOpen }: ProductActionsProps) => {
                     quantity={quantity}
                     onChange={setQuantity}
                 />
-                <Button variant="outline" className="w-full" isLoading={isPending} onClick={handleAddToCart}>
+                <Button variant="outline" className="w-full" isLoading={isPending || isFetching} onClick={handleAddToCart}>
                     {!selectedVariant || Object.keys(options).length === 0
                         ? "Select variant"
                         : !inStock || !isValidVariant

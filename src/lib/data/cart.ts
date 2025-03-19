@@ -290,7 +290,6 @@ export const useAddToCart = () => {
         mutationFn: (params: { variantId: string; quantity: number; countryCode: string }) =>
             addToCart(params),
         onSuccess: () => {
-            console.log("success")
             queryClient.invalidateQueries({ queryKey: ["cart"] });
         },
     });
