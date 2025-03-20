@@ -23,8 +23,6 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
 
   const { data: cart, isLoading, error } = useRetrieveCart();
 
-  console.log(cart)
-
   const drawerClassName =
     isBannerInView && isHeaderInView
       ? "top-[6.375rem] h-[calc(100vh-6.375rem)]"
@@ -32,7 +30,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
         ? "top-[3.875rem] h-[calc(100vh-3.875rem)]"
         : "h-full";
 
-  
+
   return (
     <Drawer
       isOpen={isOpen}
@@ -112,6 +110,8 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                     variant="outline"
                     href="/cart"
                     disabled={isLoading || cart?.items?.length === 0}
+                    isLink
+                    onClick={onClose}
                   >
                     view cart
                   </Button>

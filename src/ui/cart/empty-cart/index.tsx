@@ -7,7 +7,7 @@ const EmptyCart: React.FC = () => {
       <h2 className="mb-[3.5rem] text-xl font-normal">
         Your cart is currently empty. Fill it with some goodies!
       </h2>
-      <Button isLink href="/shop">
+      <Button isLink href="/products" variant="outline">
         Return to shop
       </Button>
     </div>

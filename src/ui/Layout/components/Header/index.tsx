@@ -103,10 +103,9 @@ const Header: React.FC = () => {
               </Link>
             </li>
             <li>
-              <div className="relative cursor-pointer">
+              <button className="relative cursor-pointer" onClick={() => setOpenCart(true)}>
                 <CiShoppingCart
                   size={20}
-                  onClick={() => setOpenCart(true)}
                 />
                 {
                   cart && cart.items && cart.items.length > 0 && (
@@ -120,7 +119,7 @@ const Header: React.FC = () => {
                     </span>
                   )
                 }
-              </div>
+              </button>
             </li>
           </ul>
         </nav>

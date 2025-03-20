@@ -9,7 +9,7 @@ type StoreCart = HttpTypes.StoreCartResponse["cart"];
 type StoreCartLineItem = NonNullable<StoreCart["items"]>[0];
 type Product = HttpTypes.StoreProductResponse["product"];
 
-type CartItemWithInventory = StoreCartLineItem & {
+export type CartItemWithInventory = StoreCartLineItem & {
   inventory_quantity?: number;
   is_in_stock?: boolean;
 };
