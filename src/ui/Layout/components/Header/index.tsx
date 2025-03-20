@@ -111,8 +111,11 @@ const Header: React.FC = () => {
                 {
                   cart && cart.items && cart.items.length > 0 && (
                     <span className="absolute -top-1 -right-2 bg-gray-800 text-white w-4 h-4 flex items-center justify-center rounded-full text-xs font-medium">
-                      {
+                      {/* {
                         cart.items.reduce((total, item) => total + (item.quantity || 0), 0)
+                      } */}
+                      {
+                        cart?.items?.length
                       }
                     </span>
                   )

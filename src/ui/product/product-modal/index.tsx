@@ -24,7 +24,6 @@ const ProductModal: React.FC<ProductModalProps> = ({
       id: productId
     }
   });
-  const { isFetching } = useRetrieveCart()
 
   const product = data?.response.products[0]
 
@@ -54,7 +53,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
           </div>
         </div>
       </Modal>
-      <CartDrawer isOpen={isCartOpen && !isFetching} onClose={closeCart} />
+      <CartDrawer isOpen={isCartOpen} onClose={closeCart} />
     </>
   );
 };

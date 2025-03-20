@@ -33,8 +33,6 @@ const ProductActions = ({ product, onCartOpen }: ProductActionsProps) => {
     const { mutate: addToCartMutation, isPending, error } = useAddToCart();
     const countryCode = useParams().countryCode as string;
 
-    const { isFetching } = useRetrieveCart()
-
     // If there is only 1 variant, preselect the options
     useEffect(() => {
         if (product.variants?.length === 1) {
@@ -157,7 +155,7 @@ const ProductActions = ({ product, onCartOpen }: ProductActionsProps) => {
                     quantity={quantity}
                     onChange={setQuantity}
                 />
-                <Button variant="outline" className="w-full" isLoading={isPending || isFetching} onClick={handleAddToCart}>
+                <Button variant="outline" className="w-full" isLoading={isPending} onClick={handleAddToCart}>
                     {!selectedVariant || Object.keys(options).length === 0
                         ? "Select variant"
                         : !inStock || !isValidVariant
