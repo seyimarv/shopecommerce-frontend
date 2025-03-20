@@ -58,9 +58,28 @@ const Card: React.FC<CardProps> = (data) => {
 
   const { mutate: addToCartMutation, isPending, error } = useAddToCart();
 
+  const allowAddToCart = (variant: HttpTypes.StoreProductVariant) => {
+    if (variant && !variant.manage_inventory) {
+      return true;
+    }
+    if (variant?.allow_backorder) {
+      return true;
+    }
+    if (
+      variant?.manage_inventory &&
+      (variant?.inventory_quantity || 0) > 0
+    ) {
+      return true;
+    }
+    return false;
+  }
+
   const addToCart = () => {
     if (product && product.variants) {
       const variantId = product.variants[0].id;
+      if (!allowAddToCart(product.variants[0])) {
+        return;
+      }
       addToCartMutation(
         {
           variantId,
