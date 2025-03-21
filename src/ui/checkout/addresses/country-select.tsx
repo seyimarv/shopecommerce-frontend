@@ -16,7 +16,8 @@ export const sortingOptions = [
 ];
 
 type SortByProps = {
-  value?: Option;
+  name?: string;
+  value?: string;
   onChange?: (option: Option) => void;
   className?: string;
 };
