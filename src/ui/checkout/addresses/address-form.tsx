@@ -80,7 +80,7 @@ const AddressForm: React.FC<AddressFormProps> = ({
 
   return (
     <>
-      {submittedData && !isEditing ? (
+      {submittedData && !isEditing && (
         <div className="flex gap-8 text-gray-600 tracking-wide">
           <div>
             <h3 className="text-xl text-black ">Shipping Details</h3>
@@ -98,7 +98,9 @@ const AddressForm: React.FC<AddressFormProps> = ({
             <p>{submittedData?.email}</p>
           </div>
         </div>
-      ) : (
+      )}
+
+      {isEditing && (
         <Formik
           initialValues={currentValues}
           validationSchema={validationSchema}
@@ -222,7 +224,7 @@ const AddressForm: React.FC<AddressFormProps> = ({
             </Form>
           )}
         </Formik>
-      )}{" "}
+      )}
     </>
   );
 };
