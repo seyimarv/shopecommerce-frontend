@@ -126,7 +126,7 @@ const AddressForm: React.FC = () => {
     address: "",
     city: "",
     state: "",
-    country: "",
+    country: "nigeria",
   };
 
   // Validation schema using Yup
@@ -184,6 +184,7 @@ const AddressForm: React.FC = () => {
             handleChange,
             handleBlur,
             setFieldValue,
+            errors,
             isSubmitting,
           }: FormikProps<FormValues>) => (
             <Form className="flex flex-row flex-wrap gap-y-4">
@@ -195,11 +196,7 @@ const AddressForm: React.FC = () => {
                   value={values.firstName}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                />
-                <ErrorMessage
-                  name="firstName"
-                  component="div"
-                  className="text-red-500 text-sm mt-1"
+                  errorMessage={errors.firstName}
                 />
               </div>
 
@@ -211,11 +208,7 @@ const AddressForm: React.FC = () => {
                   value={values.lastName}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                />
-                <ErrorMessage
-                  name="lastName"
-                  component="div"
-                  className="text-red-500 text-sm mt-1"
+                  errorMessage={errors.lastName}
                 />
               </div>
 
@@ -227,11 +220,7 @@ const AddressForm: React.FC = () => {
                   value={values.email}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                />
-                <ErrorMessage
-                  name="email"
-                  component="div"
-                  className="text-red-500 text-sm mt-1"
+                  errorMessage={errors.email}
                 />
               </div>
 
@@ -243,11 +232,7 @@ const AddressForm: React.FC = () => {
                   value={values.phonenumber}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                />
-                <ErrorMessage
-                  name="phonenumber"
-                  component="div"
-                  className="text-red-500 text-sm mt-1"
+                  errorMessage={errors.phonenumber}
                 />
               </div>
 
@@ -259,11 +244,7 @@ const AddressForm: React.FC = () => {
                   value={values.address}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                />
-                <ErrorMessage
-                  name="address"
-                  component="div"
-                  className="text-red-500 text-sm mt-1"
+                  errorMessage={errors.address}
                 />
               </div>
 
@@ -275,11 +256,7 @@ const AddressForm: React.FC = () => {
                   value={values.city}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                />
-                <ErrorMessage
-                  name="city"
-                  component="div"
-                  className="text-red-500 text-sm mt-1"
+                  errorMessage={errors.city}
                 />
               </div>
 
@@ -291,11 +268,7 @@ const AddressForm: React.FC = () => {
                   value={values.state}
                   onChange={handleChange}
                   onBlur={handleBlur}
-                />
-                <ErrorMessage
-                  name="state"
-                  component="div"
-                  className="text-red-500 text-sm mt-1"
+                  errorMessage={errors.state}
                 />
               </div>
 
@@ -317,7 +290,7 @@ const AddressForm: React.FC = () => {
               {/* Submit Button */}
               <div className="w-full mt-4">
                 <Button type="submit" disabled={isSubmitting}>
-                  {isSubmitting ? "Submitting..." : "Continue to Delivery"}
+                  {isSubmitting ? "Submitting" : "Continue to Delivery"}
                 </Button>
               </div>
             </Form>

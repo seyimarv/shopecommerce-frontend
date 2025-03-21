@@ -26,8 +26,8 @@ const CountrySelect = ({ onChange }: SortByProps) => {
   const [value, setValue] = useState<Option | undefined>(sortingOptions[0]);
   return (
     <Select value={value} onChange={onChange}>
-      <SelectTrigger className="!text-sm !border-gray-300 !w-[1/2]" />
-      <SelectContent className="bg-white shadow-md rounded-none mt-1 ">
+      <SelectTrigger className="!text-sm !border-gray-300 !w-[100%]" />
+      <SelectContent className="bg-white shadow-md rounded-none mt-1 !w-[100%]">
         {sortingOptions.map((option) => (
           <SelectItem
             key={option.value}
