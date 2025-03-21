@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Formik,
   Form,
@@ -13,97 +13,6 @@ import * as Yup from "yup";
 import CountrySelect from "./country-select";
 import Button from "@/ui/common/components/button";
 
-// interface AddressFormValues {
-//   firstName: string;
-//   lastName: string;
-//   email: string;
-//   phonenumber: string;
-//   address: string;
-//   city: string;
-//   state: string;
-// }
-
-// const AddressForm = () => {
-//   return (
-//     <>
-//       <Formik<AddressFormValues>
-//         initialValues={{
-//           firstName: "",
-//           lastName: "",
-//           email: "",
-//           phonenumber: "",
-//           address: "",
-//           city: "",
-//           state: "",
-//         }}
-//         validationSchema={Yup.object({
-//           firstName: Yup.string().required("Required"),
-//           lastName: Yup.string().required("Required"),
-//           email: Yup.string()
-//             .email("Invalid email address")
-//             .required("Required"),
-//           phonenumber: Yup.number().required("Required"),
-//           address: Yup.string().required("Required"),
-//           city: Yup.string().required("Required"),
-//           state: Yup.string().required("Required"),
-//         })}
-//         onSubmit={(values, { setSubmitting }) => {
-//           setTimeout(() => {
-//             alert(JSON.stringify(values, null, 2));
-//             setSubmitting(false);
-//           }, 400);
-//         }}
-//       >
-//         <>
-//           {({ values, handleChange }: FormikProps<AddressFormValues>) => (
-//             <Form className="flex flex-row flex-wrap gap-y-4">
-//               <div className="w-1/2 pr-2">
-//                 <Input
-//                   name="firstName"
-//                   type="text"
-//                   placeholder="First Name"
-//                   value={values.firstName}
-//                 />
-//               </div>
-
-//               <div className="w-1/2 pl-2">
-//                 <Input name="lastName" type="text" placeholder="Last Name" />
-//               </div>
-
-//               <div className="w-1/2 pr-2">
-//                 <Input name="email" type="email" placeholder="Email" />
-//               </div>
-//               <div className="w-1/2 pl-2">
-//                 <Input
-//                   name="phonenumber"
-//                   type="number"
-//                   placeholder="Phone Number"
-//                 />
-//               </div>
-//               <div className="w-1/2 pr-2">
-//                 <Input name="address" type="type" placeholder="Address" />
-//               </div>
-//               <div className="w-1/2 pl-2">
-//                 <Input name="city" type="type" placeholder="City" />
-//               </div>
-//               <div className="w-1/2 pr-2">
-//                 <Input name="state" type="type" placeholder="State" />
-//               </div>
-//               <div className="w-1/2 pl-2">
-//                 <CountrySelect />
-//               </div>
-
-//               <Button type="submit" className="">
-//                 Continue to Delivery
-//               </Button>
-//             </Form>
-//           )}
-//         </>
-//       </Formik>
-//     </>
-//   );
-// };
-
 interface FormValues {
   firstName: string;
   lastName: string;
@@ -115,7 +24,15 @@ interface FormValues {
   country: string;
 }
 
-const AddressForm: React.FC = () => {
+interface AddressFormProps {
+  isEditing: boolean;
+  onSubmitComplete: () => void;
+}
+
+const AddressForm: React.FC<AddressFormProps> = ({
+  isEditing,
+  onSubmitComplete,
+}) => {
   const [submittedData, setSubmittedData] = useState<FormValues | null>(null);
 
   const initialValues: FormValues = {
@@ -129,7 +46,14 @@ const AddressForm: React.FC = () => {
     country: "nigeria",
   };
 
-  // Validation schema using Yup
+  const currentValues = submittedData ? submittedData : initialValues;
+
+  useEffect(() => {
+    if (isEditing && submittedData) {
+      setSubmittedData(submittedData);
+    }
+  }, [isEditing]);
+
   const validationSchema = Yup.object({
     firstName: Yup.string().required("First name is required"),
     lastName: Yup.string().required("Last name is required"),
@@ -149,35 +73,37 @@ const AddressForm: React.FC = () => {
   ) => {
     setTimeout(() => {
       setSubmittedData(values);
+      onSubmitComplete();
       setSubmitting(false);
     }, 400);
   };
 
   return (
     <>
-      {submittedData ? (
+      {submittedData && !isEditing ? (
         <div className="flex gap-8 text-gray-600 tracking-wide">
           <div>
             <h3 className="text-xl text-black ">Shipping Details</h3>
             <p>
-              {submittedData.firstName} {submittedData.lastName}
+              {submittedData?.firstName || ""} {submittedData?.lastName || ""}
             </p>
             <p>
-              {submittedData.city} {submittedData.state}
+              {submittedData?.city} {submittedData?.state}
             </p>
-            <p>{submittedData.country}</p>
+            <p>{submittedData?.country}</p>
           </div>
           <div>
             <h3 className="text-xl text-black ">Contact Details</h3>
-            <p>{submittedData.phonenumber}</p>
-            <p>{submittedData.email}</p>
+            <p>{submittedData?.phonenumber}</p>
+            <p>{submittedData?.email}</p>
           </div>
         </div>
       ) : (
         <Formik
-          initialValues={initialValues}
+          initialValues={currentValues}
           validationSchema={validationSchema}
           onSubmit={handleSubmit}
+          enableReinitialize={true}
         >
           {({
             values,

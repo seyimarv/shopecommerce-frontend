@@ -4,16 +4,21 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { FiCheckCircle } from "react-icons/fi";
 import AddressForm from "./address-form";
 import Link from "next/link";
+import { useState } from "react";
 
 const Addresses = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
 
-  const isOpen = searchParams.get("step") === "address";
+  const isEditing = searchParams.get("step") === "address";
 
   const handleEdit = () => {
-    router.push(pathname + "?step=address");
+    router.push(`${pathname}?step=address`);
+  };
+
+  const handleDoneEditing = () => {
+    router.push(pathname);
   };
 
   return (
@@ -23,13 +28,17 @@ const Addresses = () => {
           <h3 className="text-3xl tracking-widest uppercase">
             Shipping Addresses
           </h3>
-          {!isOpen && <FiCheckCircle />}
+          {!isEditing && <FiCheckCircle />}
         </div>
 
-        <button className="cursor-pointer">Edit Address</button>
+        {!isEditing && (
+          <button className="cursor-pointer" onClick={handleEdit}>
+            Edit Address
+          </button>
+        )}
       </div>
 
-      <AddressForm />
+      <AddressForm isEditing={isEditing} onSubmitComplete={handleDoneEditing} />
     </div>
   );
 };
