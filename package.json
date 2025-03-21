@@ -12,17 +12,20 @@
     "@medusajs/js-sdk": "^2.6.0",
     "@medusajs/types": "^2.6.0",
     "@splidejs/react-splide": "^0.7.12",
+    "@tanstack/react-form": "^1.1.2",
     "@tanstack/react-query": "^5.67.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cva": "^0.0.0",
+    "formik": "^2.4.6",
     "lodash": "^4.17.21",
     "motion": "^12.4.7",
     "next": "15.2.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-icons": "^5.5.0",
-    "tw-merge": "^0.0.1-alpha.3"
+    "tw-merge": "^0.0.1-alpha.3",
+    "yup": "^1.6.1"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
