@@ -15,6 +15,7 @@ interface CartProductProps {
   quantity?: number;
   productTitle?: string;
   max: number;
+  currencyCode: string;
 }
 
 const CartProduct: React.FC<CartProductProps> = ({
@@ -25,6 +26,7 @@ const CartProduct: React.FC<CartProductProps> = ({
   quantity: initialQuantity,
   productTitle,
   max,
+  currencyCode
 }) => {
   const [quantity, setQuantity] = useState(initialQuantity)
   const { mutate: updateItem, isPending: isUpdatePending } =
@@ -85,7 +87,7 @@ const CartProduct: React.FC<CartProductProps> = ({
               onChange={handleQuantityChange}
             />
             <span className="text-lg font-medium">
-              {convertToLocale({ amount: price, currency_code: "usd" })}
+              {convertToLocale({ amount: price, currency_code: currencyCode })}
             </span>
           </div>
         </div>

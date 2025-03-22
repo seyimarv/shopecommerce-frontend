@@ -3,7 +3,7 @@ import TextArea from "@/ui/common/components/text-area";
 import Button from "@/ui/common/components/button";
 
 interface SummaryProps {
-  subtotal: number;
+  subtotal: string;
 }
 
 export default function Summary({ subtotal }: SummaryProps) {
@@ -25,7 +25,7 @@ export default function Summary({ subtotal }: SummaryProps) {
         />
         <div className="flex flex-col gap-4">
           <p className="uppercase text-2xl">Subtotal</p>
-          <span className="text-lg font-semibold">${subtotal.toFixed(2)}</span>
+          <span className="text-lg font-semibold">{subtotal}</span>
           <span className="text-sm text-gray-500">
             Shipping calculated at checkout
           </span>

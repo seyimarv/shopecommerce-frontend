@@ -3,6 +3,7 @@ import { sdk } from "../../../config";
 import { useQuery } from "@tanstack/react-query";
 import { getRegion, retrieveRegion } from "./region";
 import { SortOptions, sortProducts } from "../utils/sort-products";
+import { useRegion } from "../context/region-context";
 
 export const listProducts = async ({
   pageParam = 1,
@@ -200,7 +201,6 @@ export const listProductsWithSort = async ({
 export const useListProducts = ({
   pageParam = 1,
   queryParams,
-  countryCode,
   regionId,
 }: {
   pageParam?: number;
@@ -208,8 +208,15 @@ export const useListProducts = ({
   countryCode?: string;
   regionId?: string;
 } = {}) => {
+  const { countryCode } = useRegion();
   // Create a stable query key that includes the product ID if present
-  const queryKey = ["products", pageParam, queryParams, countryCode, regionId];
+  const queryKey = [
+    "products",
+    pageParam,
+    queryParams,
+    countryCode,
+    regionId,
+  ];
   // if (queryParams && 'id' in queryParams && typeof queryParams.id === 'string') {
   //   queryKey.push(queryParams.id);
   // }
@@ -217,7 +224,12 @@ export const useListProducts = ({
   const { data, isLoading, error } = useQuery({
     queryKey,
     queryFn: () =>
-      listProducts({ pageParam, queryParams, countryCode, regionId }),
+      listProducts({
+        pageParam,
+        queryParams,
+        countryCode,
+        regionId,
+      }),
   });
   return { data, isLoading, error };
 };
@@ -226,7 +238,6 @@ export const useListProductsWithSort = ({
   page = 1,
   queryParams,
   sortBy = "-created_at",
-  countryCode,
   filters,
   collectionId,
 }: {
@@ -241,11 +252,18 @@ export const useListProductsWithSort = ({
     maxPrice?: number | null;
   };
 } = {}) => {
-  console.log("sortBy", sortBy);
+  const { countryCode } = useRegion();
   const { data, isLoading, error } = useQuery({
     queryKey: ["sorted-products", sortBy, filters, page, collectionId],
     queryFn: () =>
-      listProductsWithSort({ page, queryParams, sortBy, countryCode, filters, collectionId }),
+      listProductsWithSort({
+        page,
+        queryParams,
+        sortBy,
+        countryCode,
+        filters,
+        collectionId,
+      }),
   });
   return { data, isLoading, error };
 };

@@ -104,7 +104,7 @@ const ProductActions = ({ product, onCartOpen }: ProductActionsProps) => {
             {
                 variantId: selectedVariant.id,
                 quantity: quantity,
-                countryCode: 'gb'
+
             },
             {
                 onSuccess: () => {

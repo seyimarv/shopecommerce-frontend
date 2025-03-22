@@ -4,6 +4,7 @@ import { sdk } from "../../../config";
 import { getRegion } from "./region";
 import medusaError from "../utils/medusa-error";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useRegion } from "../context/region-context";
 
 type StoreCart = HttpTypes.StoreCartResponse["cart"];
 type StoreCartLineItem = NonNullable<StoreCart["items"]>[0];
@@ -136,6 +137,8 @@ export async function getOrSetCart(
 ): Promise<CartWithInventory | null> {
   const region = await getRegion(countryCode);
 
+  console.log(countryCode)
+
   if (!region) {
     throw new Error(`Region not found for country code: ${countryCode}`);
   }
@@ -166,6 +169,9 @@ export async function getOrSetCart(
 
 export async function updateCart(data: HttpTypes.StoreUpdateCart) {
   const cartId = getCartId();
+  console.log("cart id", cartId)
+
+  console.log(data)
 
   if (!cartId) {
     throw new Error(
@@ -191,10 +197,11 @@ export async function addToCart({
   countryCode: string;
 }) {
   console.log("add to cart");
-
   if (!variantId) {
     throw new Error("Missing variant ID when adding to cart");
   }
+
+  console.log(countryCode)
 
   const cart = await getOrSetCart(countryCode);
 
@@ -211,7 +218,7 @@ export async function addToCart({
       },
       {}
     )
-    .then(async () => {})
+    .then(async () => { })
     .catch(medusaError);
 }
 
@@ -234,7 +241,7 @@ export async function updateLineItem({
 
   await sdk.store.cart
     .updateLineItem(cartId, lineId, { quantity }, {})
-    .then(async () => {})
+    .then(async () => { })
     .catch(medusaError);
 }
 
@@ -251,7 +258,7 @@ export async function deleteLineItem(lineId: string) {
 
   await sdk.store.cart
     .deleteLineItem(cartId, lineId)
-    .then(async () => {})
+    .then(async () => { })
     .catch(medusaError);
 }
 
@@ -306,13 +313,17 @@ export const useUpdateCart = () => {
 
 export const useAddToCart = () => {
   const queryClient = useQueryClient();
+  const { countryCode } = useRegion();
 
   return useMutation({
     mutationFn: (params: {
       variantId: string;
       quantity: number;
-      countryCode: string;
-    }) => addToCart(params),
+    }) =>
+      addToCart({
+        ...params,
+        countryCode,
+      }),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["cart"] });
     },

@@ -6,6 +6,7 @@ import EmptyCart from "./empty-cart";
 import Summary from "./summary";
 import WithSkeleton from "../common/components/Skeleton/with-skeleton";
 import CartTableSkeleton from "../common/components/Skeleton/cart-skeleton";
+import { convertToLocale } from "@/lib/utils/money";
 
 const CartTemplate = () => {
   const { data: cart, isLoading } = useRetrieveCart();
@@ -17,8 +18,8 @@ const CartTemplate = () => {
             <EmptyCart />
           ) : (
             <div className="overflow-x-auto">
-              <CartTable data={cart?.items || []} />
-              <Summary subtotal={cart?.subtotal || 0} />
+              <CartTable data={cart?.items || []} currencyCode={cart?.currency_code} />
+              <Summary subtotal={convertToLocale({ amount: cart?.subtotal || 0, currency_code: cart?.currency_code })} />
             </div>
           )}
         </>

@@ -3,9 +3,10 @@ import CartItem from "./cart-item";
 
 interface CartTableProps {
   data: CartItemWithInventory[];
+  currencyCode: string;
 }
 
-const CartTable = ({ data }: CartTableProps) => {
+const CartTable = ({ data, currencyCode }: CartTableProps) => {
   const tableHeaderClass = "px-4 py-4 font-normal text-gray-900 uppercase text-sm";
   return (
     <table className="w-full text-left text-sm">
@@ -21,6 +22,7 @@ const CartTable = ({ data }: CartTableProps) => {
           <CartItem
             key={item.id}
             item={item}
+            currencyCode={currencyCode}
 
           />
         ))}

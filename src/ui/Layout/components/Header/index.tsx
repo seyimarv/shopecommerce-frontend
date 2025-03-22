@@ -11,8 +11,10 @@ import Image from "next/image";
 import CartDrawer from "../../../cart/cart-drawer";
 import ProductSearch from "@/ui/product/products-search";
 import { useRetrieveCart } from "@/lib/data/cart";
+import { useListRegions } from "@/lib/data/region";
 
 const Header: React.FC = () => {
+  const { data: regions } = useListRegions()
   const [headerStatus, setHeaderStatus] = useState<
     "initial" | "sticky" | "hidden"
   >("initial");
@@ -85,7 +87,9 @@ const Header: React.FC = () => {
                 )}
               </li>
             ))}
-            <CurrencyPicker />
+            <div className="w-[150px]">
+              {regions && <CurrencyPicker regions={regions} />}
+            </div>
           </ul>
           {/* Icons (Search, Profile, Cart) */}
           <ul className="flex gap-6 flex-1 justify-end text-md">

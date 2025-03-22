@@ -84,7 +84,6 @@ const Card: React.FC<CardProps> = (data) => {
         {
           variantId,
           quantity: 1,
-          countryCode: 'gb'
         },
         {
           onSuccess: () => {
@@ -168,7 +167,7 @@ const Card: React.FC<CardProps> = (data) => {
       )}
       {product && (
         <ProductModal
-          id={product?.id}
+          productId={product?.id}
           isOpen={isModalOpen}
           onClose={handleCloseModal}
         />

@@ -5,12 +5,14 @@ import DeleteButton from "@/ui/common/components/button/delete-button";
 import { debounce } from "lodash";
 import { useState, useCallback } from "react";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import { convertToLocale } from "@/lib/utils/money";
 
 interface CartItemProps {
     item: CartItemWithInventory;
+    currencyCode: string;
 }
 
-const CartItem = ({ item }: CartItemProps) => {
+const CartItem = ({ item, currencyCode }: CartItemProps) => {
     const [quantity, setQuantity] = useState(item.quantity)
     const { mutate: updateItem, isPending: isUpdatePending } =
         useUpdateLineItem();
@@ -54,7 +56,7 @@ const CartItem = ({ item }: CartItemProps) => {
                         {!item?.title.includes("Default") ? (item.title || item?.product?.title || "") : ""}
                     </p>
                     <p className="text-gray-500 text-sm mt-1">
-                        {item.unit_price}
+                        {convertToLocale({ amount: item.unit_price, currency_code: currencyCode })}
                     </p>
                 </div>
             </td>
@@ -76,7 +78,7 @@ const CartItem = ({ item }: CartItemProps) => {
                         ) : (
 
                             <><span className="text-base tracking-wide">
-                                {item.unit_price * item.quantity}
+                                {convertToLocale({ amount: item.unit_price * item.quantity, currency_code: currencyCode })}
                             </span><DeleteButton onClick={handleRemove} /></>
 
                         )

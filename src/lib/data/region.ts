@@ -2,6 +2,7 @@
 import { HttpTypes } from "@medusajs/types";
 import { sdk } from "../../../config";
 import medusaError from "../utils/medusa-error";
+import { useQuery } from "@tanstack/react-query";
 
 export const retrieveRegion = async (id: string) => {
   // const next = {
@@ -56,3 +57,36 @@ export const getRegion = async (countryCode: string) => {
     return null;
   }
 };
+
+
+export const useRetrieveRegion = (id: string) => {
+  return useQuery({
+    queryKey: ["region", id],
+    queryFn: () => retrieveRegion(id),
+    enabled: !!id,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    gcTime: 30 * 60 * 1000, // 30 minutes
+  });
+};
+
+export const useListRegions = () => {
+  return useQuery({
+    queryKey: ["regions"],
+    queryFn: () => listRegions(),
+    staleTime: 10 * 60 * 1000, // 10 minutes
+    gcTime: 60 * 60 * 1000, // 1 hour
+  });
+};
+
+
+export const useGetRegion = (countryCode: string) => {
+  return useQuery({
+    queryKey: ["region", "country", countryCode],
+    queryFn: () => getRegion(countryCode),
+    enabled: !!countryCode,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    gcTime: 30 * 60 * 1000, // 30 minutes
+  });
+};
+
+
