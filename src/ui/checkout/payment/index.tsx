@@ -1,12 +1,17 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { FiCheckCircle } from "react-icons/fi";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Formik, Form, Field } from "formik";
 import Button from "@/ui/common/components/button";
+import Modal from "@/ui/common/components/Modal";
+import UploadImageForm from "../fileupload";
 
 const PaymentOptions = () => {
+  const [preferredOptions, setPreferredOptions] = useState<PaymentProps | null>(
+    null
+  );
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
@@ -17,7 +22,9 @@ const PaymentOptions = () => {
     router.push(`${pathname}?step=payment`);
   };
 
-  interface PaymentProps {}
+  interface PaymentProps {
+    paymentOption: string;
+  }
 
   const paymentOptions = [
     { id: "paypal", name: "Paypal" },
@@ -40,7 +47,13 @@ const PaymentOptions = () => {
         )}
       </div>
       {isEditing && (
-        <Formik initialValues={{ paymentOption: "" }} onSubmit={(values) => {}}>
+        <Formik
+          initialValues={{ paymentOption: "" }}
+          onSubmit={(value) => {
+            setPreferredOptions(value);
+            console.log(preferredOptions);
+          }}
+        >
           {({ values, setFieldValue }) => (
             <Form className="space-y-4">
               <div className="space-y-2">
@@ -86,6 +99,24 @@ const PaymentOptions = () => {
             </Form>
           )}
         </Formik>
+      )}
+      {preferredOptions?.paymentOption === "banktransfer" && (
+        <Modal isOpen={true} onClose={() => setPreferredOptions(null)}>
+          <div className="w-xl p-10 flex flex-col gap-4">
+            <div className="text-3xl border-gray-200 border-b-2 pb-3">
+              Bank Transfer Details
+            </div>
+            <p className="text-xl text-gray-700">Bank Name: Bank of America</p>
+            <p className="text-xl text-gray-700">Account Number: 1234567890</p>
+            <p className="text-xl text-gray-700">Routing Number: 1234567890</p>
+
+            <UploadImageForm />
+
+            <Button type="submit" className="max-w-md mx-auto my-5">
+              I have made the payment
+            </Button>
+          </div>
+        </Modal>
       )}
     </div>
   );
