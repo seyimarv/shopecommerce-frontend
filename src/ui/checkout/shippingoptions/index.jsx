@@ -28,9 +28,7 @@ const ShippingOptions = () => {
     <div className="flex flex-col gap-5 mb-5 border-gray-200 border-b-2 py-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <h3 className="text-3xl tracking-widest uppercase">
-            Choose Shipping Option
-          </h3>
+          <h3 className="text-3xl tracking-widest uppercase">Delivery</h3>
           {selectedDelivery && !isShipping ? <FiCheckCircle /> : ""}
         </div>
 
@@ -48,7 +46,9 @@ const ShippingOptions = () => {
           setSelectedDelivery({ method, price })
         }
       />
-      {selectedDelivery && <div>{selectedDelivery.method}</div>}
+      {selectedDelivery && (
+        <div className="text-xl text-gray-600">{selectedDelivery.method}</div>
+      )}
     </div>
   );
 };

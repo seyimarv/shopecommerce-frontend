@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Formik,
   Form,
@@ -7,7 +7,7 @@ import {
   FormikProps,
   useField,
 } from "formik";
-import { Select } from "@/ui/common/components/Select";
+
 import { Input } from "@/ui/common/components/input";
 import * as Yup from "yup";
 import CountrySelect from "./country-select";
