@@ -6,7 +6,6 @@ import { useListProducts } from "@/lib/data/products";
 import ProductActions from "../product-actions";
 import useCart from "@/lib/hooks/useCart";
 import CartDrawer from "@/ui/cart/cart-drawer";
-import { useRetrieveCart } from "@/lib/data/cart";
 
 interface ProductModalProps {
   productId: string;

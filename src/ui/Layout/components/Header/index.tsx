@@ -87,7 +87,7 @@ const Header: React.FC = () => {
                 )}
               </li>
             ))}
-            <div className="w-[150px]">
+            <div className="w-[160px]">
               {regions && <CurrencyPicker regions={regions} />}
             </div>
           </ul>
