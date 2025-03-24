@@ -163,7 +163,7 @@ const ProductActions = ({ product, onCartOpen }: ProductActionsProps) => {
                             : "Add to cart"}
                 </Button>
             </div>
-            <Link href={""} className="text-center uppercase mt-auto">
+            <Link href={"/products/" + product.handle} className="text-center uppercase mt-auto">
                 View full details
             </Link>
         </>

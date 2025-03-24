@@ -1,74 +1,179 @@
 "use client";
 
-import { useState } from "react";
+import { useAddToCart } from "@/lib/data/cart";
+import Accordion from "@/ui/common/components/Accordion";
 import Button from "@/ui/common/components/button";
 import QuantitySelector from "@/ui/common/components/quantityselector";
-import VariantSelector, { VariantOption } from "../variant-select";
-import PreviewPrice from "@/ui/common/components/Card/PreviewPrice";
-import Accordion, { AccordionItem } from "@/ui/common/components/Accordion";
-import { Product } from "../product-list";
+import { HttpTypes } from "@medusajs/types";
+import { isEqual } from "lodash";
+import { useState, useEffect, useMemo } from "react";
+import OptionSelect from "../product-actions/variant-select";
+import ProductPrice from "../product-price";
 import { GrFavorite } from "react-icons/gr";
+import ProductInfoTab from "./product-info";
 
-interface DetailsProps extends Product {
-  colors: VariantOption[];
-  quantity?: number;
-  accordionItems: AccordionItem[];
+interface ProductActionsProps {
+  product: HttpTypes.StoreProduct;
+  onCartOpen: () => void;
 }
 
-const Details = ({
-  title,
-  price,
-  colors,
-  quantity = 1,
-  accordionItems,
-}: DetailsProps) => {
-  const [selectedColor, setSelectedColor] = useState(colors[0]?.value || null);
-  const [selectedQuantity, setSelectedQuantity] = useState(quantity);
+const optionsAsKeymap = (
+  variantOptions: HttpTypes.StoreProductVariant["options"]
+) => {
+  return variantOptions?.reduce((acc: Record<string, string>, varopt: any) => {
+    acc[varopt.option_id] = varopt.value;
+    return acc;
+  }, {});
+};
+
+const ProductActions = ({ product, onCartOpen }: ProductActionsProps) => {
+  const [quantity, setQuantity] = useState(1);
+  const [options, setOptions] = useState<Record<string, string | undefined>>(
+    {}
+  );
+  const { mutate: addToCartMutation, isPending, error } = useAddToCart();
+
+  // If there is only 1 variant, preselect the options
+  useEffect(() => {
+    if (product.variants?.length === 1) {
+      const variantOptions = optionsAsKeymap(product.variants[0].options);
+      setOptions(variantOptions ?? {});
+    }
+  }, [product.variants]);
+
+  const selectedVariant = useMemo(() => {
+    if (!product.variants || product.variants.length === 0) {
+      return;
+    }
+
+    return product.variants.find((v) => {
+      const variantOptions = optionsAsKeymap(v.options);
+      return isEqual(variantOptions, options);
+    });
+  }, [product.variants, options]);
+
+  useEffect(() => {
+    const inventoryQuantity = selectedVariant?.inventory_quantity ?? Infinity;
+    if (inventoryQuantity < quantity) {
+      setQuantity(Math.max(1, inventoryQuantity));
+    }
+  }, [selectedVariant?.inventory_quantity, quantity]);
+
+  // update the options when a variant is selected
+  const setOptionValue = (optionId: string, value: string) => {
+    setOptions((prev) => ({
+      ...prev,
+      [optionId]: value,
+    }));
+    setQuantity(1)
+  };
+
+  //check if the selected options produce a valid variant
+  const isValidVariant = useMemo(() => {
+    return product.variants?.some((v) => {
+      const variantOptions = optionsAsKeymap(v.options);
+      return isEqual(variantOptions, options);
+    });
+  }, [product.variants, options]);
+
+  // check if the selected variant is in stock
+  const inStock = useMemo(() => {
+    // If we don't manage inventory, we can always add to cart
+    if (selectedVariant && !selectedVariant.manage_inventory) {
+      return true;
+    }
+
+    // If we allow back orders on the variant, we can add to cart
+    if (selectedVariant?.allow_backorder) {
+      return true;
+    }
+
+    // If there is inventory available, we can add to cart
+    if (
+      selectedVariant?.manage_inventory &&
+      (selectedVariant?.inventory_quantity || 0) > 0
+    ) {
+      return true;
+    }
+    return false;
+  }, [selectedVariant]);
+  const handleAddToCart = async () => {
+    if (!selectedVariant?.id) return null;
+
+    addToCartMutation(
+      {
+        variantId: selectedVariant.id,
+        quantity: quantity,
+
+      },
+      {
+        onSuccess: () => {
+          onCartOpen();
+        }
+      }
+    );
+  };
+
+  const accordionItems = [
+    {
+      id: 2,
+      title: "Product information",
+      content: <ProductInfoTab product={product} />,
+    },
+  ];
 
   return (
-    <div className="py-10 flex flex-1 flex-col">
-      <h3 className="text-2xl uppercase">{title}</h3>
-      <div className="flex items-center gap-2 my-4">
-        <PreviewPrice size="lg" price={price} />
-        {price.price_type === "sale" && (
-          <span className="bg-red-100 text-red-600 px-2 py-1 ml-1 text-xs rounded">
-            SALE
-          </span>
+    <>
+      <div className="py-10 flex flex-1 flex-col">
+        <h3 className="text-2xl uppercase">{product.title}</h3>
+        <div className="my-4">
+          <ProductPrice product={product} variant={selectedVariant} />
+        </div>
+        {(product.variants?.length ?? 0) > 1 && (
+          <div className="flex flex-col gap-y-4">
+            {(product.options || []).map((option) => {
+              return (
+                <div key={option.id}>
+                  <OptionSelect
+                    option={option}
+                    current={options[option.id]}
+                    updateOption={setOptionValue}
+                    title={option.title ?? ""}
+                    data-testid="product-options"
+                    disabled={isPending}
+                  />
+                </div>
+              );
+            })}
+          </div>
         )}
-      </div>
+        <p className="mt-4 text-gray-700">
+          {product.description}
+        </p>
+        <div className="my-8">
+          <Accordion items={accordionItems} allowMultiple={true} />
+        </div>
 
-      <VariantSelector
-        label="Color"
-        options={colors}
-        onSelect={setSelectedColor}
-        isColor
-        defaultValue={selectedColor}
-      />
-      <p className="mt-4 text-gray-700">
-        Lorem ipsum dolor sit amet, consectetur adip lorem, sed do eiusmod
-        tempor incididunt ut lorem. Lorem ipsum dolor sit amet, conlore, sed do
-        eiusmod tempor incid lorem ipsum dolor sit amet, consectetur adip lorem,
-        sed do eiusmod tempor incididunt ut lorem. Lorem ipsum dolor sit amet,
-        conlore, sed do eiusmod tempor incid
-      </p>
-      <div className="my-8">
-        <Accordion items={accordionItems} allowMultiple={true} />
+        <div className="flex gap-8 items-center">
+          <QuantitySelector
+            min={1}
+            max={selectedVariant?.inventory_quantity || Infinity}
+            quantity={quantity}
+            onChange={setQuantity}
+          />
+          <Button variant="outline" className="w-full" isLoading={isPending} onClick={handleAddToCart}>
+            {!selectedVariant || Object.keys(options).length === 0
+              ? "Select variant"
+              : !inStock || !isValidVariant
+                ? "Out of stock"
+                : "Add to cart"}
+          </Button>
+          <GrFavorite size={25} />
+        </div>
       </div>
-
-      <div className="flex gap-8 items-center">
-        <QuantitySelector
-          min={1}
-          max={10}
-          initial={selectedQuantity}
-          onChange={setSelectedQuantity}
-        />
-        <Button variant="outline" className="w-full" size="large">
-          ADD TO CART
-        </Button>
-        <GrFavorite size={25} />
-      </div>
-    </div>
+    </>
   );
 };
 
-export default Details;
+export default ProductActions;
+
