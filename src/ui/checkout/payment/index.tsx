@@ -2,16 +2,20 @@
 
 import { useState } from "react";
 import { FiCheckCircle } from "react-icons/fi";
+import { PaystackButton } from "react-paystack";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Formik, Form, Field } from "formik";
 import Button from "@/ui/common/components/button";
 import Modal from "@/ui/common/components/Modal";
 import UploadImageForm from "../fileupload";
+import { retrieveCart } from "@/lib/data/cart";
 
 const PaymentOptions = () => {
   const [preferredOptions, setPreferredOptions] = useState<PaymentProps | null>(
     null
   );
+  const [loading, setLoading] = useState(false);
+
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
@@ -27,11 +31,45 @@ const PaymentOptions = () => {
   }
 
   const paymentOptions = [
-    { id: "paypal", name: "Paypal" },
-    { id: "stripe", name: "Stripe" },
+    { id: "paystack", name: "Paystack" },
     { id: "banktransfer", name: "Bank Transfer" },
   ];
 
+  const verifyPayment = async (reference: string) => {
+    setLoading(true);
+    try {
+      const response = await fetch(`/api/verify-payment/${reference}`, {
+        method: "POST",
+        body: JSON.stringify({ reference }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await response.json();
+
+      if (data.success) {
+        console.log("Payment verified:", data);
+      } else {
+        console.error("Payment verification failed:", data);
+      }
+    } catch (error) {
+      console.error("Error verifying payment:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const orderData = {
+    email: "mol@gmail.com",
+        items: {
+          "ball"
+        },
+        shipping_address: "njhwdbfnkiwb bw",
+        total: 200,
+  };
+
+  // const { cart } = retrieveCart();
+  // console.log(cart);
   return (
     <div className=" mb-5 border-gray-200 border-b-2 py-4">
       <div className="flex items-center justify-between">
@@ -117,6 +155,25 @@ const PaymentOptions = () => {
             </Button>
           </div>
         </Modal>
+      )}
+      {preferredOptions?.paymentOption === "paystack" && (
+        <Button>
+          <PaystackButton
+            publicKey={process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY || ""}
+            email="customer@example.com"
+            amount={10000}
+            reference={`txn_${Date.now()}`}
+            onClose={() => console.log("Payment closed")}
+            onSuccess={(response) => {
+              console.log("Payment successful:", response);
+              const reference = response.reference;
+              verifyPayment(reference);
+              router.push("/order-confirmation");
+            }}
+          >
+            PAY WITH PAYSTACK
+          </PaystackButton>
+        </Button>
       )}
     </div>
   );
