@@ -137,7 +137,6 @@ export async function getOrSetCart(
 ): Promise<CartWithInventory | null> {
   const region = await getRegion(countryCode);
 
-  console.log(countryCode)
 
   if (!region) {
     throw new Error(`Region not found for country code: ${countryCode}`);
@@ -145,7 +144,6 @@ export async function getOrSetCart(
 
   let cart = await retrieveCart();
 
-  console.log("get or set cart");
 
   if (!cart) {
     const cartResp = await sdk.store.cart.create({ region_id: region.id }, {});
@@ -169,9 +167,6 @@ export async function getOrSetCart(
 
 export async function updateCart(data: HttpTypes.StoreUpdateCart) {
   const cartId = getCartId();
-  console.log("cart id", cartId)
-
-  console.log(data)
 
   if (!cartId) {
     throw new Error(
@@ -196,12 +191,9 @@ export async function addToCart({
   quantity: number;
   countryCode: string;
 }) {
-  console.log("add to cart");
   if (!variantId) {
     throw new Error("Missing variant ID when adding to cart");
   }
-
-  console.log(countryCode)
 
   const cart = await getOrSetCart(countryCode);
 

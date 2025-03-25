@@ -14,7 +14,6 @@ interface ImageGalleryProps {
 export default function ImageGallery({ images, thumbnail }: ImageGalleryProps) {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const mainSliderRef = useRef<Splide | null>(null);
-  console.log(images, thumbnail)
 
   return (
     <div className="flex flex-col flex-1">

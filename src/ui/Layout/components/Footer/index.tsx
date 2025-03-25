@@ -55,7 +55,6 @@ const Footer: React.FC = () => {
     }
 
     // Here you would typically handle the subscription logic
-    console.log("Subscribing email:", email);
     setEmailError("");
     setEmail("");
     // Handle subscription success

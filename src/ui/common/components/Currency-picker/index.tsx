@@ -25,8 +25,6 @@ export default function CurrencyPicker({ regions }: CurrencyPickerProps) {
 
   const selectedRegion = selectRegion(countryCode)
 
-  console.log(regions)
-
 
   const formatCountryOption = (
     countryCode: string,
@@ -37,7 +35,6 @@ export default function CurrencyPicker({ regions }: CurrencyPickerProps) {
   });
 
   const handleChange = (option: Option | null) => {
-    console.log(option?.value.toString())
     if (option) {
       setCountryCode(option.value.toString());
       setStoredCountryCode(option.value.toString());

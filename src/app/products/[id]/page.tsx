@@ -2,7 +2,7 @@
 
 import { useListProducts } from "@/lib/data/products";
 import ProductDetails from "@/ui/product/product-details";
-import { useParams } from "next/navigation";
+import { useParams, notFound } from "next/navigation";
 import { useEffect, useState } from "react";
 import { HttpTypes } from "@medusajs/types";
 import WithSkeleton from "@/ui/common/components/Skeleton/with-skeleton";
@@ -17,6 +17,11 @@ const Product = () => {
       handle: productHandle
     }
   });
+
+  // Check if product exists, if not return notFound page
+  if (!isLoading && (!data?.response?.products || data.response.products.length === 0)) {
+    notFound();
+  }
 
   return (
     <WithSkeleton isLoading={isLoading}>
