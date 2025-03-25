@@ -13,7 +13,7 @@ import { getProductPrice, subtractPrices } from "@/lib/utils/prices";
 import { isProductSoldOut } from "@/lib/utils/soldout";
 import { checkHasVariants } from "@/lib/utils/variants";
 import Link from "next/link";
-import { useAddToCart, useRetrieveCart } from "@/lib/data/cart";
+import { useAddToCart } from "@/lib/data/cart";
 
 interface Collection {
   id: string;
@@ -58,34 +58,55 @@ const Card: React.FC<CardProps> = (data) => {
 
   const { mutate: addToCartMutation, isPending, error } = useAddToCart();
 
-  const { data: cart, isLoading, isFetching } = useRetrieveCart();
+  const allowAddToCart = (variant: HttpTypes.StoreProductVariant) => {
+    if (variant && !variant.manage_inventory) {
+      return true;
+    }
+    if (variant?.allow_backorder) {
+      return true;
+    }
+    if (
+      variant?.manage_inventory &&
+      (variant?.inventory_quantity || 0) > 0
+    ) {
+      return true;
+    }
+    return false;
+  }
 
-  const addToCart = () => {
+  const addToCart = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
     if (product && product.variants) {
       const variantId = product.variants[0].id;
+      if (!allowAddToCart(product.variants[0])) {
+        return;
+      }
       addToCartMutation(
         {
           variantId,
           quantity: 1,
-          countryCode: 'gb'
         },
         {
           onSuccess: () => {
             openCart();
             setIsHovered(false)
-
           }
         }
       );
     }
   };
 
-  const handleClickButton = () => {
+  const handleClickButton = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
     if (hasVariants) {
       setIsHovered(false)
       setIsModalOpen(true);
     } else {
-      addToCart();
+      addToCart(e);
     }
   };
 
@@ -139,7 +160,7 @@ const Card: React.FC<CardProps> = (data) => {
             size="small"
             disabled={soldOut}
             className="w-full"
-            isLoading={isPending || isFetching}
+            isLoading={isPending}
           >
             {soldOut
               ? "Sold Out"
@@ -151,7 +172,7 @@ const Card: React.FC<CardProps> = (data) => {
       )}
       {product && (
         <ProductModal
-          id={product?.id}
+          productId={product?.id}
           isOpen={isModalOpen}
           onClose={handleCloseModal}
         />
@@ -169,8 +190,12 @@ const Card: React.FC<CardProps> = (data) => {
 
   return (
     <>
-      {href ? <Link href={href}>{CardContent}</Link> : CardContent}
-      <CartDrawer isOpen={isOpen && !isFetching} onClose={closeCart} />
+      {href ? (
+        <Link href={href}>
+          {CardContent}
+        </Link>
+      ) : CardContent}
+      <CartDrawer isOpen={isOpen} onClose={closeCart} />
     </>
   );
 };

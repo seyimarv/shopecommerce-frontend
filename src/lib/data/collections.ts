@@ -18,10 +18,29 @@ const fetchCollections = async (
   });
 };
 
-const fetchCollection = async (id: string): Promise<HttpTypes.StoreCollection> => {
+const fetchCollection = async (
+  idOrHandle: string,
+  isHandle = false
+): Promise<HttpTypes.StoreCollection> => {
+  console.log(idOrHandle, isHandle);
+  if (isHandle) {
+    const { collections } = await sdk.client.fetch<{
+      collections: HttpTypes.StoreCollection[];
+    }>(`/store/collections`, {
+      query: { handle: idOrHandle, fields: "id,handle,title,metadata" },
+    });
+
+    if (!collections.length) {
+      throw new Error(`Collection with handle ${idOrHandle} not found`);
+    }
+    return collections[0];
+  }
+
+ 
+
   const { collection } = await sdk.client.fetch<{
     collection: HttpTypes.StoreCollection;
-  }>(`/store/collections/${id}`, {
+  }>(`/store/collections/${idOrHandle}`, {
     query: { fields: "id,handle,title,metadata" },
   });
   return collection;
@@ -31,17 +50,17 @@ export const useFetchCollections = (
   queryParams: fetchCollectionsParams = {}
 ) => {
   const { data, isLoading, error } = useQuery({
-    queryKey: ["collections"],
+    queryKey: ["collections", queryParams],
     queryFn: () => fetchCollections(queryParams),
   });
 
   return { data, isLoading, error };
 };
 
-export const useFetchCollection = (id: string) => {
+export const useFetchCollection = (idOrHandle: string, isHandle = false) => {
   const { data, isLoading, error } = useQuery({
-    queryKey: ["collection", id],
-    queryFn: () => fetchCollection(id),
+    queryKey: ["collection", idOrHandle, isHandle],
+    queryFn: () => fetchCollection(idOrHandle, isHandle),
   });
 
   return { data, isLoading, error };

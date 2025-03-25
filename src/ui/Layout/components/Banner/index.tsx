@@ -17,7 +17,6 @@ const Banner: React.FC = () => {
     queryKey: ["announcements"],
     queryFn: retrieveAnnouncements,
   });
-  // console.log(data, isLoading, error);
   const splideRef = useRef<SplideRef>(null);
   const [autoPlay, setAutoPlay] = useState(true);
 

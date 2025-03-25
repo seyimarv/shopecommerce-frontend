@@ -11,8 +11,10 @@ import Image from "next/image";
 import CartDrawer from "../../../cart/cart-drawer";
 import ProductSearch from "@/ui/product/products-search";
 import { useRetrieveCart } from "@/lib/data/cart";
+import { useListRegions } from "@/lib/data/region";
 
 const Header: React.FC = () => {
+  const { data: regions } = useListRegions()
   const [headerStatus, setHeaderStatus] = useState<
     "initial" | "sticky" | "hidden"
   >("initial");
@@ -85,7 +87,9 @@ const Header: React.FC = () => {
                 )}
               </li>
             ))}
-            <CurrencyPicker />
+            <div className="w-[160px]">
+              {regions && <CurrencyPicker regions={regions} />}
+            </div>
           </ul>
           {/* Icons (Search, Profile, Cart) */}
           <ul className="flex gap-6 flex-1 justify-end text-md">
@@ -103,21 +107,23 @@ const Header: React.FC = () => {
               </Link>
             </li>
             <li>
-              <div className="relative cursor-pointer">
+              <button className="relative cursor-pointer" onClick={() => setOpenCart(true)}>
                 <CiShoppingCart
                   size={20}
-                  onClick={() => setOpenCart(true)}
                 />
                 {
                   cart && cart.items && cart.items.length > 0 && (
                     <span className="absolute -top-1 -right-2 bg-gray-800 text-white w-4 h-4 flex items-center justify-center rounded-full text-xs font-medium">
-                      {
+                      {/* {
                         cart.items.reduce((total, item) => total + (item.quantity || 0), 0)
+                      } */}
+                      {
+                        cart?.items?.length
                       }
                     </span>
                   )
                 }
-              </div>
+              </button>
             </li>
           </ul>
         </nav>

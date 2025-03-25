@@ -6,7 +6,6 @@ import { useListProducts } from "@/lib/data/products";
 import ProductActions from "../product-actions";
 import useCart from "@/lib/hooks/useCart";
 import CartDrawer from "@/ui/cart/cart-drawer";
-import { useRetrieveCart } from "@/lib/data/cart";
 
 interface ProductModalProps {
   productId: string;
@@ -24,7 +23,6 @@ const ProductModal: React.FC<ProductModalProps> = ({
       id: productId
     }
   });
-  const { isFetching } = useRetrieveCart()
 
   const product = data?.response.products[0]
 
@@ -54,7 +52,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
           </div>
         </div>
       </Modal>
-      <CartDrawer isOpen={isCartOpen && !isFetching} onClose={closeCart} />
+      <CartDrawer isOpen={isCartOpen} onClose={closeCart} />
     </>
   );
 };

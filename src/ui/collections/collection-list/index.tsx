@@ -30,7 +30,7 @@ const CollectionList: React.FC<CollectionListProps> = ({
               hideButtons={true}
               className="h-120"
               variety="collections"
-              href={`/collections/${collection.id}`}
+              href={`/collections/${collection.handle}`}
             />
           ))}
         </div>

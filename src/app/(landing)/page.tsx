@@ -12,8 +12,8 @@ import HeroSkeleton from "@/ui/common/components/Skeleton/hero-skeleton";
 export default function Home() {
   const { data, isLoading } = useFetchCollections();
   const {
-    data: saleItems,
-    isLoading: saleItemsLoading,
+    data: newArrivals,
+    isLoading: newArrivalsLoading,
   } = useListProductsWithSort({
     queryParams: {
       limit: 4,
@@ -27,18 +27,18 @@ export default function Home() {
       <div className="flex flex-col gap-22 pt-22 pb-22 container">
         <ProductList
           title="New Arrivals"
-          products={saleItems?.response?.products}
-          href="/shop"
+          products={newArrivals?.response?.products}
+          href="/products"
           viewMore
           hideButtons={false}
-          isLoading={isLoading}
+          isLoading={newArrivalsLoading}
         />
         <section>
           <h2 className={`text-2xl pb-8 tracking-widest uppercase`}>
             Collections
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 gap-y-20">
-            {data?.collections?.map(({ id, title, metadata }) => (
+            {data?.collections?.map(({ id, title, metadata, handle }) => (
               <div key={id}>
                 <Card
                   collection={{
@@ -47,7 +47,7 @@ export default function Home() {
                   }}
                   className="h-90"
                   variety="collections"
-                  href={`/collections/${id}`}
+                  href={`/collections/${handle}`}
                 />
               </div>
             ))}

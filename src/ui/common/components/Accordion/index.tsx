@@ -1,13 +1,13 @@
 "use client"
 
-import { useState } from "react";
+import { useState, ReactNode } from "react";
 import { motion } from "framer-motion";
 import { IoChevronDownSharp } from "react-icons/io5";
 
 export interface AccordionItem {
   id: number;
   title: string;
-  content: string | null;
+  content: string | ReactNode;
 }
 
 interface AccordionProps {
@@ -20,7 +20,6 @@ const Accordion: React.FC<AccordionProps> = ({
   allowMultiple = false,
 }) => {
   const [openSections, setOpenSections] = useState<number[]>([]);
-  
 
   const handleToggle = (index: number) => {
     if (allowMultiple) {
@@ -46,9 +45,8 @@ const Accordion: React.FC<AccordionProps> = ({
             >
               {item.title}
               <IoChevronDownSharp
-                className={`w-5 h-5 transition-transform ${
-                  isOpen ? "rotate-180" : ""
-                }`}
+                className={`w-5 h-5 transition-transform ${isOpen ? "rotate-180" : ""
+                  }`}
               />
             </button>
 
@@ -63,7 +61,13 @@ const Accordion: React.FC<AccordionProps> = ({
               transition={{ duration: 0.3, ease: "easeInOut" }}
               className="overflow-hidden"
             >
-              <p className="mt-2 text-sm text-gray-600">{item.content}</p>
+              <div className="mt-2">
+                {typeof item.content === 'string' ? (
+                  <p className="text-sm text-gray-600">{item.content}</p>
+                ) : (
+                  item.content
+                )}
+              </div>
             </motion.div>
           </div>
         );
