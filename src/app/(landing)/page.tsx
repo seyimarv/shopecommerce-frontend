@@ -28,7 +28,7 @@ export default function Home() {
         <ProductList
           title="New Arrivals"
           products={saleItems?.response?.products}
-          href="/shop"
+          href="/products"
           viewMore
           hideButtons={false}
           isLoading={isLoading}
@@ -38,7 +38,7 @@ export default function Home() {
             Collections
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 gap-y-20">
-            {data?.collections?.map(({ id, title, metadata }) => (
+            {data?.collections?.map(({ id, title, metadata, handle }) => (
               <div key={id}>
                 <Card
                   collection={{
@@ -47,7 +47,7 @@ export default function Home() {
                   }}
                   className="h-90"
                   variety="collections"
-                  href={`/collections/${id}`}
+                  href={`/collections/${handle}`}
                 />
               </div>
             ))}

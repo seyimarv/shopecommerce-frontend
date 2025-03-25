@@ -24,8 +24,6 @@ export const listProducts = async ({
   //   throw new Error("Country code or region ID is required")
   // }
 
-  console.log(queryParams)
-
   const limit = queryParams?.limit || 12;
   const _pageParam = Math.max(pageParam, 1);
   const offset = (_pageParam - 1) * limit;

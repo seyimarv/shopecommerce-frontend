@@ -2,18 +2,19 @@
 
 import { useFetchCollection } from "@/lib/data/collections";
 import ProductsFilter from "@/ui/product/products-filter";
-import { useParams } from "next/navigation";
+import { notFound, useParams } from "next/navigation";
 
 const Page = () => {
   const { id } = useParams();
-  const { data: collection, isLoading } = useFetchCollection(id as string);
+  const { data: collection, isLoading } = useFetchCollection(id as string, true);
 
-  if (isLoading) {
-    return <div>Loading...</div>;
+  if (!isLoading && !collection) {
+    notFound();
   }
 
+
   return (
-    <ProductsFilter title={collection?.title} collectionId={id as string} />
+    <ProductsFilter title={collection?.title} collectionId={collection?.id} isCollectionLoading={isLoading} />
   );
 };
 

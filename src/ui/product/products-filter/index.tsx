@@ -10,10 +10,12 @@ import { SortOptions } from "@/lib/utils/sort-products";
 import ProductList from "@/ui/product/product-list";
 import { Pagination } from "@/ui/common/components/pagination";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
+import { AiOutlineLoading } from "react-icons/ai";
 
 interface ProductsFilterProps {
   title?: string;
   collectionId?: string;
+  isCollectionLoading: boolean;
 }
 
 const sortOptionToMedusaSort: Record<string, SortOptions> = {
@@ -29,11 +31,11 @@ const sortOptionToMedusaSort: Record<string, SortOptions> = {
 
 const ITEMS_PER_PAGE = 12;
 
-const ProductsFilter = ({ title, collectionId }: ProductsFilterProps) => {
+const ProductsFilter = ({ title, collectionId, isCollectionLoading }: ProductsFilterProps) => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
-  
+
   const currentPage = Number(searchParams.get("page")) || 1;
   const availabilityParam = searchParams.get("availability")?.split(",") || [];
   const minPriceParam = searchParams.get("minPrice") ? Number(searchParams.get("minPrice")) : null;
@@ -78,7 +80,7 @@ const ProductsFilter = ({ title, collectionId }: ProductsFilterProps) => {
 
   const updateUrlParams = (params: Record<string, string | null>) => {
     const newParams = new URLSearchParams(searchParams.toString());
-    
+
     Object.entries(params).forEach(([key, value]) => {
       if (value === null) {
         newParams.delete(key);
@@ -86,7 +88,7 @@ const ProductsFilter = ({ title, collectionId }: ProductsFilterProps) => {
         newParams.set(key, value);
       }
     });
-    
+
     router.push(`${pathname}?${newParams.toString()}`, { scroll: false });
   };
 
@@ -120,9 +122,17 @@ const ProductsFilter = ({ title, collectionId }: ProductsFilterProps) => {
 
   return (
     <div className="space-y-8">
+
       <h2 className="text-4xl pb-8 tracking-widest uppercase">
-        {title || "All products"}
+        {
+          !isCollectionLoading && (
+            <>
+              {title || "All products"}
+            </>
+          )
+        }
       </h2>
+
       <div className="flex justify-between items-center mt-3 mb-5">
         <div className="flex items-center gap-4">
           <span className="text-sm">Filter:</span>
@@ -141,11 +151,13 @@ const ProductsFilter = ({ title, collectionId }: ProductsFilterProps) => {
         <div className="flex items-center gap-4">
           <SortBy value={selectedSort} onChange={handleSortChange} />
           <span className="text-sm text-gray-600">
-            {isLoading ? "Loading..." : `${data?.response.count || 0} products`}
+            {isLoading || isCollectionLoading ? <>
+              <AiOutlineLoading className="animate-spin" />
+            </> : `${data?.response.count || 0} products`}
           </span>
         </div>
       </div>
-      <ProductList products={data?.response.products} isLoading={isLoading} />
+      <ProductList products={data?.response.products} isLoading={isLoading || isCollectionLoading} />
       <Pagination totalPages={totalPages} />
     </div>
   );
