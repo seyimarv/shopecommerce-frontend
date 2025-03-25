@@ -13,7 +13,7 @@ import { getProductPrice, subtractPrices } from "@/lib/utils/prices";
 import { isProductSoldOut } from "@/lib/utils/soldout";
 import { checkHasVariants } from "@/lib/utils/variants";
 import Link from "next/link";
-import { useAddToCart, useRetrieveCart } from "@/lib/data/cart";
+import { useAddToCart } from "@/lib/data/cart";
 
 interface Collection {
   id: string;
@@ -74,7 +74,10 @@ const Card: React.FC<CardProps> = (data) => {
     return false;
   }
 
-  const addToCart = () => {
+  const addToCart = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
     if (product && product.variants) {
       const variantId = product.variants[0].id;
       if (!allowAddToCart(product.variants[0])) {
@@ -89,19 +92,21 @@ const Card: React.FC<CardProps> = (data) => {
           onSuccess: () => {
             openCart();
             setIsHovered(false)
-
           }
         }
       );
     }
   };
 
-  const handleClickButton = () => {
+  const handleClickButton = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
     if (hasVariants) {
       setIsHovered(false)
       setIsModalOpen(true);
     } else {
-      addToCart();
+      addToCart(e);
     }
   };
 
@@ -185,7 +190,11 @@ const Card: React.FC<CardProps> = (data) => {
 
   return (
     <>
-      {href ? <Link href={href}>{CardContent}</Link> : CardContent}
+      {href ? (
+        <Link href={href}>
+          {CardContent}
+        </Link>
+      ) : CardContent}
       <CartDrawer isOpen={isOpen} onClose={closeCart} />
     </>
   );

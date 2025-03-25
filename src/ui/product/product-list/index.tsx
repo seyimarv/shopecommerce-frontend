@@ -55,6 +55,7 @@ const ProductItems: React.FC<ProductItemsProps> = ({
         product={product}
         hideButtons={hideButtons}
         className="h-90"
+        href={`/products/${product.handle}`}
       />
     ))}
   </div>

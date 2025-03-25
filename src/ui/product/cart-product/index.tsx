@@ -6,6 +6,7 @@ import { convertToLocale } from "@/lib/utils/money";
 import { useUpdateLineItem, useDeleteLineItem } from "@/lib/data/cart";
 import { debounce } from "@/lib/utils/debounce";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import Link from "next/link";
 
 interface CartProductProps {
   id: string;
@@ -16,6 +17,7 @@ interface CartProductProps {
   productTitle?: string;
   max: number;
   currencyCode: string;
+  handle?: string;
 }
 
 const CartProduct: React.FC<CartProductProps> = ({
@@ -26,7 +28,8 @@ const CartProduct: React.FC<CartProductProps> = ({
   quantity: initialQuantity,
   productTitle,
   max,
-  currencyCode
+  currencyCode,
+  handle
 }) => {
   const [quantity, setQuantity] = useState(initialQuantity)
   const { mutate: updateItem, isPending: isUpdatePending } =
@@ -53,17 +56,34 @@ const CartProduct: React.FC<CartProductProps> = ({
   return (
     <div className="py-6 w-full border-b border-b-gray-200 last:border-b-0">
       <div className="flex gap-4">
-        <Thumbnail
-          image={thumbnail}
-          size="square"
-          className="w-25 h-20 !rounded-none"
-        />
+        {handle ? (
+          <Link href={`/products/${handle}`}>
+            <Thumbnail
+              image={thumbnail}
+              size="square"
+              className="w-25 h-20 !rounded-none"
+            />
+          </Link>
+        ) : (
+          <Thumbnail
+            image={thumbnail}
+            size="square"
+            className="w-25 h-20 !rounded-none"
+          />
+        )}
         <div className="flex flex-col w-full">
           <div className="flex justify-between items-center w-full">
-            <span className="font-medium">
-              {productTitle}
-              {title && <>- {title}</>}
-            </span>
+            {handle ? (
+              <Link href={`/products/${handle}`} className="font-medium hover:underline">
+                {productTitle}
+                {title && <>- {title}</>}
+              </Link>
+            ) : (
+              <span className="font-medium">
+                {productTitle}
+                {title && <>- {title}</>}
+              </span>
+            )}
 
             {isUpdatePending || isDeletePending ? (
               <div className="animate-spin">

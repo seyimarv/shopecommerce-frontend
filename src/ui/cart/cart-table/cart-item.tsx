@@ -6,6 +6,7 @@ import { debounce } from "lodash";
 import { useState, useCallback } from "react";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { convertToLocale } from "@/lib/utils/money";
+import Link from "next/link";
 
 interface CartItemProps {
     item: CartItemWithInventory;
@@ -39,19 +40,19 @@ const CartItem = ({ item, currencyCode }: CartItemProps) => {
         <tr key={item.id} className="border-t border-gray-300">
             <td className="p-4 flex gap-4 text-left">
                 {item.thumbnail && (
-                    <div className="relative w-24 h-24">
+                    <Link href={`/products/${item.product?.handle}`} className="relative w-24 h-24">
                         <Image
                             src={item.thumbnail}
                             alt={item.title || "Product image"}
                             fill
                             className="object-cover rounded-md"
                         />
-                    </div>
+                    </Link>
                 )}
                 <div>
-                    <p className="font-normal text-base tracking-wide">
+                    <Link href={`/products/${item.product?.handle}`} className="font-normal text-base tracking-wide hover:underline">
                         {item.product?.title}
-                    </p>
+                    </Link>
                     <p className="text-gray-500 text-sm mt-1">
                         {!item?.title.includes("Default") ? (item.title || item?.product?.title || "") : ""}
                     </p>
