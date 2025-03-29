@@ -15,7 +15,7 @@ export type CartItemWithInventory = StoreCartLineItem & {
   is_in_stock?: boolean;
 };
 
-type CartWithInventory = Omit<StoreCart, "items"> & {
+export type CartWithInventory = Omit<StoreCart, "items"> & {
   id: string;
   region_id: string;
   items: CartItemWithInventory[];
@@ -318,6 +318,35 @@ export const useAddToCart = () => {
       }),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["cart"] });
+    },
+  });
+};
+
+
+export async function setShippingMethod({
+  cartId,
+  shippingMethodId,
+}: {
+  cartId: string
+  shippingMethodId: string
+}) {
+
+  return sdk.store.cart
+    .addShippingMethod(cartId, { option_id: shippingMethodId }, {})
+    .then(async (response) => {
+      return response.cart;
+    })
+    .catch(medusaError)
+}
+
+export const useSetShippingMethod = () => {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: ({ cartId, shippingMethodId }: { cartId: string; shippingMethodId: string }) => 
+      setShippingMethod({ cartId, shippingMethodId }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["cart"] });
     },
   });
 };

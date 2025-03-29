@@ -49,7 +49,7 @@ export const Select = ({
 }: SelectProps) => {
   const [selected, setSelected] = useState<Option | null>(value || null);
   const [open, setOpen] = useState<boolean>(false);
-
+  
   const handleSelect = (option: Option) => {
     setSelected(option);
     onChange?.(option);

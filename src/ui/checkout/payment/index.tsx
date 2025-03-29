@@ -61,11 +61,11 @@ const PaymentOptions = () => {
 
   const orderData = {
     email: "mol@gmail.com",
-        items: {
-          "ball"
-        },
-        shipping_address: "njhwdbfnkiwb bw",
-        total: 200,
+    items: [
+      "ball"
+    ],
+    shipping_address: "njhwdbfnkiwb bw",
+    total: 200,
   };
 
   // const { cart } = retrieveCart();

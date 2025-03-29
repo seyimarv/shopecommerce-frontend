@@ -61,8 +61,8 @@ export default function CurrencyPicker({ regions }: CurrencyPickerProps) {
       }
       onChange={handleChange}
     >
-      <SelectTrigger className="whitespace-nowrap" />
-      <SelectContent className="max-h-[200px] !w-fit">
+      <SelectTrigger className="whitespace-nowrap !w-fit" />
+      <SelectContent className="max-h-[200px]">
         {regions?.map((region: HttpTypes.StoreRegion) =>
           region.countries?.map((country) => (
             <SelectItem

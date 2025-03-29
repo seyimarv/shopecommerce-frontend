@@ -103,8 +103,9 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                 </div>
                 <div className="flex w-full justify-between mt-4 px-4 pb-4">
                   <Button
-                    href={cart?.id ? `/checkout/${cart.id}` : '#'}
+                    href={cart?.id ? `/checkout` : '#'}
                     disabled={!cart?.id || isLoading || cart?.items?.length === 0}
+                    isLink
                   >
                     check out
                   </Button>
