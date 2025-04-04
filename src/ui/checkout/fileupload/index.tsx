@@ -1,13 +1,25 @@
 import React, { useState } from "react";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
+import Image from "next/image";
+import { HttpTypes } from "@medusajs/types";
+import Button from "@/ui/common/components/button";
+import { usePlaceOrder } from "@/lib/data/cart";
+import { useRouter } from "next/navigation";
 
 interface FormValues {
   image: File | null;
 }
 
-const UploadImageForm: React.FC = () => {
+interface UploadImageFormProps {
+  cart: HttpTypes.StoreCart;
+}
+
+const UploadImageForm: React.FC<UploadImageFormProps> = ({ cart }) => {
   const [preview, setPreview] = useState<string | null>(null);
+  const router = useRouter()
+
+  const { mutate, isPending } = usePlaceOrder()
 
   const initialValues: FormValues = {
     image: null,
@@ -18,24 +30,18 @@ const UploadImageForm: React.FC = () => {
   });
 
   const handleSubmit = (values: FormValues) => {
-    console.log("Selected file:", values.image);
 
-    // const formData = new FormData();
-    // if (values.image) {
-    //   formData.append("image", values.image);
-    // }
-
-    // // Send the image to backend API
-    // fetch("/api/upload", {
-    //   method: "POST",
-    //   body: formData,
-    // })
-    //   .then((res) => {
-    //     console.log("Upload complete");
-    //   })
-    //   .catch((err) => {
-    //     console.error("Upload failed:", err);
-    //   });
+    mutate({
+      cartId: cart.id,
+      reciept: values.image!
+    }, {
+      onSuccess: () => {
+        router.push(`/order/${cart.id}/confirmed`);
+      },
+      onError: (err) => {
+        console.error("Error uploading receipt:", err);
+      }
+    })
   };
 
   return (
@@ -54,7 +60,7 @@ const UploadImageForm: React.FC = () => {
               type="file"
               accept="image/*"
               onChange={(event) => {
-                const file = event.currentTarget.files?.[0];
+                const file = event.currentTarget.files?.[0] as File;
                 if (file) {
                   setFieldValue("image", file);
                   setPreview(URL.createObjectURL(file));
@@ -67,18 +73,24 @@ const UploadImageForm: React.FC = () => {
             )}
           </div>
 
-          {isSubmitting && <p>Uploading...</p>}
+          {/* {isSubmitting && <p>Uploading...</p>} */}
 
           {preview && (
             <div className="mt-4">
               <p className="font-medium mb-2">Preview:</p>
-              <img
+              <Image
                 src={preview}
                 alt="Selected"
-                className="w-40 h-40 object-cover rounded border"
+                width={160}
+                height={160}
+                className="object-cover rounded border"
               />
             </div>
           )}
+
+          <Button type="submit" className="max-w-md mx-auto my-5" isLoading={isPending} disabled={!values.image}>
+            I have made the payment
+          </Button>
         </Form>
       )}
     </Formik>

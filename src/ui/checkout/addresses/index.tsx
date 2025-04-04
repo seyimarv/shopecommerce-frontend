@@ -12,6 +12,8 @@ const Addresses = () => {
   const pathname = usePathname();
   const { data: cart, isLoading, isFetching, error } = useRetrieveCart()
 
+  console.log(cart)
+
   const currentStep = searchParams.get("step");
   const isEditing = searchParams.get("step") === "address";
 

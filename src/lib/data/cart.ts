@@ -1,10 +1,12 @@
 import { HttpTypes } from "@medusajs/types";
-import { getCartId, setCartId } from "./cookies";
+import { getCartId, removeCartId, setCartId } from "./cookies";
 import { sdk } from "../../../config";
-import { getRegion } from "./region";
+import { getRegion, useListRegions } from "./region";
 import medusaError from "../utils/medusa-error";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRegion } from "../context/region-context";
+import { redirect } from "next/navigation";
+import { uploadReceipt } from "./payment";
 
 type StoreCart = HttpTypes.StoreCartResponse["cart"];
 type StoreCartLineItem = NonNullable<StoreCart["items"]>[0];
@@ -254,6 +256,31 @@ export async function deleteLineItem(lineId: string) {
     .catch(medusaError);
 }
 
+export const useListCartPaymentMethod = (regionId: string) => {
+  return useQuery({
+    queryKey: ["payment-providers", regionId],
+    queryFn: () =>
+      sdk.client
+        .fetch<HttpTypes.StorePaymentProviderListResponse>(
+          `/store/payment-providers`,
+          {
+            method: "GET",
+            query: { region_id: regionId },
+          }
+        )
+        .then(({ payment_providers }) =>
+          payment_providers.sort((a, b) => {
+            return a.id > b.id ? 1 : -1
+          })
+        )
+        .catch(() => {
+          return null
+        }),
+    enabled: !!regionId,
+  });
+};
+
+
 export const useUpdateLineItem = () => {
   const queryClient = useQueryClient();
 
@@ -341,12 +368,80 @@ export async function setShippingMethod({
 
 export const useSetShippingMethod = () => {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
-    mutationFn: ({ cartId, shippingMethodId }: { cartId: string; shippingMethodId: string }) => 
+    mutationFn: ({ cartId, shippingMethodId }: { cartId: string; shippingMethodId: string }) =>
       setShippingMethod({ cartId, shippingMethodId }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["cart"] });
     },
   });
 };
+
+
+export async function initiatePaymentSession(
+  cart: HttpTypes.StoreCart,
+  data: HttpTypes.StoreInitializePaymentSession
+) {
+  return sdk.store.payment
+    .initiatePaymentSession(cart, data, {})
+    .then(async (resp) => {
+      return resp
+    })
+    .catch(medusaError)
+}
+
+export const useInitiatePaymentSession = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: ({
+      cart,
+      data
+    }: {
+      cart: HttpTypes.StoreCart,
+      data: HttpTypes.StoreInitializePaymentSession
+    }) => initiatePaymentSession(cart, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["cart"] });
+    },
+  });
+};
+
+export const usePlaceOrder = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ cartId, reciept }: { cartId?: string, reciept?: File }) => {
+      const id = cartId || getCartId()
+
+      if (!id) {
+        throw new Error("No existing cart found when placing an order")
+      }
+
+      if (reciept) {
+        await uploadReceipt(reciept, id)
+      }
+
+      const cartRes = await sdk.store.cart
+        .complete(id, {})
+        .then(async (cartRes) => {
+          return cartRes
+        })
+        .catch(medusaError)
+      console.log(cartRes)
+      if (cartRes?.type === "order") {
+        const countryCode =
+          cartRes.order.shipping_address?.country_code?.toLowerCase()
+
+        removeCartId()
+        return { orderId: cartRes.order.id, countryCode }
+      }
+
+      return { cart: cartRes.cart }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["cart", "order"] })
+    },
+  })
+}
