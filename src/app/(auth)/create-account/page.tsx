@@ -9,13 +9,14 @@ const Login = () => {
     <AuthFormWrapper
       title="register"
       subtitle="Please fill in the fields below:"
+      type="register"
     >
       <Input placeholder="First name" size="lg" />
       <Input placeholder="Last name" size="lg" />
       <Input placeholder="Email" size="lg" />
-      <PasswordInput placeholder="password" size="lg" />
-      <PasswordInput placeholder="Confirm password" size="lg" />
-      <Button className="mt-2 w-full">create</Button>
+      <PasswordInput placeholder="Password" size="lg" />
+      <PasswordInput placeholder="Confirm Password" size="lg" />
+      <Button className="mt-2 w-full">Create Account</Button>
     </AuthFormWrapper>
   );
 };

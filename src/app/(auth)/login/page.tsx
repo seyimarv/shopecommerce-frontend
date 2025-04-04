@@ -15,7 +15,7 @@ const Login = () => {
       <Link href="/forgot-password" className="text-sm font-light block">
         Forgot your password?
       </Link>
-      <Button className="mt-2 w-full">Log in</Button>
+      <Button className="mt-2 w-full">Log In</Button>
     </AuthFormWrapper>
   );
 };
