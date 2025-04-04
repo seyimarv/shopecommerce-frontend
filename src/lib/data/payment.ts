@@ -1,50 +1,32 @@
-import { sdk } from "../../../config"
+let MEDUSA_BACKEND_URL = "http://localhost:9000"
+if (typeof window !== "undefined" && process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL) {
+  MEDUSA_BACKEND_URL = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL
+}
 
 export async function uploadReceipt(file: File, cartId: string) {
     try {
-
-        const formattedFile = await transformFile(file)
-
-        const response = await sdk.client.fetch<{
-            id: string
-        }>(
-            `/store/receipts`,
-            {
-                method: "POST",
-                body: {
-                    file: formattedFile,
-                    cart_id: cartId
-                }
-            }
-        )
-
-        return response
+        const formData = new FormData();
+  
+        formData.append('files', file);
+      
+        formData.append("cart_id", cartId);
+        
+        const response = await fetch(`${MEDUSA_BACKEND_URL}/store/receipts`, {
+            method: "POST",
+            headers: {
+                "x-publishable-api-key": process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY!,
+            },
+            body: formData
+        });
+        
+        if (!response.ok) {
+            throw new Error(`Server responded with ${response.status}: ${response.statusText}`);
+        }
+        
+        const data = await response.json();
+        return data;
     } catch (error) {
-        console.error("Error uploading receipt:", error)
-        throw new Error("Failed to upload receipt")
+        console.error("Error uploading receipt:", error);
+        throw new Error("Failed to upload receipt");
     }
-}
-
-
-async function transformFile(file: File) {
-    return new Promise((resolve, reject) => {
-        const reader = new FileReader()
-
-        reader.onload = () => {
-            const base64Content = (reader.result as string).split(',')[1]
-
-            resolve({
-                filename: file.name,
-                mimeType: file.type,
-                content: base64Content,
-                access: "public"
-            })
-        }
-
-        reader.onerror = () => {
-            reject(new Error('Failed to read file'))
-        }
-
-        reader.readAsDataURL(file)
-    })
 }

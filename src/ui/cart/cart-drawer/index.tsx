@@ -8,7 +8,7 @@ import { GoPencil } from "react-icons/go";
 import { useRetrieveCart } from "@/lib/data/cart";
 import { convertToLocale } from "@/lib/utils/money";
 import WithSkeleton from "@/ui/common/components/Skeleton/with-skeleton";
-import EmptyCart from "../empty-cart";
+import { getCheckoutStep } from "@/lib/utils/checkout";
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -22,6 +22,8 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
   const [note, setNote] = useState("");
 
   const { data: cart, isLoading, error } = useRetrieveCart();
+
+  const checkoutStep = getCheckoutStep(cart)
 
   const drawerClassName =
     isBannerInView && isHeaderInView
@@ -103,7 +105,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                 </div>
                 <div className="flex w-full justify-between mt-4 px-4 pb-4">
                   <Button
-                    href={cart?.id ? `/checkout` : '#'}
+                    href={cart?.id ? `/checkout?step=` + checkoutStep : '#'}
                     disabled={!cart?.id || isLoading || cart?.items?.length === 0}
                     isLink
                   >

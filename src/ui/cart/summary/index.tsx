@@ -1,6 +1,8 @@
 import { useState } from "react";
 import TextArea from "@/ui/common/components/text-area";
 import Button from "@/ui/common/components/button";
+import { useRetrieveCart } from "@/lib/data/cart";
+import { getCheckoutStep } from "@/lib/utils/checkout";
 
 interface SummaryProps {
   subtotal: string;
@@ -8,6 +10,9 @@ interface SummaryProps {
 
 export default function Summary({ subtotal }: SummaryProps) {
   const [note, setNote] = useState("");
+  const {data: cart, isLoading} = useRetrieveCart()
+
+  const checkoutStep = getCheckoutStep(cart)
 
   return (
     <div>
@@ -29,7 +34,14 @@ export default function Summary({ subtotal }: SummaryProps) {
           <span className="text-sm text-gray-500">
             Shipping calculated at checkout
           </span>
-          <Button className="w-xs">Check Out</Button>
+          <Button
+            className="w-xs"
+            href={cart?.id ? `/checkout?step=` + checkoutStep : "#"}
+            disabled={!cart?.id || isLoading || cart?.items?.length === 0}
+            isLink
+          >
+            Check Out
+          </Button>
         </div>
       </div>
     </div>

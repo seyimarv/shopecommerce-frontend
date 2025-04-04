@@ -13,6 +13,7 @@ import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 const PaymentOptions = () => {
   const [openBankTransfer, setOpenBankTransfer] = useState(false)
+  const [clickedPaymentOption, setClickedPaymentOption] = useState<string | null>(null)
 
   const { data: cart } = useRetrieveCart()
 
@@ -20,38 +21,37 @@ const PaymentOptions = () => {
     (paymentSession: any) => paymentSession.status === "pending"
   )
 
-  console.log(activeSession)
   const { mutate: initiatePaymentSession, isPending, error } = useInitiatePaymentSession()
 
   const { data: cartPaymentMethods } = useListCartPaymentMethod(cart?.region_id ?? '')
 
   const searchParams = useSearchParams();
-  const router = useRouter();
-  const pathname = usePathname();
+  // const router = useRouter();
+  // const pathname = usePathname();
 
   const isEditing = searchParams.get("step") === "payment";
 
-  const handleEdit = () => {
-    router.push(`${pathname}?step=payment`);
-  };
+  // const handleEdit = () => {
+  //   router.push(`${pathname}?step=payment`);
+  // };
 
-  interface PaymentProps {
-    paymentOption: string;
-  }
+  // interface PaymentProps {
+  //   paymentOption: string;
+  // }
 
   return (
     <div className=" mb-5 border-gray-200 border-b-2 py-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <h3 className="text-3xl tracking-widest uppercase mb-4">Payment</h3>
-          {!isEditing && <FiCheckCircle />}
+          {/* {!isEditing && <FiCheckCircle />} */}
         </div>
 
-        {!isEditing && (
+        {/* {!isEditing && (
           <button className="cursor-pointer" onClick={handleEdit}>
             Edit
           </button>
-        )}
+        )} */}
       </div>
       {isEditing && (
         <Formik
@@ -90,6 +90,7 @@ const PaymentOptions = () => {
                           value={option.id}
                           className="hidden"
                           onClick={() => {
+                            setClickedPaymentOption(option.id);
                             if (isManual(option.id) && (activeSession?.provider_id === option.id)) {
                               setOpenBankTransfer(true);
                             }
@@ -130,7 +131,7 @@ const PaymentOptions = () => {
                           )}
                         </div>
                         <span className="uppercase">{paymentInfoMap[option?.id]?.title || option.id}</span>
-                        {values.paymentOption !== option.id && isPending && (
+                        {clickedPaymentOption === option.id && isPending && (
                           <AiOutlineLoading3Quarters className="animate-spin ml-2" />
                         )}
                       </div>

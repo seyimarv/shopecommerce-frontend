@@ -1,18 +1,17 @@
 "use client";
 
-import Addresses from "@/ui/checkout/addresses";
-
-import ShippingOptions from "@/ui/checkout/shippingoptions";
-import CartSummary from "@/ui/checkout/cartsummary";
 import { useRetrieveCart } from "@/lib/data/cart";
 import WithSkeleton from "@/ui/common/components/Skeleton/with-skeleton";
-import PaymentOptions from "@/ui/checkout/payment";
 import CheckoutTemplate from "@/ui/checkout";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 const Checkout = () => {
   const { data: cart, isLoading, error } = useRetrieveCart()
   return (
-    <WithSkeleton isLoading={isLoading}>
+    <WithSkeleton isLoading={isLoading} skeleton={
+      <div className="flex items-center justify-center h-[75vh]">
+        <AiOutlineLoading3Quarters className="animate-spin" />
+      </div>} >
       <CheckoutTemplate />
     </WithSkeleton>
   );
