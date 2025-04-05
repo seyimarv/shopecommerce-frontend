@@ -15,7 +15,7 @@ import { AiOutlineLoading } from "react-icons/ai";
 interface ProductsFilterProps {
   title?: string;
   collectionId?: string;
-  isCollectionLoading: boolean;
+  isCollectionLoading?: boolean;
 }
 
 const sortOptionToMedusaSort: Record<string, SortOptions> = {

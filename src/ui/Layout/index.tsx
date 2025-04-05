@@ -10,10 +10,12 @@ export default function MainLayout({
 }) {
   return (
     <Provider>
-      <Banner />
-      <Header />
-      {children}
-      <Footer />
+      <div className="flex flex-col min-h-screen">
+        <Banner />
+        <Header />
+        <main className="flex-grow">{children}</main>
+        <Footer />
+      </div>
     </Provider>
   );
 }

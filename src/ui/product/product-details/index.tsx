@@ -1,5 +1,3 @@
-import { mockProducts } from "@/lib/mock-data";
-import ProductList from "../product-list";
 import Details from "./details";
 import ImageGallery from "./image-gallery";
 import { HttpTypes } from "@medusajs/types";

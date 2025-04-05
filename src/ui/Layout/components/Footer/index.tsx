@@ -61,7 +61,7 @@ const Footer: React.FC = () => {
   };
 
   return (
-    <footer className="bg-gray-900 text-white py-20 mt-auto">
+    <footer className="bg-gray-900 text-white py-20 mt-auto" id="footer">
       <div className="container flex justify-between gap-0 md:text-left">
         <div className="">
           <h3 className="text-lg">LINKS</h3>

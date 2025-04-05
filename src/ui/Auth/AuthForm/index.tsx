@@ -30,13 +30,13 @@ const AuthFormWrapper: React.FC<AuthFormWrapperProps> = ({
       <Button className="w-full bg-secondary" variant="outline">
         <div className="flex gap-2 items-center justify-center">
           <GoogleIcon />
-          <span>Log in</span>
+          <span>Log In</span>
         </div>
       </Button>
       <p className="text-md text-gray-500 mt-4 font-light">
         {type === "login" ? (
           <>
-            Dont have an account yet?{" "}
+            Don't have an account yet?{" "}
             <Link
               href="/create-account"
               className="text-gray-900 hover:underline ml-1"

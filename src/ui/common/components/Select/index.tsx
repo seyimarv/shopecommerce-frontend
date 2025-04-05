@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
@@ -15,7 +15,7 @@ import { motion, AnimatePresence } from "framer-motion";
 export interface Option {
   value: string | number;
   label: string;
-  href?: string; 
+  href?: string;
 }
 
 interface SelectContextProps {
@@ -49,7 +49,7 @@ export const Select = ({
 }: SelectProps) => {
   const [selected, setSelected] = useState<Option | null>(value || null);
   const [open, setOpen] = useState<boolean>(false);
-
+  
   const handleSelect = (option: Option) => {
     setSelected(option);
     onChange?.(option);
@@ -61,7 +61,7 @@ export const Select = ({
   return (
     <SelectContext.Provider value={{ selected, open, setOpen, handleSelect }}>
       <div
-        className="relative w-fit"
+        className="relative"
         ref={selectRef}
         onMouseEnter={hover ? () => setOpen(true) : undefined}
         onMouseLeave={hover ? () => setOpen(false) : undefined}
@@ -151,7 +151,10 @@ export const SelectTrigger = forwardRef<
 
 SelectTrigger.displayName = "SelectTrigger";
 
-export const SelectContentBase = ({ children, className }: SelectContentProps) => {
+export const SelectContentBase = ({
+  children,
+  className,
+}: SelectContentProps) => {
   return (
     <motion.div
       initial={{ opacity: 0, y: -10 }}

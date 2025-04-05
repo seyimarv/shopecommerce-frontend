@@ -129,19 +129,6 @@ const Header: React.FC = () => {
         </nav>
       </motion.header>
       <CartDrawer isOpen={openCart} onClose={() => setOpenCart(false)} />
-      {/* Search Modal Animation */}
-      {/* <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.3, ease: "easeOut" }}
-          >
-            <SearchModal setIsOpen={setIsOpen} />
-          </motion.div>
-        )}
-      </AnimatePresence> */}
       <ProductSearch
         isOpen={isSearchOpen}
         onClose={() => setSearchOpen(false)}
