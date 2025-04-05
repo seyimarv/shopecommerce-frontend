@@ -70,15 +70,28 @@ const CartSummary = ({ order }: OrderProps) => {
       </div>
 
       {!!order.discount_total && (
-        <div className="flex items-center justify-between">
+        <div className="flex justify-between text-red-600">
           <span>Discount</span>
-          <span>{order.discount_total ?? 0}</span>
+          <span>
+            -{" "}
+            {convertToLocale({
+              amount: order.discount_total,
+              currency_code: order.currency_code,
+            })}
+          </span>
         </div>
       )}
+
       {!!order.gift_card_total && (
-        <div className="flex items-center justify-between">
-          <span>Gift card</span>
-          <span>{order.gift_card_total ?? 0}</span>
+        <div className="flex justify-between text-purple-600">
+          <span>Gift Card</span>
+          <span>
+            -{" "}
+            {convertToLocale({
+              amount: order.gift_card_total,
+              currency_code: order.currency_code,
+            })}
+          </span>
         </div>
       )}
       <Divider className="mt-3" />

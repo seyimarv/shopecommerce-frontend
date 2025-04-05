@@ -8,10 +8,10 @@ type ShippingDetailsProps = {
 const ShippingDetails = ({ order }: ShippingDetailsProps) => {
   return (
     <div>
-      <h2>Delivery</h2>
+      <h2 className="text-2xl my-3">Delivery</h2>
       <div className="flex items-start gap-x-8">
         <div className="flex flex-col w-1/3">
-          <h3>Shipping Address</h3>
+          <h3 className="font-medium  text-xl">Shipping Address</h3>
           <h3>
             {order.shipping_address?.first_name}{" "}
             {order.shipping_address?.last_name}
@@ -27,14 +27,14 @@ const ShippingDetails = ({ order }: ShippingDetailsProps) => {
           <h3>{order.shipping_address?.country_code?.toUpperCase()}</h3>
         </div>
 
-        <div>
-          <h3>Contact</h3>
+        <div className="flex flex-col w-1/3">
+          <h3 className="font-medium text-xl">Contact</h3>
           <h3>{order.shipping_address?.phone}</h3>
           <h3>{order.email}</h3>
         </div>
 
         <div className="flex flex-col w-1/3">
-          <h3>Method</h3>
+          <h3 className="font-medium text-xl">Method</h3>
           <h3>
             {(order as any).shipping_methods[0]?.name} (
             {convertToLocale({
