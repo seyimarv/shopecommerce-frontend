@@ -15,19 +15,19 @@ const OrderDetails = ({ order }: OrderDetailsProps) => {
       <div className="flex gap-5 tracking-wide">
         <div>
           <h3 className="">
-            Order date:
+            Order Date:
             <span> {new Date(order.created_at).toDateString()}</span>
           </h3>
           <h3 className="">
-            Order number: <span>{order.display_id}</span>
+            Order Number: <span>{order.display_id}</span>
           </h3>
         </div>
         <div>
           <h3>
-            Order status: <span className=" uppercase">{order.status}</span>
+            Order Status: <span className=" uppercase">{order.status}</span>
           </h3>
           <h3>
-            Payment status:{" "}
+            Payment Status:{" "}
             <span className="uppercase">{order.payment_status}</span>
           </h3>
         </div>
