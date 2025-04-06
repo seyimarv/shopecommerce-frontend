@@ -39,7 +39,10 @@ const PaymentDetails = ({ order }: PaymentDetailsProps) => {
                       ).toLocaleString()}`}
                 </h3>
                 <h3>
-                  {isManual(payment.provider_id) && "Paid via Bank Transfer"}
+                  {isManual(payment.provider_id) &&
+                    `Paid via Bank Transfer ${new Date(
+                      payment.created_at ?? ""
+                    ).toLocaleString()} `}
                 </h3>
               </div>
             </div>
