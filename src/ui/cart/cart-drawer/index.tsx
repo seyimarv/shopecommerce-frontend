@@ -23,6 +23,8 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
 
   const { data: cart, isLoading, error } = useRetrieveCart();
 
+  console.log(cart)
+
   const checkoutStep = getCheckoutStep(cart)
 
   const drawerClassName =

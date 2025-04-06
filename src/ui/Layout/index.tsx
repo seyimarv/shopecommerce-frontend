@@ -13,7 +13,7 @@ export default function MainLayout({
       <div className="flex flex-col min-h-screen">
         <Banner />
         <Header />
-        <main className="flex-grow">{children}</main>
+        <main className="flex-grow h-full flex flex-col">{children}</main>
         <Footer />
       </div>
     </Provider>

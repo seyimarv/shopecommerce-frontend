@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { ReactNode, FC } from "react";
+import Spinner from "../spinner";
 
 type WithSkeletonProps = {
   isLoading: boolean;
@@ -13,7 +14,7 @@ const WithSkeleton: FC<WithSkeletonProps> = ({
   children,
 }) => {
   if (isLoading) {
-    return Skeleton ? <>{Skeleton}</> : <h1>Loading...</h1>;
+    return Skeleton ? <>{Skeleton}</> : <div className="flex flex-grow items-center justify-center h-full"><Spinner /></div>;
   }
   return <>{children}</>;
 };
