@@ -77,7 +77,7 @@ const Card: React.FC<CardProps> = (data) => {
   const addToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    
+
     if (product && product.variants) {
       const variantId = product.variants[0].id;
       if (!allowAddToCart(product.variants[0])) {
@@ -101,7 +101,7 @@ const Card: React.FC<CardProps> = (data) => {
   const handleClickButton = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    
+
     if (hasVariants) {
       setIsHovered(false)
       setIsModalOpen(true);
@@ -170,13 +170,6 @@ const Card: React.FC<CardProps> = (data) => {
           </Button>
         </motion.div>
       )}
-      {product && (
-        <ProductModal
-          productId={product?.id}
-          isOpen={isModalOpen}
-          onClose={handleCloseModal}
-        />
-      )}
       <div className="pt-2 flex flex-col px-1 font-light">
         <span className="tracking-wider text-md flex items-center gap-1">
           {title} {variety === "collections" && <GrLinkNext size={16} />}
@@ -196,6 +189,13 @@ const Card: React.FC<CardProps> = (data) => {
         </Link>
       ) : CardContent}
       <CartDrawer isOpen={isOpen} onClose={closeCart} />
+      {product && (
+        <ProductModal
+          productId={product?.id}
+          isOpen={isModalOpen}
+          onClose={handleCloseModal}
+        />
+      )}
     </>
   );
 };

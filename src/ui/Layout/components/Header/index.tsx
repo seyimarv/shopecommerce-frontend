@@ -12,6 +12,7 @@ import CartDrawer from "../../../cart/cart-drawer";
 import ProductSearch from "@/ui/product/products-search";
 import { useRetrieveCart } from "@/lib/data/cart";
 import { useListRegions } from "@/lib/data/region";
+import { useRetrieveCustomer } from "@/lib/data/customer";
 
 const Header: React.FC = () => {
   const { data: regions } = useListRegions()
@@ -49,7 +50,9 @@ const Header: React.FC = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const { data: cart, isLoading, error } = useRetrieveCart()
+  const { data: cart, isLoading: cartIsLoading, error: cartError } = useRetrieveCart()
+
+  const {data: customer, isLoading: customerIsLoading, error: customerError} = useRetrieveCustomer()
 
   return (
     <>
@@ -102,7 +105,7 @@ const Header: React.FC = () => {
               </button>
             </li>
             <li>
-              <Link href="/profile">
+              <Link href="/account">
                 <CiUser className="text-lg" size={20} />
               </Link>
             </li>

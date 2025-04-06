@@ -1,8 +1,8 @@
-export const getAuthHeaders = (): { authorization: string } | {} => {
+export const getAuthHeaders = (): { authorization: string } | null => {
     const token = getCookie("_medusa_jwt");
 
     if (!token) {
-        return {};
+        return null;
     }
 
     return { authorization: `Bearer ${token}` };
@@ -30,7 +30,7 @@ export const getCacheOptions = (tag: string): { tags: string[] } | {} => {
 };
 
 export const setAuthToken = (token: string) => {
-    setCookie("_medusa_jwt", token, 60 * 60 * 24 * 7);
+    setCookie("_medusa_jwt", token, 1000 * 60 * 60 * 24 * 7);
 };
 
 export const removeAuthToken = () => {

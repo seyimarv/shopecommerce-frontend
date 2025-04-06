@@ -22,17 +22,17 @@ const AuthFormWrapper: React.FC<AuthFormWrapperProps> = ({
       <h2 className="text-2xl tracking-wide uppercase">{title}</h2>
       {subtitle && <p className="my-4 text-md">{subtitle}</p>}
       <div className="flex flex-col gap-3 pt-4">{children}</div>
-      <div className="flex items-center gap-3 py-2">
+      {/* <div className="flex items-center gap-3 py-2">
         <Divider />
         <p className="text-gray-400 font-light">Or continue with</p>
         <Divider />
-      </div>
-      <Button className="w-full bg-secondary" variant="outline">
+      </div> */}
+      {/* <Button className="w-full bg-secondary" variant="outline">
         <div className="flex gap-2 items-center justify-center">
           <GoogleIcon />
           <span>Log In</span>
         </div>
-      </Button>
+      </Button> */}
       <p className="text-md text-gray-500 mt-4 font-light">
         {type === "login" ? (
           <>
