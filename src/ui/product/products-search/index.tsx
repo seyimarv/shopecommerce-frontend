@@ -1,10 +1,11 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { SearchInput } from "@/ui/common/components/input/search-input";
 import { Drawer } from "@/ui/Layout/components/Drawer";
 import SearchResults from "./search-result";
 import { useListProducts } from "@/lib/data/products";
 import { debounce } from "@/lib/utils/debounce";
 import { HttpTypes } from "@medusajs/types";
+import { useRouter, usePathname } from "next/navigation";
 
 const customContentAnimation = {
   hidden: { y: "0", opacity: 0 },
@@ -18,7 +19,10 @@ const ProductSearch = ({
 }: {
   isOpen: boolean;
   onClose: () => void;
-}) => {
+}) => { 
+  const router = useRouter();
+  const pathname = usePathname();
+  const prevPathnameRef = useRef(pathname);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState<HttpTypes.StoreProduct[]>([]);
   const [isSearching, setIsSearching] = useState(false);
@@ -60,6 +64,19 @@ const ProductSearch = ({
     }
   }, [isOpen]);
 
+  useEffect(() => {
+    if (pathname !== prevPathnameRef.current && isOpen) {
+      onClose();
+    }
+    prevPathnameRef.current = pathname;
+  }, [pathname, isOpen, onClose]);
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      router.push(`/search?q=${encodeURIComponent(searchQuery)}`);
+      onClose();
+    }
+  };
   return (
     <Drawer
       isOpen={isOpen}
@@ -74,6 +91,7 @@ const ProductSearch = ({
           value={searchQuery}
           onChange={(e) => handleSearch(e.target.value)}
           placeholder="Search products..."
+          onKeyDown={handleKeyDown}
           autoFocus
         />
       </div>

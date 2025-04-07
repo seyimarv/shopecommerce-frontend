@@ -254,7 +254,7 @@ export const useListProductsWithSort = ({
 } = {}) => {
   const { countryCode } = useRegion();
   const { data, isLoading, error } = useQuery({
-    queryKey: ["sorted-products", sortBy, filters, page, collectionId],
+    queryKey: ["sorted-products", sortBy, filters, page, collectionId, queryParams],
     queryFn: () =>
       listProductsWithSort({
         page,

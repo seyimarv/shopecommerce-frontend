@@ -16,6 +16,8 @@ interface ProductsFilterProps {
   title?: string;
   collectionId?: string;
   isCollectionLoading?: boolean;
+  isSearch?: boolean;
+  hideTitle?: boolean;
 }
 
 const sortOptionToMedusaSort: Record<string, SortOptions> = {
@@ -31,17 +33,18 @@ const sortOptionToMedusaSort: Record<string, SortOptions> = {
 
 const ITEMS_PER_PAGE = 12;
 
-const ProductsFilter = ({ title, collectionId, isCollectionLoading }: ProductsFilterProps) => {
+const ProductsFilter = ({ title, collectionId, isCollectionLoading, isSearch, hideTitle }: ProductsFilterProps) => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
+
+  const searchQuery = searchParams.get("q") || "";
 
   const currentPage = Number(searchParams.get("page")) || 1;
   const availabilityParam = searchParams.get("availability")?.split(",") || [];
   const minPriceParam = searchParams.get("minPrice") ? Number(searchParams.get("minPrice")) : null;
   const maxPriceParam = searchParams.get("maxPrice") ? Number(searchParams.get("maxPrice")) : null;
   const sortParam = searchParams.get("sort");
-
   const [selectedAvailability, setSelectedAvailability] = useState<string[]>(availabilityParam);
   const [minPrice, setMinPrice] = useState<number | null>(minPriceParam);
   const [maxPrice, setMaxPrice] = useState<number | null>(maxPriceParam);
@@ -55,6 +58,7 @@ const ProductsFilter = ({ title, collectionId, isCollectionLoading }: ProductsFi
     page: currentPage,
     queryParams: {
       limit: ITEMS_PER_PAGE,
+      ...(isSearch && { q: searchQuery }),
     },
     sortBy: selectedSort
       ? sortOptionToMedusaSort[selectedSort.value as string]
@@ -125,7 +129,7 @@ const ProductsFilter = ({ title, collectionId, isCollectionLoading }: ProductsFi
 
       <h2 className="text-4xl pb-8 tracking-widest uppercase">
         {
-          !isCollectionLoading && (
+          !isCollectionLoading && !hideTitle && (
             <>
               {title || "All products"}
             </>
@@ -158,6 +162,11 @@ const ProductsFilter = ({ title, collectionId, isCollectionLoading }: ProductsFi
         </div>
       </div>
       <ProductList products={data?.response.products} isLoading={isLoading || isCollectionLoading} />
+      {isSearch && !isLoading && !isCollectionLoading && data?.response.count === 0 && (
+        <div className="text-center py-16 text-gray-500">
+          No products found matching "{searchQuery}". Try a different search.
+        </div>
+      )}
       <Pagination totalPages={totalPages} />
     </div>
   );
