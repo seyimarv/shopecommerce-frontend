@@ -2,8 +2,9 @@ import { useState, useCallback, useEffect } from "react";
 import { SearchInput } from "@/ui/common/components/input/search-input";
 import { Drawer } from "@/ui/Layout/components/Drawer";
 import SearchResults from "./search-result";
-import { mockProducts } from "@/lib/mock-data";
-import { Product } from "../product-list";
+import { useListProducts } from "@/lib/data/products";
+import { debounce } from "@/lib/utils/debounce";
+import { HttpTypes } from "@medusajs/types";
 
 const customContentAnimation = {
   hidden: { y: "0", opacity: 0 },
@@ -19,30 +20,38 @@ const ProductSearch = ({
   onClose: () => void;
 }) => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [searchResults, setSearchResults] = useState<Product[]>([]);
+  const [searchResults, setSearchResults] = useState<HttpTypes.StoreProduct[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
 
+  const { data: products, isLoading, error } = useListProducts({
+    queryParams: {
+      limit: 12,
+      q: searchQuery,
+    },
+  });
+  const debouncedSearch = useCallback(
+    debounce((query: string) => {
+      if (query.trim() === "") {
+        setSearchResults([]);
+        setHasSearched(false);
+        return;
+      }
+
+      setIsSearching(true);
+      setHasSearched(true);
+      if (products?.response?.products) {
+        setSearchResults(products.response.products);
+      }
+      setIsSearching(false);
+    }, 300),
+    [products]
+  );
+
   const handleSearch = useCallback((query: string) => {
     setSearchQuery(query);
-
-    if (query.trim() === "") {
-      setSearchResults([]);
-      return;
-    }
-
-    setIsSearching(true);
-    setHasSearched(true);
-
-    setTimeout(() => {
-      const lowerCaseQuery = query.toLowerCase();
-      const filtered = mockProducts.filter((product) =>
-        product.title.toLowerCase().includes(lowerCaseQuery)
-      );
-      setSearchResults(filtered);
-      setIsSearching(false);
-    }, 300);
-  }, []);
+    debouncedSearch(query);
+  }, [debouncedSearch]);
 
   useEffect(() => {
     if (isOpen) {
@@ -69,19 +78,15 @@ const ProductSearch = ({
         />
       </div>
 
-      {/* {hasSearched && searchQuery && searchResults.length === 0 && !isSearching && (
-        <div className="text-center py-12 text-gray-500">
-          No products found matching "{searchQuery}"
-        </div>
-      )} */}
-
-      {(searchResults.length > 0 || isSearching || hasSearched) && (
+      {(searchResults.length > 0 || isSearching || (hasSearched && searchQuery)) && (
         <SearchResults
           results={searchResults}
-          loading={isSearching}
-          hasSearch={hasSearched}
+          loading={isSearching || isLoading}
+          hasSearch={hasSearched && !!searchQuery}
+          searchQuery={searchQuery}
         />
       )}
+     
     </Drawer>
   );
 };
