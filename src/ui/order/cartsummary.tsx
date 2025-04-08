@@ -15,7 +15,7 @@ const CartSummary = ({ order }: OrderProps) => {
         {items?.map((item) => (
           <div
             key={item.id}
-            className="flex items-start gap-4 border-b pb-4 border-gray-200"
+            className="flex items-center gap-4 border-b pb-4 border-gray-200"
           >
             <div className="relative w-20 h-20 rounded overflow-hidden">
               <Image
@@ -26,10 +26,12 @@ const CartSummary = ({ order }: OrderProps) => {
               />
             </div>
             <div className="flex-1">
-              <h3 className="font-medium">{item.product.title}</h3>
+              <h3 className="font-medium">{item.product?.title}</h3>
               <p className="text-sm text-gray-500">
                 Variant: {item.variant?.title ?? "N/A"}
               </p>
+            </div>
+            <div className="text-right font-medium">
               <p className="text-sm mt-1">
                 {item.quantity} x{" "}
                 {convertToLocale({
@@ -37,8 +39,6 @@ const CartSummary = ({ order }: OrderProps) => {
                   currency_code: order.currency_code,
                 })}
               </p>
-            </div>
-            <div className="text-right font-medium">
               {convertToLocale({
                 amount: item.unit_price * item.quantity,
                 currency_code: order.currency_code,

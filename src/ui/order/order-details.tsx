@@ -1,3 +1,4 @@
+import { OrderStatus, PaymentStatus } from "@/lib/constants";
 import { HttpTypes } from "@medusajs/types";
 
 type OrderDetailsProps = {
@@ -24,11 +25,19 @@ const OrderDetails = ({ order }: OrderDetailsProps) => {
         </div>
         <div>
           <h3>
-            Order Status: <span className=" uppercase">{order.status}</span>
+            Order Status:{" "}
+            <span className=" uppercase">
+              {OrderStatus[order.status as keyof typeof OrderStatus] ||
+                order.status}
+            </span>
           </h3>
           <h3>
             Payment Status:{" "}
-            <span className="uppercase">{order.payment_status}</span>
+            <span className="uppercase">
+              {PaymentStatus[
+                order.payment_status as keyof typeof PaymentStatus
+              ] || order.payment_status}
+            </span>
           </h3>
         </div>
       </div>

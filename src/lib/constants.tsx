@@ -82,6 +82,6 @@ export const PaymentStatus = {
 };
 
 export const OrderStatus = {
-  not_fulfilled: "Your order has not been",
+  not_fulfilled: "Your order is yet to be processed",
   delivered: "Your order has been delivered",
 };
