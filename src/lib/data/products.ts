@@ -10,11 +10,13 @@ export const listProducts = async ({
   queryParams,
   countryCode = "gb",
   regionId,
+  metadata,
 }: {
   pageParam?: number;
   queryParams?: HttpTypes.FindParams & HttpTypes.StoreProductParams;
   countryCode?: string;
   regionId?: string;
+  metadata?: Record<string, unknown>;
 } = {}): Promise<{
   response: { products: HttpTypes.StoreProduct[]; count: number };
   nextPage: number | null;
@@ -99,6 +101,8 @@ export const listProductsWithSort = async ({
   countryCode,
   filters,
   collectionId,
+  metadata,
+  isRestocked = false,
 }: {
   page?: number;
   queryParams?: HttpTypes.FindParams & HttpTypes.StoreProductParams;
@@ -110,12 +114,15 @@ export const listProductsWithSort = async ({
     minPrice?: number | null;
     maxPrice?: number | null;
   };
+  metadata?: Record<string, unknown>;
+  isRestocked?: boolean;
 }): Promise<{
   response: { products: HttpTypes.StoreProduct[]; count: number };
   nextPage: number | null;
   queryParams?: HttpTypes.FindParams & HttpTypes.StoreProductParams;
 }> => {
   const limit = queryParams?.limit || 12;
+  const offset = (page - 1) * limit;
 
   const filterConditions: FilterConditions = {};
 
@@ -170,23 +177,73 @@ export const listProductsWithSort = async ({
       };
     }
   }
-  const {
-    response: { products, count },
-  } = await listProducts({
-    pageParam: page,
-    queryParams: {
-      ...queryParams,
-      order: sortBy,
+
+  // If not restocked, use the standard listProducts function
+  if (!isRestocked) {
+    const {
+      response: { products, count },
+    } = await listProducts({
+      pageParam: page,
+      queryParams: {
+        ...queryParams,
+        order: sortBy,
+        limit,
+        ...(collectionId ? { collection_id: [collectionId] } : {}),
+        ...filterConditions,
+      },
+      countryCode,
+      metadata,
+    });
+
+    const sortedProducts = sortProducts(products, sortBy);
+    const nextPage = count > page * limit ? page + 1 : null;
+
+    return {
+      response: {
+        products: sortedProducts,
+        count,
+      },
+      nextPage,
+      queryParams,
+    };
+  }
+  
+  // For restocked products, fetch directly from the restocked endpoint
+  let region: HttpTypes.StoreRegion | undefined | null;
+
+  if (countryCode) {
+    region = await getRegion(countryCode);
+  } else {
+    throw new Error("Country code is required for restocked products");
+  }
+
+  if (!region) {
+    return {
+      response: { products: [], count: 0 },
+      nextPage: null,
+    };
+  }
+
+  const { products, count } = await sdk.client.fetch<{
+    products: HttpTypes.StoreProduct[];
+    count: number;
+  }>(`/store/restocked-products`, {
+    method: "GET",
+    query: {
       limit,
+      offset,
+      region_id: region?.id,
+      currency_code: region?.currency_code,
+      fields: "*variants.calculated_price,+variants.inventory_quantity,+metadata,+tags",
+      order: sortBy,
       ...(collectionId ? { collection_id: [collectionId] } : {}),
-      ...filterConditions,
+      ...filterConditions.filter,
+      ...queryParams,
     },
-    countryCode,
   });
 
   const sortedProducts = sortProducts(products, sortBy);
-
-  const nextPage = count > page * limit ? page + 1 : null;
+  const nextPage = count > offset + limit ? page + 1 : null;
 
   return {
     response: {
@@ -240,6 +297,8 @@ export const useListProductsWithSort = ({
   sortBy = "-created_at",
   filters,
   collectionId,
+  metadata,
+  isRestocked = false,
 }: {
   page?: number;
   queryParams?: HttpTypes.FindParams & HttpTypes.StoreProductParams;
@@ -251,10 +310,14 @@ export const useListProductsWithSort = ({
     minPrice?: number | null;
     maxPrice?: number | null;
   };
+  metadata?: Record<string, unknown>;
+  isRestocked?: boolean;
 } = {}) => {
   const { countryCode } = useRegion();
+  const queryKeyPrefix = isRestocked ? "restocked-products" : "sorted-products";
+  
   const { data, isLoading, error } = useQuery({
-    queryKey: ["sorted-products", sortBy, filters, page, collectionId, queryParams],
+    queryKey: [queryKeyPrefix, sortBy, filters, page, collectionId, queryParams, metadata, isRestocked],
     queryFn: () =>
       listProductsWithSort({
         page,
@@ -263,7 +326,82 @@ export const useListProductsWithSort = ({
         countryCode,
         filters,
         collectionId,
+        metadata,
+        isRestocked,
       }),
   });
   return { data, isLoading, error };
 };
+
+// This function is now deprecated, use listProductsWithSort with isRestocked=true instead
+export const listRestockedProducts = async ({
+  page = 1,
+  queryParams,
+  sortBy = "-created_at",
+  countryCode,
+  filters,
+  collectionId,
+  metadata,
+}: {
+  page?: number;
+  queryParams?: HttpTypes.FindParams & HttpTypes.StoreProductParams;
+  sortBy?: SortOptions;
+  countryCode?: string;
+  collectionId?: string;
+  filters?: {
+    availability?: string[];
+    minPrice?: number | null;
+    maxPrice?: number | null;
+  };
+  metadata?: Record<string, unknown>;
+}): Promise<{
+  response: { products: HttpTypes.StoreProduct[]; count: number };
+  nextPage: number | null;
+  queryParams?: HttpTypes.FindParams & HttpTypes.StoreProductParams;
+}> => {
+  // For backward compatibility, delegate to the unified function
+  return listProductsWithSort({
+    page,
+    queryParams,
+    sortBy,
+    countryCode,
+    filters,
+    collectionId,
+    metadata,
+    isRestocked: true,
+  });
+};
+
+// This hook is now deprecated, use useListProductsWithSort with isRestocked=true instead
+export const useListRestockedProducts = ({
+  page = 1,
+  queryParams,
+  sortBy = "-created_at",
+  filters,
+  collectionId,
+  metadata,
+}: {
+  page?: number;
+  queryParams?: HttpTypes.FindParams & HttpTypes.StoreProductParams;
+  sortBy?: SortOptions;
+  countryCode?: string;
+  collectionId?: string;
+  filters?: {
+    availability?: string[];
+    minPrice?: number | null;
+    maxPrice?: number | null;
+  };
+  metadata?: Record<string, unknown>;
+} = {}) => {
+  // For backward compatibility, delegate to the unified hook
+  return useListProductsWithSort({
+    page,
+    queryParams,
+    sortBy,
+    filters,
+    collectionId,
+    metadata,
+    isRestocked: true,
+  });
+};
+

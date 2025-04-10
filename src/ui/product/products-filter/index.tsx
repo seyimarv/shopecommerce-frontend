@@ -18,6 +18,7 @@ interface ProductsFilterProps {
   isCollectionLoading?: boolean;
   isSearch?: boolean;
   hideTitle?: boolean;
+  restocked?: boolean;
 }
 
 const sortOptionToMedusaSort: Record<string, SortOptions> = {
@@ -33,7 +34,7 @@ const sortOptionToMedusaSort: Record<string, SortOptions> = {
 
 const ITEMS_PER_PAGE = 12;
 
-const ProductsFilter = ({ title, collectionId, isCollectionLoading, isSearch, hideTitle }: ProductsFilterProps) => {
+const ProductsFilter = ({ title, collectionId, isCollectionLoading, isSearch, hideTitle, restocked }: ProductsFilterProps) => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
@@ -69,7 +70,9 @@ const ProductsFilter = ({ title, collectionId, isCollectionLoading, isSearch, hi
       maxPrice,
     },
     collectionId,
-  });
+    isRestocked: restocked,
+  }) 
+
 
   useEffect(() => {
     if (data?.response?.products) {

@@ -5,7 +5,7 @@ import ProductList from "@/ui/product/product-list";
 import Testimonials from "@/ui/Landing/Testimonials";
 import ValuesList from "@/ui/Landing/Values";
 import { useFetchCollections } from "@/lib/data/collections";
-import { useListProductsWithSort } from "@/lib/data/products";
+import { useListProductsWithSort, useListRestockedProducts } from "@/lib/data/products";
 import Card from "@/ui/common/components/Card";
 import HeroSkeleton from "@/ui/common/components/Skeleton/hero-skeleton";
 
@@ -19,6 +19,15 @@ export default function Home() {
       limit: 4,
     },
   });
+  const {
+    data: restocked,
+    isLoading: restockedLoading,
+  } = useListRestockedProducts({
+    queryParams: {
+      limit: 4,
+    },
+  });
+
   return (
     <>
       <HeroSkeleton isLoading={isLoading}>
@@ -27,11 +36,19 @@ export default function Home() {
       <div className="flex flex-col gap-22 pt-22 pb-22 container">
         <ProductList
           title="New Arrivals"
-          products={newArrivals?.response?.products}
+          products={newArrivals?.response?.products ?? []}
           href="/products"
           viewMore
           hideButtons={false}
           isLoading={newArrivalsLoading}
+        />
+        <ProductList
+          title="Back in stock"
+          products={restocked?.response?.products ?? []}
+          href="/products/restocked"
+          viewMore
+          hideButtons={false}
+          isLoading={restockedLoading}
         />
         <section>
           <h2 className={`text-2xl pb-8 tracking-widest uppercase`}>
