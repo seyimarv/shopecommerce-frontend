@@ -30,7 +30,6 @@ const AddAddress = () => {
         { currentState: {}, formData },
         {
           onSuccess: () => {
-            alert("sucss");
             resetForm();
             setOpenModal(false);
           },
@@ -89,7 +88,6 @@ const AddAddress = () => {
                 <Input
                   id="postal_code"
                   name="postal_code"
-                  required
                   autoComplete="postal-code"
                   value={formik.values.postal_code}
                   onChange={formik.handleChange}
