@@ -15,6 +15,52 @@ type AddressInput = {
   formData: FormData;
 };
 
+type UpdateCustomerAddressInput = {
+  addressId: string;
+  formData: FormData;
+};
+
+export const useUpdateCustomerAddress = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ addressId, formData }: UpdateCustomerAddressInput) => {
+      if (!addressId) {
+        throw new Error("Address ID is required");
+      }
+
+      const address: HttpTypes.StoreUpdateCustomerAddress = {
+        address_1: formData.get("address_1") as string,
+        province: formData.get("province") as string,
+        city: formData.get("city") as string,
+        postal_code: formData.get("postal_code") as string,
+        country_code: formData.get("country_code") as string,
+      };
+
+      const phone = formData.get("phone") as string;
+      if (phone) {
+        address.phone = phone;
+      }
+
+      const headers = {
+        ...(await getAuthHeaders()),
+      };
+
+      await sdk.store.customer.updateAddress(addressId, address, {}, headers);
+
+      return { success: true };
+    },
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["customer"] });
+    },
+
+    onError: (error) => {
+      console.error("Failed to update customer address:", error);
+    },
+  });
+};
+
 export const useAddCustomerAddress = () => {
   const queryClient = useQueryClient();
 
@@ -26,14 +72,10 @@ export const useAddCustomerAddress = () => {
         (currentState.isDefaultShipping as boolean) || false;
 
       const address = {
-        first_name: formData.get("first_name") as string,
-        last_name: formData.get("last_name") as string,
-        company: formData.get("company") as string,
         address_1: formData.get("address_1") as string,
-        address_2: formData.get("address_2") as string,
+        province: formData.get("province") as string,
         city: formData.get("city") as string,
         postal_code: formData.get("postal_code") as string,
-        province: formData.get("province") as string,
         country_code: formData.get("country_code") as string,
         phone: formData.get("phone") as string,
         is_default_billing: isDefaultBilling,
