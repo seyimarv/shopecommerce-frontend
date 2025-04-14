@@ -61,24 +61,24 @@ export const AddressCard = ({ address }: AddressProps) => {
 
   return (
     <>
-      <div className="p-4 border rounded-xl shadow-sm">
-        <p className="text-sm text-gray-600">{address_1}</p>
-        <p className="text-sm text-gray-600">{`${postal_code}, ${city}`}</p>
-        <p className="text-sm text-gray-600">{province}</p>
-        <p className="text-sm text-gray-600 uppercase">{country_code}</p>
+      <div className="p-4 border border-gray-200 rounded-xl shadow-sm text-lg">
+        <p className="">{address_1}</p>
+        <p className="">{`${postal_code}, ${city}`}</p>
+        <p className="">{province}</p>
+        <p className="uppercase">{country_code}</p>
 
         <div className="flex gap-2 mt-3">
           <button
             onClick={() => setEditModalOpen(true)}
-            className="flex items-center text-sm text-blue-600 hover:underline"
+            className="flex items-center cursor-pointer"
           >
-            <HiOutlinePencilAlt size={14} className="mr-1" /> Edit
+            <HiOutlinePencilAlt className="mr-1" /> Edit
           </button>
           <button
             onClick={onDelete}
-            className="flex items-center text-sm text-red-600 hover:underline"
+            className="flex items-center cursor-pointer"
           >
-            <IoTrashOutline size={14} className="mr-1" /> Remove
+            <IoTrashOutline className="mr-1" /> Remove
           </button>
         </div>
       </div>

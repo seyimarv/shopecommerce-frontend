@@ -142,7 +142,6 @@ const AddAddress = () => {
                 Country <span className="text-red-500">*</span>
               </label>
               <CountrySelect
-                id="country_code"
                 name="country_code"
                 value={formik.values.country_code}
                 onChange={(option) =>
