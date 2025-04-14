@@ -14,7 +14,13 @@ const WithSkeleton: FC<WithSkeletonProps> = ({
   children,
 }) => {
   if (isLoading) {
-    return Skeleton ? <>{Skeleton}</> : <div className="flex flex-grow items-center justify-center h-full"><Spinner /></div>;
+    return Skeleton ? (
+      <>{Skeleton}</>
+    ) : (
+      <div className="flex flex-grow items-center justify-center h-full">
+        <Spinner size={30} />
+      </div>
+    );
   }
   return <>{children}</>;
 };

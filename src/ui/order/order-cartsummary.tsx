@@ -6,9 +6,10 @@ import { convertToLocale } from "@/lib/utils/money";
 type OrderProps = {
   order: HttpTypes.StoreOrder;
 };
-const CartSummary = ({ order }: OrderProps) => {
+const OrderCartSummary = ({ order }: OrderProps) => {
   const { items } = order;
 
+  console.log(order);
   return (
     <div className="">
       <div className="space-y-6">
@@ -109,4 +110,4 @@ const CartSummary = ({ order }: OrderProps) => {
   );
 };
 
-export default CartSummary;
+export default OrderCartSummary;

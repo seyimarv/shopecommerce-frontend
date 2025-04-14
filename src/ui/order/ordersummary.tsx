@@ -1,8 +1,8 @@
 import { HttpTypes } from "@medusajs/types";
-import CartSummary from "./cartsummary";
 import ShippingDetails from "./shippingdetails";
 import PaymentDetails from "./paymentdetails";
 import HelpSection from "./help";
+import OrderCartSummary from "./order-cartsummary";
 
 type OrderProps = {
   order: HttpTypes.StoreOrder;
@@ -11,7 +11,7 @@ type OrderProps = {
 const OrderSummary = ({ order }: OrderProps) => {
   return (
     <div>
-      <CartSummary order={order} />
+      <OrderCartSummary order={order} />
       <ShippingDetails order={order} />
       <PaymentDetails order={order} />
       <HelpSection />

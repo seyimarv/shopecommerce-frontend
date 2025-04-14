@@ -1,6 +1,6 @@
 "use client";
 
-import useRetrieveOrder from "@/lib/data/order";
+import { useRetrieveOrder } from "@/lib/data/order";
 import WithSkeleton from "@/ui/common/components/Skeleton/with-skeleton";
 import OrderCompletedTemplate from "@/ui/order/order-completed-template";
 import { notFound, useParams } from "next/navigation";
