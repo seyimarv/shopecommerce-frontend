@@ -36,15 +36,27 @@ interface OverlayProps {
 }
 
 const defaultContentAnimations: Record<string, Variants> = {
-  top: { hidden: { y: "-100%" }, visible: { y: 0 } },
-  right: { hidden: { x: "100%" }, visible: { x: 0 } },
-  bottom: { hidden: { y: "100%" }, visible: { y: 0 } },
-  left: { hidden: { x: "-100%" }, visible: { x: 0 } },
+  top: { 
+    hidden: { y: "-100%", transition: { duration: 0.5, ease: [0.25, 1, 0.5, 1] } }, 
+    visible: { y: 0, transition: { duration: 0.5, ease: [0.25, 1, 0.5, 1] } } 
+  },
+  right: { 
+    hidden: { x: "100%", transition: { duration: 0.5, ease: [0.25, 1, 0.5, 1] } }, 
+    visible: { x: 0, transition: { duration: 0.5, ease: [0.25, 1, 0.5, 1] } } 
+  },
+  bottom: { 
+    hidden: { y: "100%", transition: { duration: 0.5, ease: [0.25, 1, 0.5, 1] } }, 
+    visible: { y: 0, transition: { duration: 0.5, ease: [0.25, 1, 0.5, 1] } } 
+  },
+  left: { 
+    hidden: { x: "-100%", transition: { duration: 0.5, ease: [0.25, 1, 0.5, 1] } }, 
+    visible: { x: 0, transition: { duration: 0.5, ease: [0.25, 1, 0.5, 1] } } 
+  },
 };
 
 const defaultOverlayAnimation: Variants = {
-  hidden: { opacity: 0 },
-  visible: { opacity: 1 },
+  hidden: { opacity: 0, transition: { duration: 0.5, ease: "easeOut" } },
+  visible: { opacity: 1, transition: { duration: 0.5, ease: "easeIn" } },
 };
 
 export const Drawer = ({
@@ -131,7 +143,12 @@ export const DrawerContent = ({
       exit="hidden"
       ref={ref}
       variants={variants}
-      transition={{ duration: 0.5, ease: "easeIn" }}
+      transition={{ duration: 0.5, ease: [0.25, 1, 0.5, 1] }}
+      style={{
+        willChange: "transform",
+        backfaceVisibility: "hidden",
+        WebkitBackfaceVisibility: "hidden",
+      }}
       className={`absolute bg-white shadow-lg overflow-y-auto ${className} ${
         position === "right"
           ? "top-0 right-0 h-full w-full max-w-[450px]"
@@ -160,10 +177,14 @@ export const Overlay = ({
       animate="visible"
       exit="hidden"
       variants={variants}
-      transition={{ duration: 0.5, ease: "easeInOut" }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
+      style={{
+        willChange: "opacity",
+        ...{ cursor: `url(${cancelCursor}), auto` }
+      }}
       className={`absolute inset-0 bg-black/50 ${className}`}
       onClick={onClose}
-      style={{ cursor: `url(${cancelCursor}), auto` }}
+
     />
   );
 };

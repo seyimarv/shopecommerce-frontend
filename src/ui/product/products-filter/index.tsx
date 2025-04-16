@@ -11,7 +11,10 @@ import ProductList from "@/ui/product/product-list";
 import { Pagination } from "@/ui/common/components/pagination";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { AiOutlineLoading } from "react-icons/ai";
+import { FiFilter } from "react-icons/fi";
 import { isProductSoldOut } from "@/lib/utils/soldout";
+import { useIsMobile } from "@/lib/hooks/useIsMobile";
+import MobileFilterDrawer from "./mobile-filter-drawer";
 
 interface ProductsFilterProps {
   title?: string;
@@ -127,52 +130,84 @@ const ProductsFilter = ({ title, collectionId, isCollectionLoading, isSearch, hi
   };
 
   const totalPages = Math.ceil((data?.response.count || 0) / ITEMS_PER_PAGE);
+  const isMobile = useIsMobile()
+
+  const [isFilterDrawerOpen, setIsFilterDrawerOpen] = useState(false);
 
   return (
-    <div className="space-y-8">
+    <>
+      {isMobile && (
+        <MobileFilterDrawer
+          isOpen={isFilterDrawerOpen}
+          onClose={() => setIsFilterDrawerOpen(false)}
+          selectedAvailability={selectedAvailability}
+          onAvailabilityChange={handleAvailabilityChange}
+          inStockCount={inStockCount}
+          outOfStockCount={outOfStockCount}
+          minPrice={minPrice}
+          maxPrice={maxPrice}
+          onPriceChange={handlePriceChange}
+        />
+      )}
 
-      <h2 className="text-4xl pb-8 tracking-widest uppercase">
-        {
-          !isCollectionLoading && !hideTitle && (
-            <>
-              {title || "All products"}
-            </>
-          )
-        }
-      </h2>
+      <div className="space-y-4 md:space-y-6 lg:space-y-8">
 
-      <div className="flex justify-between items-center mt-3 mb-5">
-        <div className="flex items-center gap-4">
-          <span className="text-sm">Filter:</span>
-          <AvailabiltyFilter
-            selectedAvailability={selectedAvailability}
-            onAvailabilityChange={handleAvailabilityChange}
-            inStockCount={inStockCount}
-            outOfStockCount={outOfStockCount}
-          />
-          <PriceFilter
-            minPrice={minPrice}
-            maxPrice={maxPrice}
-            onPriceChange={handlePriceChange}
-          />
+        <h2 className="text-2xl sm:text-3xl md:text-4xl pb-4 sm:pb-6 md:pb-8 tracking-widest uppercase font-light">
+          {
+            !isCollectionLoading && !hideTitle && (
+              <>
+                {title || "All products"}
+              </>
+            )
+          }
+        </h2>
+
+        <div className="flex justify-between items-center mt-2 sm:mt-3 mb-4 sm:mb-5 flex-wrap gap-y-3">
+
+          <div className="items-center gap-4 hidden md:flex">
+            <span className="text-sm">Filter:</span>
+            <AvailabiltyFilter
+              selectedAvailability={selectedAvailability}
+              onAvailabilityChange={handleAvailabilityChange}
+              inStockCount={inStockCount}
+              outOfStockCount={outOfStockCount}
+            />
+            <PriceFilter
+              minPrice={minPrice}
+              maxPrice={maxPrice}
+              onPriceChange={handlePriceChange}
+            />
+          </div>
+          <button
+            onClick={() => setIsFilterDrawerOpen(true)}
+            className="flex items-center gap-2 py-1.5 sm:py-2 px-2 sm:px-3 border rounded-lg text-xs sm:text-sm font-medium md:hidden"
+          >
+            <FiFilter size={14} />
+            <span>Filter</span>
+          </button>
+
+
+          <div className="flex items-center gap-2 sm:gap-4 ml-auto">
+            <SortBy value={selectedSort} onChange={handleSortChange} />
+            <span className="text-xs sm:text-sm text-gray-600">
+              {isLoading || isCollectionLoading ? <>
+                <AiOutlineLoading className="animate-spin" />
+              </> : `${data?.response.count || 0} products`}
+            </span>
+          </div>
         </div>
-        <div className="flex items-center gap-4">
-          <SortBy value={selectedSort} onChange={handleSortChange} />
-          <span className="text-sm text-gray-600">
-            {isLoading || isCollectionLoading ? <>
-              <AiOutlineLoading className="animate-spin" />
-            </> : `${data?.response.count || 0} products`}
-          </span>
+
+        <ProductList products={sortProducts(data?.response.products ?? [], selectedSort?.value as SortOptions)} isLoading={isLoading || isCollectionLoading} />
+        {isSearch && !isLoading && !isCollectionLoading && data?.response.count === 0 && (
+          <div className="text-center py-8 sm:py-12 md:py-16 text-gray-500 text-sm sm:text-base">
+            No products found matching "{searchQuery}". Try a different search.
+          </div>
+        )}
+        <div className="pt-4 sm:pt-6 md:pt-8">
+          <Pagination totalPages={totalPages} />
         </div>
       </div>
-      <ProductList products={sortProducts(data?.response.products ?? [], selectedSort?.value as SortOptions)} isLoading={isLoading || isCollectionLoading} />
-      {isSearch && !isLoading && !isCollectionLoading && data?.response.count === 0 && (
-        <div className="text-center py-16 text-gray-500">
-          No products found matching "{searchQuery}". Try a different search.
-        </div>
-      )}
-      <Pagination totalPages={totalPages} />
-    </div>
+    </>
   );
 };
 

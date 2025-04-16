@@ -112,13 +112,13 @@ export const SelectTriggerBase = forwardRef<
     return (
       <Component
         ref={ref as any}
-        className={`flex gap-1 py-[.6rem] px-4 border items-center min-w-[5.5rem] w-full rounded-lg justify-between cursor-pointer tracking-wider text-xs ${className}`}
+        className={`flex gap-1 py-2 md:py-[.6rem] px-3 md:px-4 border items-center min-w-[5.5rem] w-full rounded-lg justify-between cursor-pointer tracking-wider text-[11px] md:text-xs font-medium truncate ${className}`}
         {...(href ? { href } : { onClick: props.onClick })}
       >
-        <span>{title || placeholder}</span>
+        <span className="truncate">{title || placeholder}</span>
         {!hideIcon && (
           <>
-            {props.open ? <FaAngleUp size={15} /> : <FaAngleDown size={15} />}
+            {props.open ? <FaAngleUp size={12} className="md:text-[15px] flex-shrink-0" /> : <FaAngleDown size={12} className="md:text-[15px] flex-shrink-0" />}
           </>
         )}
       </Component>

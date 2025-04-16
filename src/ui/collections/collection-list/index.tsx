@@ -18,10 +18,10 @@ const CollectionList: React.FC<CollectionListProps> = ({
 }) => {
   return (
     <>
-      <h2 className={`text-4xl pb-8 tracking-widest uppercase`}>{title}</h2>
+      <h2 className={`text-2xl sm:text-3xl md:text-4xl pb-4 sm:pb-6 md:pb-8 tracking-widest uppercase font-light`}>{title}</h2>
       <WithSkeleton isLoading={isLoading} skeleton={<CollectionsSkeleton />}>
         <div
-          className={`grid ${"grid-cols-2 md:grid-cols-3"} gap-4 gap-y-20 ${className}`}
+          className={`grid ${"grid-cols-1 md:grid-cols-2 lg:grid-cols-3"} gap-4 sm:gap-6 md:gap-8 gap-y-6 sm:gap-y-12 md:gap-y-20 ${className}`}
         >
           {collections?.map((collection) => (
             <Card

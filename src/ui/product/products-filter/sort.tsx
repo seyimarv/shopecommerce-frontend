@@ -27,7 +27,7 @@ type SortByProps = {
 const SortBy = ({ value, onChange }: SortByProps) => {
   return (
     <Select value={value} onChange={onChange} title="Sort by">
-      <SelectTrigger title="Sort by" className="!text-sm !w-[12.5rem]" />
+      <SelectTrigger title="Sort by" className="!text-xs md:!text-sm !w-[6rem] sm:!w-[9rem] md:!w-[12.5rem]" />
       <SelectContent className="bg-white shadow-md rounded-none mt-1 ">
         {sortingOptions.map((option) => (
           <SelectItem
