@@ -13,8 +13,8 @@ export const sortingOptions = [
   // { value: "best-selling", label: "Best selling" },
   { value: "alpha-asc", label: "Alphabetically, A-Z" },
   { value: "alpha-desc", label: "Alphabetically, Z-A" },
-  // { value: "variants.calculated_price", label: "Price, low to high" },
-  // { value: "-variants.calculated_price", label: "Price, high to low" },
+  { value: "price_asc", label: "Price, low to high" },
+  { value: "price_desc", label: "Price, high to low" },
   { value: "date-old", label: "Date, old to new" },
   { value: "date-new", label: "Date, new to old" },
 ];
@@ -26,7 +26,7 @@ type SortByProps = {
 
 const SortBy = ({ value, onChange }: SortByProps) => {
   return (
-    <Select value={value} onChange={onChange}>
+    <Select value={value} onChange={onChange} title="Sort by">
       <SelectTrigger title="Sort by" className="!text-sm !w-[12.5rem]" />
       <SelectContent className="bg-white shadow-md rounded-none mt-1 ">
         {sortingOptions.map((option) => (

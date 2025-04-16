@@ -28,10 +28,12 @@ const valuesData: ValueType[] = [
 
 const ValuesList: React.FC = () => {
   return (
-    <div className="container mx-auto flex flex-wrap justify-center gap-12">
-      {valuesData.map((value, index) => (
-        <Value key={index} {...value} />
-      ))}
+    <div className="container mx-auto px-4 md:px-0">
+      <div className="flex flex-col md:flex-row flex-wrap justify-center gap-8 md:gap-12">
+        {valuesData.map((value, index) => (
+          <Value key={index} {...value} />
+        ))}
+      </div>
     </div>
   );
 };

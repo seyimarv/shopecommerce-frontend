@@ -90,10 +90,10 @@ const Testimonials: React.FC = () => {
 
   return (
     <div className="gallery-with-thumbs relative container max-w-6xl mx-auto">
-      <h4 className="text-center text-2xl tracking-widest uppercase -mb-4">
+      <h4 className="text-xl md:text-2xl text-center tracking-widest uppercase -mb-4">
         Our Customers love us
       </h4>
-      <div className="py-8 max-w-2xl mx-auto relative w-full">
+      <div className="pt-8 pb-2 md:py-8 max-w-2xl mx-auto relative w-full">
         <Splide
           ref={thumbsRef}
           options={{
@@ -106,6 +106,13 @@ const Testimonials: React.FC = () => {
             interval: 3000,
             isNavigation: true,
             focus: "center",
+            breakpoints: {
+              480: {
+                gap: 10,
+                fixedWidth: 80,
+                fixedHeight: 80,
+              }
+            }
           }}
           aria-label="Thumbnails"
           hasTrack={false}
@@ -121,13 +128,13 @@ const Testimonials: React.FC = () => {
                 key={index}
                 className="!border-none flex items-center justify-center"
               >
-                <div className="relative w-[60px] h-[60px]">
+                <div className="relative w-[50px] h-[50px] md:w-[60px] md:h-[60px]">
                   <Image
                     src={image.url}
                     alt={`Thumbnail - ${image.alt}`}
                     fill
                     className={`rounded-lg transition-all duration-300 object-cover object-center
-        ${index === activeIndex ? "scale-125" : "opacity-50"}`}
+        ${index === activeIndex ? "scale-110 md:scale-125" : "opacity-50"}`}
                   />
                 </div>
               </SplideSlide>
@@ -155,14 +162,14 @@ const Testimonials: React.FC = () => {
           <SplideTrack>
             {testimonials.map((image, index) => (
               <SplideSlide key={index}>
-                <div className="max-w-lg mx-auto flex justify-center items-center flex-col font-light text-md">
+                <div className="max-w-lg mx-auto flex justify-center items-center flex-col font-light text-sm md:text-md px-4 md:px-0">
                   <StarRating rating={image.rating} />
-                  <span className="italic tracking-wider text-center mb-2">
+                  <span className="italic tracking-wider text-center mb-2 mt-[2px] md:mt-4">
                     {image.quote}
                   </span>
-                  <div className="flex items-center">
-                    <span className="w-4 h-[2px] bg-gray-500 inline-block"></span>
-                    <span className="text-sm text-gray-500 uppercase ml-2">
+                  <div className="flex items-center md:mt-2">
+                    <span className="w-3 md:w-4 h-[1px] md:h-[2px] bg-gray-500 inline-block"></span>
+                    <span className="text-xs md:text-sm text-gray-500 uppercase ml-2">
                       {image.name}
                     </span>
                   </div>
@@ -170,13 +177,13 @@ const Testimonials: React.FC = () => {
               </SplideSlide>
             ))}
           </SplideTrack>
-          <div className="splide__arrows">
-            <ArrowButton className="splide__arrow splide__arrow--prev left-4 top-1/2">
-              <GrNext fill="black" stroke="black" />
+          <div className="splide__arrows hidden md:block">
+            <ArrowButton className="splide__arrow splide__arrow--prev left-1 md:left-4 top-1/2">
+              <GrNext fill="black" stroke="black" className="text-sm md:text-base" />
             </ArrowButton>
 
-            <ArrowButton className="splide__arrow splide__arrow--next right-4 top-1/2">
-              <GrNext fill="black" stroke="black" />
+            <ArrowButton className="splide__arrow splide__arrow--next right-1 md:right-4 top-1/2">
+              <GrNext fill="black" stroke="black" className="text-sm md:text-base" />
             </ArrowButton>
           </div>
         </Splide>

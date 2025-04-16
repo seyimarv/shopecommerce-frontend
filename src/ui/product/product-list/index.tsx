@@ -29,7 +29,7 @@ const ProductTitle: React.FC<ProductTitleProps> = ({
   title,
   className = "",
 }) => (
-  <h2 className={`text-2xl pb-8 tracking-widest uppercase ${className}`}>
+  <h2 className={`text-xl md:text-2xl pb-4 md:pb-8 tracking-widest uppercase ${className}`}>
     {title}
   </h2>
 );
@@ -47,14 +47,14 @@ const ProductItems: React.FC<ProductItemsProps> = ({
   className = "",
 }) => (
   <div
-    className={`grid grid-cols-2 md:grid-cols-4 gap-4 gap-y-20 ${className}`}
+    className={`grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 gap-y-10 md:gap-y-20 ${className}`}
   >
     {products?.map((product) => (
       <ProductPreview
         key={product.id}
         product={product}
         hideButtons={hideButtons}
-        className="h-90"
+        className="w-full lg:h-90"
         href={`/products/${product.handle}`}
       />
     ))}
@@ -70,8 +70,8 @@ const ViewMoreLink: React.FC<ViewMoreLinkProps> = ({
   href,
   className = "",
 }) => (
-  <div className={`flex justify-center mt-10  ${className}`}>
-    <Button href={href} isLink className="min-w-[14rem]" size="large">
+  <div className={`flex justify-center mt-6 md:mt-10 ${className}`}>
+    <Button href={href} isLink className="min-w-[10rem] md:min-w-[14rem]" size="large">
       View More
     </Button>
   </div>
@@ -97,7 +97,7 @@ const ProductList: React.FC<ProductListProps> = ({
   isLoading,
 }) => {
   return (
-    <section className={` ${className}`}>
+    <section className={`mb-8 md:mb-0 ${className}`}>
       {title && <ProductTitle title={title} />}
       <WithSkeleton isLoading={isLoading} skeleton={<ProductsSkeleton />}>
         <ProductItems products={products} hideButtons={hideButtons} />

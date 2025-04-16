@@ -3,6 +3,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import Button from "@/ui/common/components/button";
 import { GrLinkNext } from "react-icons/gr";
+import { FaShoppingCart } from "react-icons/fa";
 import PreviewPrice from "./PreviewPrice";
 import Thumbnail from "../../../product/Thumbnail";
 import ProductModal from "../../../product/product-modal";
@@ -14,6 +15,7 @@ import { isProductSoldOut } from "@/lib/utils/soldout";
 import { checkHasVariants } from "@/lib/utils/variants";
 import Link from "next/link";
 import { useAddToCart } from "@/lib/data/cart";
+import { LiaCartPlusSolid } from "react-icons/lia";
 
 interface Collection {
   id: string;
@@ -120,15 +122,15 @@ const Card: React.FC<CardProps> = (data) => {
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
     >
-      <div className="overflow-hidden">
+      <div className="overflow-hidden rounded-sm relative">
         <Thumbnail
           image={thumbnail}
           className={className}
           isHovered={isHovered}
         />
         {cheapestPrice?.price_type === "sale" && product && (
-          <div className="absolute top-4 left-4 z-1 text-white bg-tertiary px-3 py-0.1 rounded-sm">
-            <span className="text-sm uppercase tracking-wide">
+          <div className="absolute top-2 sm:top-3 md:top-4 left-2 sm:left-3 md:left-4 z-1 text-white bg-tertiary px-2 sm:px-3 py-0.1 rounded-sm">
+            <span className="text-xs sm:text-sm uppercase tracking-wide">
               Save{" "}
               {subtractPrices(
                 cheapestPrice?.original_price,
@@ -137,42 +139,73 @@ const Card: React.FC<CardProps> = (data) => {
             </span>
           </div>
         )}
+        {
+          !hideButtons && product &&
+          <div className="lg:hidden absolute bottom-4 right-2 z-10">
+            {soldOut ? (
+              <div className="p-1 bg-red-50 border border-red-200 rounded-sm text-xs text-red-600">
+                <div>
+                  Sold out
+                </div>
+              </div>
+            ) : (
+              <button
+                onClick={handleClickButton}
+                disabled={isPending}
+                className="bg-white shadow-md p-1 text-gray-800 hover:bg-gray-100 transition-colors"
+              >
+                {isPending ? (
+                  <div className="h-5 w-5 border-2 border-gray-300 border-t-gray-800 rounded-full animate-spin"></div>
+                ) : (
+                  <LiaCartPlusSolid size={24} />
+                )}
+              </button>
+            )}
+          </div>
+        }
+
       </div>
       {!hideButtons && product && (
-        <motion.div
-          initial={soldOut ? {} : { opacity: 0, y: 20, pointerEvents: "none" }}
-          animate={
-            soldOut
-              ? {}
-              : {
-                opacity: isHovered ? 1 : 0,
-                y: isHovered ? 0 : 20,
-                pointerEvents: isHovered ? "auto" : "none",
-              }
-          }
-          transition={
-            soldOut ? { duration: 0 } : { duration: 0.3, ease: "easeOut" }
-          }
-          className="absolute bottom-18 min-w-auto left-1/2 transform -translate-x-1/2 w-[80%]"
-        >
-          <Button
-            onClick={handleClickButton}
-            size="small"
-            disabled={soldOut}
-            className="w-full"
-            isLoading={isPending}
+        <>
+          {/* Desktop button */}
+          <motion.div
+            initial={soldOut ? {} : { opacity: 0, y: 20, pointerEvents: "none" }}
+            animate={
+              soldOut
+                ? {}
+                : {
+                  opacity: isHovered ? 1 : 0,
+                  y: isHovered ? 0 : 20,
+                  pointerEvents: isHovered ? "auto" : "none",
+                }
+            }
+            transition={
+              soldOut ? { duration: 0 } : { duration: 0.3, ease: "easeOut" }
+            }
+            className="absolute bottom-18 min-w-auto left-1/2 transform -translate-x-1/2 w-[80%] hidden lg:block"
           >
-            {soldOut
-              ? "Sold Out"
-              : hasVariants
-                ? "Choose options"
-                : "Add to cart"}
-          </Button>
-        </motion.div>
+            <Button
+              onClick={handleClickButton}
+              size="small"
+              disabled={soldOut}
+              className="w-full"
+              isLoading={isPending}
+            >
+              {soldOut
+                ? "Sold Out"
+                : hasVariants
+                  ? "Choose options"
+                  : "Add to cart"}
+            </Button>
+          </motion.div>
+
+          {/* Mobile cart icon or sold out tag */}
+
+        </>
       )}
       <div className="pt-2 flex flex-col px-1 font-light">
-        <span className="tracking-wider text-md flex items-center gap-1">
-          {title} {variety === "collections" && <GrLinkNext size={16} />}
+        <span className="tracking-wide sm:tracking-wider text-sm sm:text-md flex items-center gap-0.5 sm:gap-1 truncate">
+          {title} {variety === "collections" && <GrLinkNext className="flex-shrink-0" size={variety === "collections" ? 14 : 16} />}
         </span>
         {variety !== "collections" && product && (
           <PreviewPrice price={cheapestPrice || null} />

@@ -11,6 +11,8 @@ import {
 import { FaAngleDown, FaAngleUp } from "react-icons/fa6";
 import useOnClickOutside from "@/lib/hooks/useOnClickOutside";
 import { motion, AnimatePresence } from "framer-motion";
+import { Drawer } from "@/ui/Layout/components/Drawer";
+import { IoMdClose } from "react-icons/io";
 
 export interface Option {
   value: string | number;
@@ -23,6 +25,7 @@ interface SelectContextProps {
   open: any;
   setOpen: (open: any) => void;
   handleSelect: (option: Option) => void;
+  title?: string;
 }
 
 const SelectContext = createContext<SelectContextProps | undefined>(undefined);
@@ -39,6 +42,7 @@ interface SelectProps {
   onChange?: (option: Option) => void;
   hover?: boolean; // Enable hover interaction
   children: ReactNode;
+  title?: string;
 }
 
 export const Select = ({
@@ -46,10 +50,11 @@ export const Select = ({
   onChange,
   hover = false,
   children,
+  title
 }: SelectProps) => {
   const [selected, setSelected] = useState<Option | null>(value || null);
   const [open, setOpen] = useState<boolean>(false);
-  
+
   const handleSelect = (option: Option) => {
     setSelected(option);
     onChange?.(option);
@@ -59,7 +64,7 @@ export const Select = ({
   const selectRef = useOnClickOutside<HTMLDivElement>(() => setOpen(false));
 
   return (
-    <SelectContext.Provider value={{ selected, open, setOpen, handleSelect }}>
+    <SelectContext.Provider value={{ selected, open, setOpen, handleSelect, title }}>
       <div
         className="relative"
         ref={selectRef}
@@ -97,9 +102,9 @@ export const SelectTriggerBase = forwardRef<
       className,
       as: Component = "button",
       href,
-      title,
       placeholder,
       hideIcon,
+      title,
       ...props
     },
     ref
@@ -127,14 +132,14 @@ export const SelectTrigger = forwardRef<
   HTMLButtonElement | HTMLAnchorElement,
   SelectTriggerProps
 >(({ className, as, href, title, placeholder, hideIcon }, ref) => {
-  const { selected, open, setOpen } = useSelect();
+  const { selected, open, setOpen, title: selectTitle } = useSelect();
 
   return (
     <SelectTriggerBase
       ref={ref}
       as={as}
       href={href}
-      title={title || selected?.label}
+      title={title || selectTitle || selected?.label}
       placeholder={placeholder}
       hideIcon={hideIcon}
       className={className}
@@ -165,7 +170,7 @@ export const SelectContentBase = ({
         ease: "easeInOut",
         exit: { duration: 1, ease: "easeInOut", delay: 0.15 }, // Delay only on exit
       }}
-      className={`absolute left-0 bg-white border border-gray-300 shadow-sm z-50 overflow-y-auto w-full no-scrollbar ${className}`}
+      className={`absolute left-0 bg-white border border-gray-300 shadow-sm z-50 overflow-y-auto w-full no-scrollbar  ${className}`}
     >
       {children}
     </motion.div>
@@ -173,14 +178,44 @@ export const SelectContentBase = ({
 };
 
 export const SelectContent = ({ children, className }: SelectContentProps) => {
-  const { open } = useSelect();
+  const { open, setOpen, selected, title } = useSelect();
 
   return (
-    <AnimatePresence mode="wait">
-      {open && (
-        <SelectContentBase className={className}>{children}</SelectContentBase>
-      )}
-    </AnimatePresence>
+    <>
+      <div className="hidden md:block">
+        <AnimatePresence mode="wait">
+          {open && (
+            <SelectContentBase className={className}>{children}</SelectContentBase>
+          )}
+        </AnimatePresence>
+      </div>
+      <Drawer
+        isOpen={open}
+        onClose={() => setOpen(false)}
+        position="bottom"
+        className={`rounded-t-xl max-h-[80vh] ${className}`}
+        wrapperClassName="md:hidden"
+      >
+        <div className="p-4">
+          {
+            title &&
+            <>
+              <div className="flex items-center justify-between mb-4">
+                <div className="w-6"></div>
+                <h3 className="text-xl font-medium text-center">{title}</h3>
+                <button onClick={() => setOpen(false)} className="text-gray-500">
+                  <IoMdClose />
+                </button>
+              </div>
+              <div className="h-px bg-gray-200 w-full mb-4"></div>
+            </>
+          }
+          <div className="max-h-[60vh] overflow-y-auto">
+            {children}
+          </div>
+        </div>
+      </Drawer>
+    </>
   );
 };
 
@@ -202,9 +237,8 @@ export const SelectItem = ({
 
   return (
     <Component
-      className={`px-4 py-2 cursor-pointer hover:text-gray-500 text-sm flex items-center gap-2 transition-colors duration-200 ${
-        isSelected ? "text-gray-500 underline" : "text-black"
-      }`}
+      className={`px-4 py-2 md:py-2 cursor-pointer hover:text-gray-500 text-base md:text-sm flex md:items-center items-center justify-center md:justify-start gap-3 md:gap-2 transition-colors duration-200 ${isSelected ? "text-gray-500 underline" : "text-black"
+        }`}
       onClick={(e: any) => {
         if (!href) {
           e.preventDefault();

@@ -21,17 +21,22 @@ const Thumbnail: React.FC<ThumbnailProps> = ({
   className,
   isHovered,
 }) => {
+  // Check if className contains aspect ratio
+  const hasAspectRatio = className?.includes('aspect-');
+  
   return (
     <motion.div
-      className={clsx("relative overflow-hidden rounded-sm", className, {
-        "aspect-[11/14]": isFeatured,
-        "aspect-[9/16]": !isFeatured && size !== "square",
-        "aspect-[1/1]": size === "square",
+      className={clsx("relative overflow-hidden rounded-sm", {
+        // Only override the default square aspect ratio in special cases
+        // "aspect-[11/14]": !hasAspectRatio && isFeatured,
+        // "aspect-[9/16]": !hasAspectRatio && !isFeatured && size === "full" && size !== "square",
+        // Default to square aspect ratio
+        "aspect-[1/1]": !hasAspectRatio,
         "w-[180px]": size === "small",
         "w-[290px]": size === "medium",
         "w-[440px]": size === "large",
         "w-full": size === "full",
-      })}
+      }, className)}
       initial={{ scale: 1 }}
       animate={{ scale: isHovered ? 1.05 : 1 }}
       transition={{ duration: 0.3, ease: "easeOut" }}

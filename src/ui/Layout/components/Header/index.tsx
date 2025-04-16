@@ -13,6 +13,7 @@ import ProductSearch from "@/ui/product/products-search";
 import { useRetrieveCart } from "@/lib/data/cart";
 import { useListRegions } from "@/lib/data/region";
 import { useRetrieveCustomer } from "@/lib/data/customer";
+import MobileNav from "./mobile-nav/mobile-nav";
 
 const Header: React.FC = () => {
   const { data: regions } = useListRegions()
@@ -29,7 +30,7 @@ const Header: React.FC = () => {
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
-
+      
       // If at the top of the page (or within threshold), always show as initial
       if (currentScrollY <= initialScrollThreshold.current) {
         setHeaderStatus("initial");
@@ -42,17 +43,19 @@ const Header: React.FC = () => {
           setHeaderStatus("hidden");
         }
       }
-
+      
       lastScrollY.current = currentScrollY;
     };
-
+    
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const { data: cart, isLoading: cartIsLoading, error: cartError } = useRetrieveCart()
 
-  const {data: customer, isLoading: customerIsLoading, error: customerError} = useRetrieveCustomer()
+  const { data: customer, isLoading: customerIsLoading, error: customerError } = useRetrieveCustomer()
+
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
     <>
@@ -72,7 +75,16 @@ const Header: React.FC = () => {
           }`}
         id="header"
       >
-        <nav className="h-full flex justify-between w-full gap-4 items-center container">
+        {/* Mobile Navigation */}
+        <MobileNav
+          setSearchOpen={setSearchOpen}
+          setOpenCart={setOpenCart}
+          setMobileMenuOpen={setMobileMenuOpen}
+          mobileMenuOpen={mobileMenuOpen}
+        />
+
+        {/* Desktop Navigation */}
+        <nav className="hidden lg:flex h-[3.875rem] justify-between w-full gap-4 items-center container">
           <div className="w-30">
             <Link href="/">
               <Image src="/logo.png" alt="logo" width={120} height={40} />
@@ -110,16 +122,13 @@ const Header: React.FC = () => {
               </Link>
             </li>
             <li>
-              <button className="relative cursor-pointer" onClick={() => setOpenCart(true)}>
+              <button className="relative cursor-pointer" onClick={() => setOpenCart(!openCart)} data-drawer-toggle="true">
                 <CiShoppingCart
                   size={20}
                 />
                 {
                   cart && cart.items && cart.items.length > 0 && (
                     <span className="absolute -top-1 -right-2 bg-gray-800 text-white w-4 h-4 flex items-center justify-center rounded-full text-xs font-medium">
-                      {/* {
-                        cart.items.reduce((total, item) => total + (item.quantity || 0), 0)
-                      } */}
                       {
                         cart?.items?.length
                       }

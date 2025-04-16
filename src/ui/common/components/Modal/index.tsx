@@ -12,6 +12,7 @@ interface ModalProps {
   title?: string;
   children: React.ReactNode;
   className?: string;
+  wrapperClassName?: string;
 }
 
 const Modal: React.FC<ModalProps> = ({
@@ -19,6 +20,7 @@ const Modal: React.FC<ModalProps> = ({
   onClose,
   children,
   className,
+  wrapperClassName,
 }) => {
   const overlayRef = useRef<HTMLDivElement>(null);
   const modalRef = useOnClickOutside<HTMLDivElement>(onClose);
@@ -37,7 +39,7 @@ const Modal: React.FC<ModalProps> = ({
       {isOpen && (
         <motion.div
           ref={overlayRef}
-          className="fixed inset-0 z-1002 flex items-center justify-center bg-black/50"
+          className={`fixed inset-0 z-1002 flex items-center justify-center bg-black/50 ${wrapperClassName}`}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}

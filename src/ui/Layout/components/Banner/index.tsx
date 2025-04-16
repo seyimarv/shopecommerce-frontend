@@ -56,14 +56,14 @@ const Banner: React.FC = () => {
           {data?.announcements?.map(
             (announcement: { id: number; message: string }) => (
               <SplideSlide key={announcement?.id}>
-                <p className="text-xs font-light tracking-widest">
+                <p className="text-xs font-light tracking-widest overflow-hidden text-ellipsis">
                   {announcement?.message}
                 </p>
               </SplideSlide>
             )
           )}
         </Splide>
-        <div className="flex gap-4 text-sm font-light">
+        <div className="flex gap-2 md:gap-4 text-xs md:text-sm font-light">
           <button className="cursor-pointer" onClick={goPrev}>
             <FaChevronLeft />
           </button>

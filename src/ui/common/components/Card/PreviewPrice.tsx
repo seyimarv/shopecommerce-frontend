@@ -19,14 +19,21 @@ export default function PreviewPrice({
 }: PreviewPriceProps) {
   if (!price) return null;
 
-  const textSize = size === "lg" ? "text-lg" : "text-md";
+  const getTextSize = () => {
+    if (size === "lg") {
+      return "text-base sm:text-md md:text-lg";
+    }
+    return "text-xs sm:text-sm md:text-md";
+  };
+
+  const textSize = getTextSize();
 
   return price.price_type === "sale" ? (
-    <div className={`flex gap-2 ${textSize} `}>
-      <span className={`text-red-500 ${size === "lg" ? "font-bold" : ""}`}>
+    <div className={`flex flex-wrap gap-1 sm:gap-2 ${textSize}`}>
+      <span className={`text-red-500 ${size === "lg" ? "font-medium sm:font-bold" : ""}`}>
         {price.calculated_price}
       </span>
-      <span className="line-through  text-gray-500">
+      <span className="line-through text-gray-400 sm:text-gray-500 text-xs sm:text-sm md:text-md">
         {price.original_price}
       </span>
     </div>

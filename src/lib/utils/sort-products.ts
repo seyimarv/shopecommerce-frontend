@@ -5,8 +5,8 @@ export type SortOptions =
   | "price_desc"
   | "created_at"
   | "-created_at"
-  | "variants.calculated_price"
-  | "-variants.calculated_price"
+  | "variants.prices.amount"
+  | "-variants.prices.amount"
   | "title"
   | "-title";
 
@@ -25,6 +25,7 @@ export function sortProducts(
   sortBy: SortOptions
 ): HttpTypes.StoreProduct[] {
   let sortedProducts = products as MinPricedProduct[];
+  console.log(sortBy);
 
   if (["price_asc", "price_desc"].includes(sortBy)) {
     // Precompute the minimum price for each product
@@ -47,21 +48,21 @@ export function sortProducts(
     });
   }
 
-  if (sortBy === "-created_at") {
-    sortedProducts.sort((a, b) => {
-      return (
-        new Date(b.created_at!).getTime() - new Date(a.created_at!).getTime()
-      );
-    });
-  }
+  // if (sortBy === "-created_at") {
+  //   sortedProducts.sort((a, b) => {
+  //     return (
+  //       new Date(b.created_at!).getTime() - new Date(a.created_at!).getTime()
+  //     );
+  //   });
+  // }
 
-  if (sortBy === "created_at") {
-    sortedProducts.sort((a, b) => {
-      return (
-        new Date(a.created_at!).getTime() - new Date(b.created_at!).getTime()
-      );
-    });
-  }
+  // if (sortBy === "created_at") {
+  //   sortedProducts.sort((a, b) => {
+  //     return (
+  //       new Date(a.created_at!).getTime() - new Date(b.created_at!).getTime()
+  //     );
+  //   });
+  // }
 
   return sortedProducts;
 }

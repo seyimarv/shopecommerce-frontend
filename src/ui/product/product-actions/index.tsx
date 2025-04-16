@@ -10,10 +10,15 @@ import QuantitySelector from "@/ui/common/components/quantityselector";
 import Link from "next/link";
 import OptionSelect from "./variant-select";
 import { useAddToCart, useRetrieveCart } from "@/lib/data/cart";
+import { useIsMobile } from "@/lib/hooks/useIsMobile";
+import Thumbnail from "../Thumbnail";
+import { IoMdClose } from "react-icons/io";
+import Divider from "@/ui/common/components/Divider";
 
 interface ProductActionsProps {
     product: HttpTypes.StoreProduct;
     onCartOpen: () => void;
+    onModalClose?: () => void;
 }
 
 const optionsAsKeymap = (
@@ -25,7 +30,7 @@ const optionsAsKeymap = (
     }, {});
 };
 
-const ProductActions = ({ product, onCartOpen }: ProductActionsProps) => {
+const ProductActions = ({ product, onCartOpen, onModalClose }: ProductActionsProps) => {
     const [quantity, setQuantity] = useState(1);
     const [options, setOptions] = useState<Record<string, string | undefined>>(
         {}
@@ -122,16 +127,46 @@ const ProductActions = ({ product, onCartOpen }: ProductActionsProps) => {
         },
     ];
 
+    const isMobile = useIsMobile()
+
     return (
         <>
-            <div className="flex items-center gap-x-0.5">
-                <ProductPrice product={product} variant={selectedVariant} />
-            </div>
+            {
+                isMobile ? (
+                    <div className="flex justify-between items-start pt-4 pb-6 border-b border-gray-300">
+                        <div className="flex gap-x-2 mb-3">
+                            <Thumbnail image={product?.thumbnail} className="!w-[100px] !h-[80px]" />
+                            <div>
+                                <div className="mb-2">
+                                    <p className="text-xs font-extralight uppercase mb-1">ShopHaul</p>
+                                    <h3 className="text-xl uppercase font-medium">{product?.title}</h3>
+                                </div>
+                                <ProductPrice product={product} variant={selectedVariant} />
+                                <span className="text-sm text-gray-500">
+                                    Shipping calculated at checkout
+                                </span>
+                            </div>
+                        </div>
+                        <button
+                            className="text-gray-400"
+                            onClick={onModalClose}
+                            aria-label="Close product details"
+                            data-drawer-toggle="true"
+                        >
+                            <IoMdClose size={24} />
+                        </button>
+                    </div>
+                ) : (
+                    <div className="flex items-center gap-x-0.5 mb-3">
+                        <ProductPrice product={product} variant={selectedVariant} />
+                    </div>
+                )
+            }
             {(product.variants?.length ?? 0) > 1 && (
-                <div className="flex flex-col gap-y-4">
+                <div className="flex flex-col gap-y-3 md:gap-y-4 py-4 md:py-0">
                     {(product.options || []).map((option) => {
                         return (
-                            <div key={option.id}>
+                            <div key={option.id} className="w-full">
                                 <OptionSelect
                                     option={option}
                                     current={options[option.id]}
@@ -145,17 +180,29 @@ const ProductActions = ({ product, onCartOpen }: ProductActionsProps) => {
                     })}
                 </div>
             )}
-            <div className="mt-5">
+            <div className="pb-4 md:pb-0 md:mt-5">
                 <Accordion items={accordionItems} allowMultiple={true} />
             </div>
-            <div className="flex gap-6 items-center">
-                <QuantitySelector
-                    min={1}
-                    max={selectedVariant?.inventory_quantity || Infinity}
-                    quantity={quantity}
-                    onChange={setQuantity}
-                />
-                <Button variant="outline" className="w-full" isLoading={isPending} onClick={handleAddToCart}>
+            <div className="flex flex-col md:flex-row gap-3 md:gap-6 items-center pb-4 md:pb-0 md:mt-6">
+                <div className="w-full md:w-auto pb-2">
+                    <span className="md:hidden pb-2 block">Quantity:</span>
+                    <QuantitySelector
+                        min={1}
+                        max={selectedVariant?.inventory_quantity || Infinity}
+                        quantity={quantity}
+                        onChange={setQuantity}
+                        className="w-full md:w-auto"
+                    />
+                </div>
+                {
+                    isMobile && <Divider className="py-2 w-full !border-gray-300" />
+                }
+                <Button
+                    variant="outline"
+                    className="w-full"
+                    isLoading={isPending}
+                    onClick={handleAddToCart}
+                >
                     {!selectedVariant || Object.keys(options).length === 0
                         ? "Select variant"
                         : !inStock || !isValidVariant
@@ -163,9 +210,13 @@ const ProductActions = ({ product, onCartOpen }: ProductActionsProps) => {
                             : "Add to cart"}
                 </Button>
             </div>
-            <Link href={"/products/" + product.handle} className="text-center uppercase mt-auto">
+            <Link
+                href={"/products/" + product.handle}
+                className="text-center uppercase pb-4 md:pb-0 md:mt-auto text-md md:text-base block w-full"
+            >
                 View full details
             </Link>
+
         </>
     );
 };

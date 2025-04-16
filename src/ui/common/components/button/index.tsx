@@ -7,13 +7,13 @@ import Link from "next/link";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 const buttonVariants = cva(
-  "rounded-md cursor-pointer tracking-widest min-w-[12rem] text-button uppercase",
+  "rounded-md cursor-pointer tracking-widest min-w-[8rem] md:min-w-[12rem] text-button uppercase",
   {
     variants: {
       size: {
-        small: "px-3 py-2 text-sm",
-        base: "px-4 py-2 text-base",
-        large: "px-5 py-3 text-base",
+        small: "px-2 md:px-3 py-1.5 md:py-2 text-xs md:text-sm",
+        base: "px-3 md:px-4 py-1.5 md:py-2 text-sm md:text-base",
+        large: "px-4 md:px-5 py-2 md:py-3 text-sm md:text-base",
       },
       variant: {
         filled: "bg-primary",

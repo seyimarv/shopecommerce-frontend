@@ -5,12 +5,13 @@ import { AvailabiltyFilter, PriceFilter } from "./filter";
 import SortBy, { sortingOptions } from "./sort";
 import { Option } from "@/ui/common/components/Select";
 import { useListProductsWithSort } from "@/lib/data/products";
-import { SortOptions } from "@/lib/utils/sort-products";
+import { SortOptions, sortProducts } from "@/lib/utils/sort-products";
 
 import ProductList from "@/ui/product/product-list";
 import { Pagination } from "@/ui/common/components/pagination";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { AiOutlineLoading } from "react-icons/ai";
+import { isProductSoldOut } from "@/lib/utils/soldout";
 
 interface ProductsFilterProps {
   title?: string;
@@ -26,8 +27,8 @@ const sortOptionToMedusaSort: Record<string, SortOptions> = {
   "best-selling": "-created_at",
   "alpha-asc": "title",
   "alpha-desc": "-title",
-  "price-asc": "variants.calculated_price",
-  "price-desc": "-variants.calculated_price",
+  // "price-asc": "variants.prices.amount",
+  // "price-desc": "-variants.prices.amount",
   "date-old": "created_at",
   "date-new": "-created_at",
 };
@@ -71,13 +72,13 @@ const ProductsFilter = ({ title, collectionId, isCollectionLoading, isSearch, hi
     },
     collectionId,
     isRestocked: restocked,
-  }) 
+  })
 
 
   useEffect(() => {
     if (data?.response?.products) {
       const inStock = data.response.products.filter((p) =>
-        p.variants?.some((v) => v.inventory_quantity ?? 0 > 0)
+        !isProductSoldOut(p)
       ).length;
       const outOfStock = data.response.products.length - inStock;
       setInStockCount(inStock);
@@ -121,7 +122,7 @@ const ProductsFilter = ({ title, collectionId, isCollectionLoading, isSearch, hi
     setSelectedSort(option);
     updateUrlParams({
       sort: option.value as string,
-      page: "1"
+      // page: "1"
     });
   };
 
@@ -164,7 +165,7 @@ const ProductsFilter = ({ title, collectionId, isCollectionLoading, isSearch, hi
           </span>
         </div>
       </div>
-      <ProductList products={data?.response.products} isLoading={isLoading || isCollectionLoading} />
+      <ProductList products={sortProducts(data?.response.products ?? [], selectedSort?.value as SortOptions)} isLoading={isLoading || isCollectionLoading} />
       {isSearch && !isLoading && !isCollectionLoading && data?.response.count === 0 && (
         <div className="text-center py-16 text-gray-500">
           No products found matching "{searchQuery}". Try a different search.

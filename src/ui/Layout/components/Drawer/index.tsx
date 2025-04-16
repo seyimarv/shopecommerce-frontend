@@ -7,7 +7,7 @@ import { useEffect } from "react";
 interface DrawerProps {
   isOpen: boolean;
   onClose: () => void;
-  position?: "top" | "right" | "bottom";
+  position?: "top" | "right" | "bottom" | "left";
   absolute?: boolean;
   children: ReactNode;
   wrapperClassName?: string;
@@ -21,7 +21,7 @@ interface DrawerProps {
 
 interface DrawerContentProps {
   isOpen: boolean;
-  position: "top" | "right" | "bottom";
+  position: "top" | "right" | "bottom" | "left";
   children: ReactNode;
   className?: string;
   animation?: Variants; // ✅ FIX: Explicitly use Variants
@@ -39,6 +39,7 @@ const defaultContentAnimations: Record<string, Variants> = {
   top: { hidden: { y: "-100%" }, visible: { y: 0 } },
   right: { hidden: { x: "100%" }, visible: { x: 0 } },
   bottom: { hidden: { y: "100%" }, visible: { y: 0 } },
+  left: { hidden: { x: "-100%" }, visible: { x: 0 } },
 };
 
 const defaultOverlayAnimation: Variants = {
@@ -112,7 +113,16 @@ export const DrawerContent = ({
   onClose,
 }: DrawerContentProps) => {
   const variants = animation || defaultContentAnimations[position];
-  const ref = useOnClickOutside<HTMLDivElement>(onClose);
+  
+  const handleClickOutside = (event: MouseEvent | TouchEvent) => {
+    const target = event.target as HTMLElement;
+    if (target.closest('[data-drawer-toggle]')) {
+      return;
+    }
+    onClose();
+  };
+  
+  const ref = useOnClickOutside<HTMLDivElement>(handleClickOutside);
 
   return (
     <motion.div
@@ -121,16 +131,18 @@ export const DrawerContent = ({
       exit="hidden"
       ref={ref}
       variants={variants}
-      transition={{ duration: 0.5, ease: "easeInOut" }}
+      transition={{ duration: 0.5, ease: "easeIn" }}
       className={`absolute bg-white shadow-lg overflow-y-auto ${className} ${
         position === "right"
           ? "top-0 right-0 h-full w-full max-w-[450px]"
+          : position === "left"
+          ? "top-0 left-0 h-full w-full max-w-[450px]"
           : position === "top"
           ? "top-0 left-0 w-full h-auto"
           : "bottom-0 left-0 w-full h-auto"
       }`}
     >
-      {children}
+      {children}  
     </motion.div>
   );
 };
@@ -148,8 +160,8 @@ export const Overlay = ({
       animate="visible"
       exit="hidden"
       variants={variants}
-      transition={{ duration: 0.5, ease: "easeInOut", delay: 0.2 }}
-      className={`absolute inset-0 bg-black/50  transition-opacity duration-500 ${className}`}
+      transition={{ duration: 0.5, ease: "easeInOut" }}
+      className={`absolute inset-0 bg-black/50 ${className}`}
       onClick={onClose}
       style={{ cursor: `url(${cancelCursor}), auto` }}
     />

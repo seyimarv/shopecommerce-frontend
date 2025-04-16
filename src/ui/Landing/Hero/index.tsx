@@ -23,7 +23,7 @@ const HeroSection: React.FC<HeroProps> = ({ collections }) => {
   };
 
   return (
-    <section className="relative w-full h-[calc(100vh-6.375rem)]">
+    <section className="relative w-full h-[calc(100vh-12rem)] md:h-[calc(100vh-6.375rem)]">
       <Splide
         ref={splideRef}
         options={{
@@ -46,7 +46,7 @@ const HeroSection: React.FC<HeroProps> = ({ collections }) => {
         <SplideTrack>
           {collections?.map(({ title, metadata }: any, index: number) => (
             <SplideSlide key={index}>
-              <div className="relative w-full h-[calc(100vh-6.375rem)] overflow-hidden">
+              <div className="relative w-full h-[calc(100vh-12rem)] md:h-[calc(100vh-6.375rem)] overflow-hidden">
                 <AnimatePresence mode="wait">
                   <motion.div
                     key={activeIndex} // 🔥 Forces re-mount when index changes
@@ -65,10 +65,10 @@ const HeroSection: React.FC<HeroProps> = ({ collections }) => {
                   </motion.div>
                 </AnimatePresence>
                 <div className="absolute inset-0 bg-white opacity-3"></div>
-                <div className="container">
-                  <div className="absolute bottom-40 flex flex-col gap-8 items-start">
-                    <h4 className="text-5xl uppercase font-normal">{title}</h4>
-                    <Button className="py-3 min-w-[14rem]" variant="secondary">
+                <div className="container px-4 md:px-0">
+                  <div className="absolute bottom-20 md:bottom-40 flex flex-col gap-4 md:gap-8 items-start">
+                    <h4 className="text-3xl md:text-5xl uppercase font-normal">{title}</h4>
+                    <Button className="py-2 md:py-3 min-w-[10rem] md:min-w-[14rem]" variant="secondary">
                       Shop Now
                     </Button>
                   </div>
@@ -80,14 +80,14 @@ const HeroSection: React.FC<HeroProps> = ({ collections }) => {
       </Splide>
 
       {/* Navigation Dots */}
-      <div className="flex gap-2 w-full justify-center absolute z-10 bottom-8 items-end">
+      <div className="flex gap-1 md:gap-2 w-full justify-center absolute z-10 bottom-12 md:bottom-8 items-end">
         {collections?.map((_: any, index: number) => (
           <button
             key={index}
             className={`cursor-pointer bg-gray-100 transition-all duration-300 ${
               index === activeIndex
-                ? "w-[3rem] h-[0.75rem]"
-                : "w-[3rem] h-[0.5rem]"
+                ? "w-[2rem] md:w-[3rem] h-[0.5rem] md:h-[0.75rem]"
+                : "w-[2rem] md:w-[3rem] h-[0.3rem] md:h-[0.5rem]"
             }`}
             onClick={() => navigate(index)}
           >
