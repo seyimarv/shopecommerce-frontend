@@ -65,11 +65,10 @@ const MobileNav: React.FC<MobileNavProps> = ({
                             <CiSearch size={22} />
                         </button>
 
-                        <button
+                        <Link
+                            href="/cart"
                             className="relative text-gray-800 p-1"
-                            onClick={() => setOpenCart(true)}
                             aria-label="Cart"
-                            data-drawer-toggle="true"
                         >
                             <CiShoppingCart size={22} />
                             {cart && cart.items && cart.items.length > 0 && (
@@ -77,7 +76,7 @@ const MobileNav: React.FC<MobileNavProps> = ({
                                     {cart.items.length}
                                 </span>
                             )}
-                        </button>
+                        </Link>
                     </div>
                 </div>
             </div>

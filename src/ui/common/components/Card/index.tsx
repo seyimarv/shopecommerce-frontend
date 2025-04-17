@@ -16,6 +16,9 @@ import { checkHasVariants } from "@/lib/utils/variants";
 import Link from "next/link";
 import { useAddToCart } from "@/lib/data/cart";
 import { LiaCartPlusSolid } from "react-icons/lia";
+import toast from 'react-hot-toast';
+import { useIsMobile } from "@/lib/hooks/useIsMobile";
+import CustomToast from "../custom-toast";
 
 interface Collection {
   id: string;
@@ -38,6 +41,7 @@ const Card: React.FC<CardProps> = (data) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const { isOpen, openCart, closeCart } = useCart();
+  const isMobile = useIsMobile();
 
   const {
     product,
@@ -92,8 +96,22 @@ const Card: React.FC<CardProps> = (data) => {
         },
         {
           onSuccess: () => {
-            openCart();
-            setIsHovered(false)
+            if (isMobile) {
+              // On mobile, show toast with link to cart
+              toast.custom((t) => (
+                <CustomToast
+                  message="Product has been added to cart"
+                  actionLink="/cart"
+                  actionText="View Cart"
+                  type="success"
+                  onClose={() => toast.dismiss(t.id)}
+                />
+              ));
+            } else {
+              // On desktop, open cart drawer
+              openCart();
+              setIsHovered(false);
+            }
           }
         }
       );
