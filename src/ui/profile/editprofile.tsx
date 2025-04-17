@@ -38,7 +38,6 @@ export default function EditProfile({ customer }: CustomerProps) {
     onSubmit: (values) => {
       updateCustomer(values, {
         onSuccess: () => {
-          alert("Profile updated!");
           setEditMode(false);
         },
         onError: () => alert("Failed to update profile."),

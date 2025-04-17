@@ -19,12 +19,19 @@ type CountrySelectProps = {
 const CountrySelect = ({ onChange, value, className }: CountrySelectProps) => {
   // Convert string value to Option object if it exists
   const selectedOption = value
-    ? { value: value.toUpperCase(), label: countries.find((c) => c.value.toUpperCase() === value.toUpperCase())?.label || value }
+    ? {
+        value: value.toUpperCase(),
+        label:
+          countries.find((c) => c.value.toUpperCase() === value.toUpperCase())
+            ?.label || value,
+      }
     : undefined;
-  
+
   return (
     <Select value={selectedOption} onChange={onChange}>
-      <SelectTrigger className={`!text-sm !border-gray-300 !w-[100%] ${className || ''}`} />
+      <SelectTrigger
+        className={`!text-sm !border-gray-300 !w-[100%] ${className || ""}`}
+      />
       <SelectContent className="bg-white shadow-md rounded-none mt-1 !w-[100%] max-h-[200px] overflow-y-scroll">
         {countries.map((option) => (
           <SelectItem

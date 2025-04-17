@@ -11,7 +11,9 @@ export default function OverviewTemplate() {
     data: orders,
     isLoading: ordersLoading,
     error: ordersError,
-  } = useListOrders();
+  } = useListOrders({
+    limit: 4,
+  });
 
   console.log("Orders:", orders);
   if (!isLoading && !customer) {
