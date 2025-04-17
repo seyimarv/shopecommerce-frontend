@@ -17,9 +17,9 @@ interface UploadImageFormProps {
 
 const UploadImageForm: React.FC<UploadImageFormProps> = ({ cart }) => {
   const [preview, setPreview] = useState<string | null>(null);
-  const router = useRouter()
+  const router = useRouter();
 
-  const { mutate, isPending } = usePlaceOrder()
+  const { mutate, isPending } = usePlaceOrder();
 
   const initialValues: FormValues = {
     image: null,
@@ -30,18 +30,20 @@ const UploadImageForm: React.FC<UploadImageFormProps> = ({ cart }) => {
   });
 
   const handleSubmit = (values: FormValues) => {
-
-    mutate({
-      cartId: cart.id,
-      reciept: values.image!
-    }, {
-      onSuccess: () => {
-        router.push(`/order/${cart.id}/confirmed`);
+    mutate(
+      {
+        cartId: cart.id,
+        reciept: values.image!,
       },
-      onError: (err) => {
-        console.error("Error uploading receipt:", err);
+      {
+        onSuccess: (data) => {
+          router.push(`/order/${data?.orderId}/confirmed`);
+        },
+        onError: (err) => {
+          console.error("Error uploading receipt:", err);
+        },
       }
-    })
+    );
   };
 
   return (
@@ -88,7 +90,12 @@ const UploadImageForm: React.FC<UploadImageFormProps> = ({ cart }) => {
             </div>
           )}
 
-          <Button type="submit" className="max-w-md mx-auto my-5" isLoading={isPending} disabled={!values.image}>
+          <Button
+            type="submit"
+            className="max-w-md mx-auto my-5"
+            isLoading={isPending}
+            disabled={!values.image}
+          >
             I have made the payment
           </Button>
         </Form>

@@ -9,7 +9,7 @@ import Paystack from "@/ui/common/icons/paystack";
 /* Map of payment provider_id to their title and icon. Add in any payment providers you want to use. */
 export const paymentInfoMap: Record<
   string,
-  { title: string; icon: React.JSX.Element }
+  { title: string; icon: React.JSX.Element | string }
 > = {
   //   pp_stripe_stripe: {
   //     title: "Credit card",
@@ -29,7 +29,7 @@ export const paymentInfoMap: Record<
   //   },
   pp_system_default: {
     title: "Bank Transfer",
-    icon: <Paystack />,
+    icon: "",
   },
   pp_paystack_paystack: {
     title: "Paystack",
