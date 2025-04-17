@@ -124,9 +124,9 @@ const ProductActions = ({ product, onCartOpen }: ProductActionsProps) => {
 
   return (
     <>
-      <div className="py-10 flex flex-1 flex-col">
-        <h3 className="text-2xl uppercase">{product.title}</h3>
-        <div className="my-4">
+      <div className="py-6 md:py-10 flex flex-1 flex-col">
+        <h3 className="text-xl md:text-2xl uppercase">{product.title}</h3>
+        <div className="my-3 md:my-4">
           <ProductPrice product={product} variant={selectedVariant} />
         </div>
         {(product.variants?.length ?? 0) > 1 && (
@@ -150,25 +150,29 @@ const ProductActions = ({ product, onCartOpen }: ProductActionsProps) => {
         <p className="mt-4 text-gray-700">
           {product.description}
         </p>
-        <div className="my-8">
+        <div className="my-6 md:my-8">
           <Accordion items={accordionItems} allowMultiple={true} />
         </div>
 
-        <div className="flex gap-8 items-center">
-          <QuantitySelector
-            min={1}
-            max={selectedVariant?.inventory_quantity || Infinity}
-            quantity={quantity}
-            onChange={setQuantity}
-          />
-          <Button variant="outline" className="w-full" isLoading={isPending} onClick={handleAddToCart}>
+        <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 md:gap-8 items-center">
+          <div className="w-full sm:w-auto">
+            <QuantitySelector
+              min={1}
+              max={selectedVariant?.inventory_quantity || Infinity}
+              quantity={quantity}
+              onChange={setQuantity}
+            />
+          </div>
+          <Button variant="outline" className="w-full sm:flex-1" isLoading={isPending} onClick={handleAddToCart}>
             {!selectedVariant || Object.keys(options).length === 0
               ? "Select variant"
               : !inStock || !isValidVariant
                 ? "Out of stock"
                 : "Add to cart"}
           </Button>
-          <GrFavorite size={25} />
+          <div className="hidden sm:block">
+            <GrFavorite size={25} />
+          </div>
         </div>
       </div>
     </>

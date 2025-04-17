@@ -69,7 +69,7 @@ const Signup = () => {
             subtitle="Please fill in the fields below:"
             type="register"
         >
-            <form onSubmit={formik.handleSubmit} className="flex flex-col gap-4">
+            <form onSubmit={formik.handleSubmit} className="flex flex-col gap-3 sm:gap-4">
                 <Input
                     name="firstName"
                     placeholder="First name"
@@ -153,14 +153,14 @@ const Signup = () => {
 
                 <Button
                     type="submit"
-                    className="mt-2 w-full"
+                    className="mt-3 sm:mt-4 w-full text-sm sm:text-base py-2 sm:py-3"
                     disabled={signup.isPending || !(formik.isValid && formik.dirty)}
                     isLoading={signup.isPending}
                 >
                    Create account
                 </Button>
                 {Object.keys(formik.errors).length > 0 && formik.submitCount > 0 && (
-                    <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-600 flex items-start gap-2">
+                    <div className="mt-3 sm:mt-4 p-2 sm:p-3 bg-red-50 border border-red-200 rounded-lg text-xs sm:text-sm text-red-600 flex items-start gap-2">
                         <FiAlertCircle className="mt-0.5 flex-shrink-0" />
                         <div>
                             Please fix the errors above to continue
@@ -168,7 +168,7 @@ const Signup = () => {
                     </div>
                 )}
                 {signup.isError && (
-                    <div className="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg text-sm text-red-600 flex items-start gap-2">
+                    <div className="mt-3 sm:mt-4 p-2 sm:p-3 bg-red-50 border border-red-200 rounded-lg text-xs sm:text-sm text-red-600 flex items-start gap-2">
                         <FiAlertCircle className="mt-0.5 flex-shrink-0" />
                         <div>
                             {signup.error instanceof Error 

@@ -16,7 +16,7 @@ export default function ImageGallery({ images, thumbnail }: ImageGalleryProps) {
   const mainSliderRef = useRef<Splide | null>(null);
 
   return (
-    <div className="flex flex-col flex-1">
+    <div className="flex flex-col w-full">
       <div className="relative">
         {images.length > 1 ? (
           <Splide
@@ -34,7 +34,7 @@ export default function ImageGallery({ images, thumbnail }: ImageGalleryProps) {
           >
             {images.map((image, index) => (
               <SplideSlide key={index}>
-                <div className="relative w-full h-[calc(100vh-6.375rem)]">
+                <div className="relative w-full aspect-square max-h-[600px]">
                   <Image
                     src={image}
                     alt={`Image ${index + 1}`}
@@ -48,7 +48,7 @@ export default function ImageGallery({ images, thumbnail }: ImageGalleryProps) {
             ))}
           </Splide>
         ) : (
-          <div className="relative w-full h-[calc(100vh-6.375rem)]">
+          <div className="relative w-full aspect-square max-h-[600px]">
             <Image
               src={thumbnail}
               alt="Thumbnail"
@@ -61,44 +61,52 @@ export default function ImageGallery({ images, thumbnail }: ImageGalleryProps) {
         )}
       </div>
       {images.length > 1 && (
-        <div className="mt-7 relative">
+        <div className="mt-4 md:mt-7 relative">
           <button
-            className="cursor-pointer p-3 rounded-full absolute shadow-lg left-4 top-1/2 transform -translate-y-1/2 z-10 bg-white"
+            className="hidden sm:block cursor-pointer p-2 rounded-full absolute shadow-lg left-2 lg:left-4 top-1/2 transform -translate-y-1/2 z-10 bg-white"
             onClick={() => mainSliderRef.current?.go("-1")}
           >
-            <FaChevronLeft size={20} />
+            <FaChevronLeft size={16} className="md:text-lg" />
           </button>
-          <div className="bg-white p-3 rounded-lg shadow-lg w-full max-w-sm mx-auto">
+          <div className="bg-white p-2 md:p-3 rounded-lg shadow-lg w-full sm:!max-w-sm mx-auto">
             <Splide
               options={{
                 type: "slide",
                 perPage: 4,
                 perMove: 1,
-                gap: "1rem",
+                gap: "0.5rem",
                 pagination: false,
                 arrows: false,
-                focus: "center",
+                autoWidth: false,
+                fixedWidth: false,
+                trimSpace: true,
+                focus: 0,
                 breakpoints: {
-                  1024: { perPage: 3 },
-                  768: { perPage: 3 },
-                  480: { perPage: 2 },
+                  1200: { perPage: 5, gap: "0.75rem" },
+                  992: { perPage: 4, gap: "0.75rem" },
+                  768: { perPage: 4, gap: "0.5rem" },
                 },
               }}
             >
               {images.map((image, index) => (
                 <SplideSlide key={index}>
-                  <div className="relative w-full h-24">
+                  <div 
+                    className={`relative aspect-square w-full cursor-pointer rounded-md transition-all duration-100 overflow-hidden ${
+                      selectedIndex === index 
+                        ? "border" 
+                        : ""
+                    }`}
+                    onClick={() => {
+                      setSelectedIndex(index);
+                      mainSliderRef.current?.go(index);
+                    }}
+                  >
                     <Image
                       src={image}
                       alt={`Thumbnail ${index + 1}`}
                       layout="fill"
                       objectFit="cover"
-                      className={`rounded-md cursor-pointer ${selectedIndex === index ? "border-2 border-black" : ""
-                        }`}
-                      onClick={() => {
-                        setSelectedIndex(index);
-                        mainSliderRef.current?.go(index);
-                      }}
+                      className="transition-transform duration-200 hover:scale-105"
                     />
                   </div>
                 </SplideSlide>
@@ -107,10 +115,10 @@ export default function ImageGallery({ images, thumbnail }: ImageGalleryProps) {
           </div>
 
           <button
-            className="cursor-pointer p-3 rounded-full absolute shadow-lg right-4 top-1/2 transform -translate-y-1/2 z-10 bg-white"
+            className="hidden sm:block cursor-pointer p-2 lg:p-3 rounded-full absolute shadow-lg right-2 lg:right-4 top-1/2 transform -translate-y-1/2 z-10 bg-white"
             onClick={() => mainSliderRef.current?.go("+1")}
           >
-            <FaChevronRight size={20} />
+            <FaChevronRight size={16} className="md:text-lg" />
           </button>
         </div>
       )}

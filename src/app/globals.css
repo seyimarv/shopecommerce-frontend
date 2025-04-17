@@ -77,3 +77,21 @@ body {
   color: var(--foreground);
   background: var(--background);
 }
+
+
+@layer components {
+  /* Medium screens */
+  @media (min-width: 768px) {
+    .container {
+      padding-inline: 0.5rem;
+    }
+  }
+  
+  /* Large screens */
+  @media (min-width: 1024px) {
+    .container {
+      padding-inline: 1rem !important;
+      max-width: 1400px !important;
+    }
+  }
+}

@@ -23,7 +23,7 @@
     --container-padding-md: 0.5rem;
     --container-padding-lg: 1rem;
     --container-padding-xl: 1rem;
-    --container-padding-2xl: 4rem;
+    --container-padding-2xl: 1rem;
 
     /* Box Shadows */
     --shadow-outline-icon: 0 0 0px 2px black;
