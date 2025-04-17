@@ -46,7 +46,7 @@ const OverviewComponent = ({ customer, orders }: OverviewComponentProps) => {
     <div className=" flex flex-col gap-y-2 tracking-wide">
       <div className="flex items-center justify-between">
         {" "}
-        <h3 className="text-3xl">Hello {customer?.last_name}!</h3>
+        <h3 className="lg:text-3xl text-lg">Hello {customer?.last_name}!</h3>
         <span className="">
           Signed in as:{" "}
           <span
@@ -64,7 +64,7 @@ const OverviewComponent = ({ customer, orders }: OverviewComponentProps) => {
         <div>
           {" "}
           <h3 className="text-2xl mb-2">Profile</h3>
-          <span className="font-bold text-3xl">
+          <span className="font-bold lg:text-3xl text-2xl">
             {" "}
             {getProfileCompletion(customer)}%{" "}
           </span>
@@ -72,7 +72,7 @@ const OverviewComponent = ({ customer, orders }: OverviewComponentProps) => {
         </div>
         <div>
           <h3 className="text-2xl mb-2">Addresses</h3>
-          <span className="font-bold text-3xl">
+          <span className="font-bold lg:text-3xl text-2xl">
             {" "}
             {customer?.addresses?.length || 0}{" "}
           </span>

@@ -18,7 +18,7 @@ const OrdersList = ({ orders }: { orders: HttpTypes.StoreOrder[] }) => {
               >
                 <Link href={`/account/orders/details/${order.id}`}>
                   <div className="bg-gray-50 flex justify-between items-center p-4">
-                    <div className="grid grid-cols-3 grid-rows-2 text-small-regular gap-x-4 flex-1">
+                    <div className="grid grid-cols-3 grid-rows-2 text-small-regular lg:gap-x-4 gap-x-2 flex-1">
                       <span className="font-semibold">Date placed</span>
                       <span className="font-semibold">Order number</span>
                       <span className="font-semibold">Total amount</span>
