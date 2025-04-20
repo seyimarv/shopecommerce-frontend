@@ -14,7 +14,7 @@ const ShippingOptions = ({disabled}: {disabled: boolean}) => {
       <div className="flex flex-col gap-5 mb-5 border-gray-200 border-b-2 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <h3 className="text-3xl tracking-widest uppercase">Delivery</h3>
+            <h3 className="subtitle">Delivery</h3>
           </div>
         </div>
       </div>
@@ -66,7 +66,7 @@ const ShippingOptions = ({disabled}: {disabled: boolean}) => {
     <div className="flex flex-col gap-5 mb-5 border-gray-200 border-b-2 py-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <h3 className="text-3xl tracking-widest uppercase">Delivery</h3>
+          <h3 className="subtitle">Delivery</h3>
           {cart?.shipping_methods?.at(-1)?.shipping_option_id && !isShipping ? <FiCheckCircle /> : ""}
         </div>
 
@@ -88,13 +88,13 @@ const ShippingOptions = ({disabled}: {disabled: boolean}) => {
               getShippingOptionPrice={getShippingOptionPrice}
             />
           ) : (
-            <div className="text-xl text-gray-600">No shipping options available</div>
+            <div className="text-lg md:text-xl text-gray-600">No shipping options available</div>
           )
         ) : (
           <>
           {
             isLoading ? <AiOutlineLoading3Quarters className="text-2xl animate-spin" /> : (
-              <div className="text-xl text-gray-600">
+              <div className="text-lg md:text-xl text-gray-600">
                 {shippingOptions.find(option => option.id === cart?.shipping_methods?.at(-1)?.shipping_option_id)?.name || 
                   cart?.shipping_methods?.at(-1)?.shipping_option_id} ({getShippingOptionPrice(
                     shippingOptions.find(option => option.id === cart?.shipping_methods?.at(-1)?.shipping_option_id) || 

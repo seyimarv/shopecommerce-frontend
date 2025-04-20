@@ -129,9 +129,6 @@ const AddressForm: React.FC<AddressFormProps> = ({
     setFieldValue("phone", address.phone || "");
   };
 
-  console.log(addressesInRegion);
-  console.log(customer?.addresses)
-  console.log(countriesInRegion)
 
   return (
     <>
@@ -164,7 +161,8 @@ const AddressForm: React.FC<AddressFormProps> = ({
                 </div>
               )}
               <Form className="flex flex-row flex-wrap gap-y-4">
-                <div className="w-1/2 pr-2">
+                {/* First Name */}
+                <div className="w-full md:w-1/2 md:pr-2">
                   <Input
                     name="first_name"
                     type="text"
@@ -176,7 +174,8 @@ const AddressForm: React.FC<AddressFormProps> = ({
                   />
                 </div>
 
-                <div className="w-1/2 pl-2">
+                {/* Last Name */}
+                <div className="w-full md:w-1/2 md:pl-2">
                   <Input
                     name="last_name"
                     type="text"
@@ -188,7 +187,8 @@ const AddressForm: React.FC<AddressFormProps> = ({
                   />
                 </div>
 
-                <div className="w-1/2 pr-2">
+                {/* Email */}
+                <div className="w-full md:w-1/2 md:pr-2">
                   <Input
                     name="email"
                     type="email"
@@ -200,7 +200,8 @@ const AddressForm: React.FC<AddressFormProps> = ({
                   />
                 </div>
 
-                <div className="w-1/2 pl-2">
+                {/* Phone */}
+                <div className="w-full md:w-1/2 md:pl-2">
                   <Input
                     name="phone"
                     type="text"
@@ -212,7 +213,8 @@ const AddressForm: React.FC<AddressFormProps> = ({
                   />
                 </div>
 
-                <div className="w-1/2 pr-2">
+                {/* Address 1 */}
+                <div className="w-full md:w-1/2 md:pr-2">
                   <Input
                     name="address_1"
                     type="text"
@@ -224,7 +226,8 @@ const AddressForm: React.FC<AddressFormProps> = ({
                   />
                 </div>
 
-                <div className="w-1/2 pl-2">
+                {/* Postal Code */}
+                <div className="w-full md:w-1/2 md:pl-2">
                   <Input
                     name="postal_code"
                     type="text"
@@ -236,7 +239,8 @@ const AddressForm: React.FC<AddressFormProps> = ({
                   />
                 </div>
 
-                <div className="w-1/2 pr-2">
+                {/* City */}
+                <div className="w-full md:w-1/2 md:pr-2">
                   <Input
                     name="city"
                     type="text"
@@ -248,7 +252,8 @@ const AddressForm: React.FC<AddressFormProps> = ({
                   />
                 </div>
 
-                <div className="w-1/2 pl-2">
+                {/* Province */}
+                <div className="w-full md:w-1/2 md:pl-2">
                   <Input
                     name="province"
                     type="text"
@@ -260,7 +265,8 @@ const AddressForm: React.FC<AddressFormProps> = ({
                   />
                 </div>
 
-                <div className="w-1/2 pr-2">
+                {/* Country Select */}
+                <div className="w-full md:w-1/2 md:pr-2">
                   <CountrySelect
                     name="country_code"
                     value={values.country_code}
@@ -292,9 +298,9 @@ const AddressForm: React.FC<AddressFormProps> = ({
       ) : (
         <div>
           {cart && cart.shipping_address && (
-            <div className="flex gap-8 text-gray-600 tracking-wide">
+            <div className="flex flex-wrap gap-6 md:gap-8 text-gray-600 tracking-wide">
               <div>
-                <h3 className="text-xl text-black ">Shipping Details</h3>
+                <h3 className="text-lg sm:text-xl text-black ">Shipping Details</h3>
                 <p>
                   {cart.shipping_address?.first_name || ""} {cart.shipping_address?.last_name || ""}
                 </p>
@@ -307,7 +313,7 @@ const AddressForm: React.FC<AddressFormProps> = ({
                 {cart.shipping_address?.company && <p>{cart.shipping_address.company}</p>}
               </div>
               <div>
-                <h3 className="text-xl text-black ">Contact Details</h3>
+                <h3 className="text-lg sm:text-xl text-black ">Contact Details</h3>
                 <p>{cart.shipping_address?.phone}</p>
                 <p>{cart.email}</p>
               </div>

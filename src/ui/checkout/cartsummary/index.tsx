@@ -8,10 +8,9 @@ interface CartSummaryProps {
 }
 
 const CartSummary = ({ cart }: CartSummaryProps) => {
-  console.log(cart);
   return (
     <div>
-      <h3 className="text-3xl tracking-widest uppercase border-gray-200 border-b-2 pb-4">
+      <h3 className="subtitle border-gray-200 border-b-2 pb-4">
         In Your Cart
       </h3>
 
@@ -33,7 +32,7 @@ const CartSummary = ({ cart }: CartSummaryProps) => {
           })}{" "}
         </span>
       </div>
-      <div className="flex justify-between text-2xl border-y-2 border-gray-200 py-4">
+      <div className="flex justify-between text-xl md:text-2xl border-y-2 border-gray-200 py-4">
         <span>Total</span>
         <span>
           {convertToLocale({

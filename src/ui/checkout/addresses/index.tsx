@@ -42,7 +42,7 @@ const Addresses = () => {
     <div className="flex flex-col gap-5 mb-5 border-gray-200 border-b-2 pb-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <h3 className="text-3xl tracking-widest uppercase">
+          <h3 className="subtitle">
             Shipping Addresses
           </h3>
           {!isEditing && cart?.shipping_address && <FiCheckCircle />}

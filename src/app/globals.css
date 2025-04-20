@@ -81,6 +81,12 @@ body {
 
 @layer components {
   /* Medium screens */
+  .title {
+    @apply text-2xl sm:text-3xl md:text-4xl lg:text-4xl tracking-widest uppercase;
+  }
+  .subtitle {
+    @apply text-xl sm:text-2xl md:text-3xl lg:text-3xl tracking-widest uppercase;
+  }
   @media (min-width: 768px) {
     .container {
       padding-inline: 0.5rem;

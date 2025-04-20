@@ -43,7 +43,7 @@ const PaymentOptions = () => {
     <div className=" mb-5 border-gray-200 border-b-2 py-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <h3 className="text-3xl tracking-widest uppercase mb-4">Payment</h3>
+          <h3 className="subtitle mb-4">Payment</h3>
           {/* {!isEditing && <FiCheckCircle />} */}
         </div>
 
@@ -63,13 +63,13 @@ const PaymentOptions = () => {
           {({ values, setFieldValue }) => (
             <>
               <Modal isOpen={openBankTransfer} onClose={() => setOpenBankTransfer(false)}>
-                <div className="w-xl p-10 flex flex-col gap-4">
-                  <div className="text-3xl border-gray-200 border-b-2 pb-3">
+                <div className="w-full max-w-xl p-6 md:p-10 flex flex-col gap-4">
+                  <div className="subtitle border-gray-200 border-b-2 pb-3">
                     Bank Transfer Details
                   </div>
-                  <p className="text-xl text-gray-700">Bank Name: Bank of America</p>
-                  <p className="text-xl text-gray-700">Account Number: 1234567890</p>
-                  <p className="text-xl text-gray-700">Routing Number: 1234567890</p>
+                  <p className="text-lg md:text-xl text-gray-700">Bank Name: Bank of America</p>
+                  <p className="text-lg md:text-xl text-gray-700">Account Number: 1234567890</p>
+                  <p className="text-lg md:text-xl text-gray-700">Routing Number: 1234567890</p>
 
                   <UploadImageForm cart={cart} />
                 </div>
@@ -145,9 +145,6 @@ const PaymentOptions = () => {
 
         </Formik>
       )}
-
-
-
       <div className="mt-4">
         <PaymentButton cart={cart} disabled={isPending} />
       </div>
