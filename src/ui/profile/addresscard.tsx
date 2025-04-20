@@ -18,7 +18,7 @@ type AddressProps = {
 };
 
 export const AddressCard = ({ address }: AddressProps) => {
-  const { id, address_1, postal_code, city, country_code, phone, province } =
+  const { id, address_1, postal_code, city, country_code, phone, province, first_name, last_name } =
     address;
 
   const { mutate: deleteAddress } = useDeleteCustomerAddress();
@@ -63,6 +63,7 @@ export const AddressCard = ({ address }: AddressProps) => {
   return (
     <>
       <div className="p-4 border border-gray-200 rounded-xl shadow-sm text-lg">
+        <p className="">{first_name} {last_name}</p>
         <p className="">{address_1}</p>
         <p className="">{`${postal_code}, ${city}`}</p>
         <p className="">{province}</p>

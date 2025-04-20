@@ -11,7 +11,14 @@ import {
 import { HttpTypes } from "@medusajs/types";
 
 type AddressInput = {
-  currentState: Record<string, unknown>;
+  first_name: string;
+  last_name: string;
+  address_1: string;
+  postal_code: string;
+  city: string;
+  province: string;
+  country_code: string;
+  phone: string;
   formData: FormData;
 };
 
@@ -30,6 +37,8 @@ export const useUpdateCustomerAddress = () => {
       }
 
       const address: HttpTypes.StoreUpdateCustomerAddress = {
+        first_name: formData.get("first_name") as string,
+        last_name: formData.get("last_name") as string,
         address_1: formData.get("address_1") as string,
         province: formData.get("province") as string,
         city: formData.get("city") as string,
@@ -43,7 +52,7 @@ export const useUpdateCustomerAddress = () => {
       }
 
       const headers = {
-        ...(await getAuthHeaders()),
+        ...getAuthHeaders(),
       };
 
       await sdk.store.customer.updateAddress(addressId, address, {}, headers);
@@ -72,6 +81,8 @@ export const useAddCustomerAddress = () => {
         (currentState.isDefaultShipping as boolean) || false;
 
       const address = {
+        first_name: formData.get("first_name") as string,
+        last_name: formData.get("last_name") as string,
         address_1: formData.get("address_1") as string,
         province: formData.get("province") as string,
         city: formData.get("city") as string,
@@ -83,7 +94,7 @@ export const useAddCustomerAddress = () => {
       };
 
       const headers = {
-        ...(await getAuthHeaders()),
+         ...getAuthHeaders(),
       };
 
       const response = await sdk.store.customer.createAddress(

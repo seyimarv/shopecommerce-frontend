@@ -13,6 +13,8 @@ const AddAddress = () => {
 
   const formik = useFormik({
     initialValues: {
+      first_name: "",
+      last_name: "",
       address_1: "",
       postal_code: "",
       city: "",
@@ -57,7 +59,42 @@ const AddAddress = () => {
 
         <form className="flex flex-col gap-4" onSubmit={formik.handleSubmit}>
           <div className="space-y-4">
-            {/* Address */}
+            <div className="flex gap-4">
+              <div className="flex flex-col gap-1 w-1/2">
+                <label
+                  htmlFor="first_name"
+                  className="text-sm font-medium text-gray-700"
+                >
+                  First name <span className="text-red-500">*</span>
+                </label>
+                <Input
+                  id="first_name"
+                  name="first_name"
+                  required
+                  // autoComplete="address-line1"
+                  value={formik.values.first_name}
+                  onChange={formik.handleChange}
+                  className="border border-gray-300 rounded-lg px-3 py-2"
+                />
+              </div>
+              <div className="flex flex-col gap-1 w-1/2">
+                <label
+                  htmlFor="last_name"
+                  className="text-sm font-medium text-gray-700"
+                >
+                  Last name <span className="text-red-500">*</span>
+                </label>
+                <Input
+                  id="last_name"
+                  name="last_name"
+                  required
+                  // autoComplete="address-line1"
+                  value={formik.values.last_name}
+                  onChange={formik.handleChange}
+                  className="border border-gray-300 rounded-lg px-3 py-2"
+                />
+              </div>
+            </div>
             <div className="flex flex-col gap-1">
               <label
                 htmlFor="address_1"
