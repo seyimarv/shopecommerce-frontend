@@ -33,7 +33,7 @@ const UploadImageForm: React.FC<UploadImageFormProps> = ({ cart }) => {
     mutate(
       {
         cartId: cart.id,
-        reciept: values.image!,
+        receipt: values.image!,
       },
       {
         onSuccess: (data) => {

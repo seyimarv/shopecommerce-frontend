@@ -26,7 +26,7 @@ const CheckoutTemplate = () => {
         <>
             {
                 cart &&
-                <div className="container mx-auto px-4 mt-8 lg:mt-16 flex flex-col lg:flex-row gap-y-8 lg:gap-x-16">
+                <div className="container mx-auto px-4 mt-8 lg:mt-16 flex flex-col lg:flex-row gap-y-8 lg:gap-x-24">
                     <div className="w-full lg:w-3/5 order-2 lg:order-1 space-y-8">
                         <Addresses />
                         <ShippingOptions disabled={getCheckoutStep(cart) === "address"} />

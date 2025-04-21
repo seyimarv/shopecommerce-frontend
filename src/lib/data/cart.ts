@@ -1,12 +1,12 @@
 import { HttpTypes } from "@medusajs/types";
-import { getCartId, removeCartId, setCartId } from "./cookies";
+import { getAuthHeaders, getCartId, removeCartId, setCartId } from "./cookies";
 import { sdk } from "../../../config";
 import { getRegion, useListRegions } from "./region";
 import medusaError from "../utils/medusa-error";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRegion } from "../context/region-context";
-import { redirect } from "next/navigation";
 import { uploadReceipt } from "./payment";
+import { queryKeys } from "../keys";
 
 type StoreCart = HttpTypes.StoreCartResponse["cart"];
 type StoreCartLineItem = NonNullable<StoreCart["items"]>[0];
@@ -21,6 +21,7 @@ export type CartWithInventory = Omit<StoreCart, "items"> & {
   id: string;
   region_id: string;
   items: CartItemWithInventory[];
+  promo_codes?: { id: string; code: string }[];
 };
 
 /**
@@ -139,13 +140,11 @@ export async function getOrSetCart(
 ): Promise<CartWithInventory | null> {
   const region = await getRegion(countryCode);
 
-
   if (!region) {
     throw new Error(`Region not found for country code: ${countryCode}`);
   }
 
   let cart = await retrieveCart();
-
 
   if (!cart) {
     const cartResp = await sdk.store.cart.create({ region_id: region.id }, {});
@@ -270,14 +269,65 @@ export const useListCartPaymentMethod = (regionId: string) => {
         )
         .then(({ payment_providers }) =>
           payment_providers.sort((a, b) => {
-            return a.id > b.id ? 1 : -1
+            return a.id > b.id ? 1 : -1;
           })
         )
         .catch(() => {
-          return null
+          return null;
         }),
     enabled: !!regionId,
   });
+};
+
+const applyPromotionsToCart = async (codes: string[], prevPromotions: any[]) => {
+  const cartId = getCartId();
+
+  if (!cartId) {
+    throw new Error("No existing cart found to apply promotions to.");
+  }
+
+  const headers = getAuthHeaders() || {};
+
+  try {
+    const response = await sdk.store.cart.update(
+      cartId,
+      { promo_codes: codes },
+      {},
+      headers
+    );
+
+    if (codes.length > 0 && (!response.cart.promotions || response.cart.promotions.length === 0)) {
+        throw new Error(`Unable to apply promo code '${codes.join(', ')}'. It may be invalid or expired.`);
+    }
+    const currentPromotionIds = (response.cart.promotions || []).map(p => p.id).sort();
+    const previousPromotionIds = (prevPromotions || []).map(p => p.id).sort();
+    const promotionsAreEqual = 
+      currentPromotionIds.length === previousPromotionIds.length && 
+      currentPromotionIds.every((id, index) => id === previousPromotionIds[index]);
+
+    if (promotionsAreEqual && codes.length > 0) {
+        const attemptedCode = codes.find(c => !previousPromotionIds.includes(c));
+        if (attemptedCode || codes.length > previousPromotionIds.length) { 
+             throw new Error(`Unable to apply promo code '${codes.join(', ')}'. It may be invalid, expired, or already applied.`);
+        }
+    }
+    console.log(response.cart)
+    return response.cart;
+  } catch (error) {
+    throw error instanceof Error ? error : new Error('Failed to apply Promo code.');
+  }
+};
+
+export const useApplyPromotions = ({prevPromtions = []}: {prevPromtions: any[]}) => {
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation({
+    mutationFn: (codes: string[]) => applyPromotionsToCart(codes, prevPromtions),
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: queryKeys.cart });
+    },
+  });
+  return mutation
 };
 
 
@@ -349,21 +399,19 @@ export const useAddToCart = () => {
   });
 };
 
-
 export async function setShippingMethod({
   cartId,
   shippingMethodId,
 }: {
-  cartId: string
-  shippingMethodId: string
+  cartId: string;
+  shippingMethodId: string;
 }) {
-
   return sdk.store.cart
     .addShippingMethod(cartId, { option_id: shippingMethodId }, {})
     .then(async (response) => {
       return response.cart;
     })
-    .catch(medusaError)
+    .catch(medusaError);
 }
 
 export const useSetShippingMethod = () => {
@@ -378,7 +426,6 @@ export const useSetShippingMethod = () => {
   });
 };
 
-
 export async function initiatePaymentSession(
   cart: HttpTypes.StoreCart,
   data: HttpTypes.StoreInitializePaymentSession
@@ -386,9 +433,9 @@ export async function initiatePaymentSession(
   return sdk.store.payment
     .initiatePaymentSession(cart, data, {})
     .then(async (resp) => {
-      return resp
+      return resp;
     })
-    .catch(medusaError)
+    .catch(medusaError);
 }
 
 export const useInitiatePaymentSession = () => {
@@ -397,10 +444,10 @@ export const useInitiatePaymentSession = () => {
   return useMutation({
     mutationFn: ({
       cart,
-      data
+      data,
     }: {
-      cart: HttpTypes.StoreCart,
-      data: HttpTypes.StoreInitializePaymentSession
+      cart: HttpTypes.StoreCart;
+      data: HttpTypes.StoreInitializePaymentSession;
     }) => initiatePaymentSession(cart, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["cart"] });
@@ -412,36 +459,36 @@ export const usePlaceOrder = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ cartId, reciept }: { cartId?: string, reciept?: File }) => {
-      const id = cartId || getCartId()
+    mutationFn: async ({ cartId, receipt }: { cartId?: string; receipt?: File }) => {
+      const id = cartId || getCartId();
 
       if (!id) {
-        throw new Error("No existing cart found when placing an order")
+        throw new Error("No existing cart found when placing an order");
       }
 
-      if (reciept) {
-        await uploadReceipt(reciept, id)
+      if (receipt) {
+        await uploadReceipt(receipt, id);
       }
 
       const cartRes = await sdk.store.cart
         .complete(id, {})
         .then(async (cartRes) => {
-          return cartRes
+          return cartRes;
         })
-        .catch(medusaError)
-      console.log(cartRes)
+        .catch(medusaError);
+      console.log(cartRes);
       if (cartRes?.type === "order") {
         const countryCode =
-          cartRes.order.shipping_address?.country_code?.toLowerCase()
+          cartRes.order.shipping_address?.country_code?.toLowerCase();
 
-        removeCartId()
-        return { orderId: cartRes.order.id, countryCode }
+        removeCartId();
+        return { orderId: cartRes.order.id, countryCode };
       }
 
-      return { cart: cartRes.cart }
+      return { cart: cartRes.cart };
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["cart", "order"] })
+      queryClient.invalidateQueries({ queryKey: ["cart", "order"] });
     },
-  })
+  });
 }
