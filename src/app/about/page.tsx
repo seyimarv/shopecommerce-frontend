@@ -10,8 +10,8 @@ export default function AboutPage() {
       </section>
 
       <section className="mb-16">
-        <h2 className="text-3xl font-semibold mb-4">Our Story</h2>
-        <p className="text-gray-700 text-md">
+        <h2 className="text-2xl font-semibold mb-4">Our Story</h2>
+        <p className="text-gray-700 text-lg">
           Founded in 2023, our journey began with a simple idea: to make
           beautiful, functional products that fit seamlessly into your
           lifestyle. What started as a small project has now grown into a
@@ -20,7 +20,7 @@ export default function AboutPage() {
       </section>
 
       <section className="mb-16 ">
-        <h2 className="text-3xl font-semibold mb-4">What Makes Us Different</h2>
+        <h2 className="text-2xl font-semibold mb-4">Our Products</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
           <div className="bg-primary text-white shadow-lg rounded-xl p-6 py-12 text-center hover:shadow-xl transition duration-300">
             <h3 className="text-xl font-bold mb-2">Premium Quality</h3>
@@ -49,8 +49,8 @@ export default function AboutPage() {
         </div>
       </section>
       <section className="mb-16">
-        <h2 className="text-3xl font-semibold mb-4">Our Mission</h2>
-        <p className="text-gray-700 text-md">
+        <h2 className="text-2xl font-semibold mb-4">Our Mission</h2>
+        <p className="text-gray-700 text-lg">
           Our mission is to inspire creativity and organization through
           thoughtfully designed stationery products. We believe that the right
           tools can make a world of difference in your daily life.
