@@ -9,6 +9,7 @@ import { useRetrieveCart } from "@/lib/data/cart";
 import { convertToLocale } from "@/lib/utils/money";
 import WithSkeleton from "@/ui/common/components/Skeleton/with-skeleton";
 import { getCheckoutStep } from "@/lib/utils/checkout";
+import { useIsMobile } from "@/lib/hooks/useIsMobile";
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -21,9 +22,9 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
   const [openNote, setOpenNote] = useState(false);
   const [note, setNote] = useState("");
 
-  const { data: cart, isLoading, error } = useRetrieveCart();
+  const isMobile = useIsMobile()
 
-  console.log(cart)
+  const { data: cart, isLoading, error } = useRetrieveCart();
 
   const checkoutStep = getCheckoutStep(cart)
 
@@ -34,6 +35,9 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
         ? "top-[3.875rem] h-[calc(100vh-3.875rem)]"
         : "h-full";
 
+  if (isMobile) {
+    return
+  }
 
   return (
     <Drawer

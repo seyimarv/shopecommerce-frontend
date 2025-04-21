@@ -26,9 +26,10 @@ interface QuantitySelectorProps {
   onChange: (value: number) => void;
   quantity: number;
   className?: string;
+  compact?: boolean;
 }
 
-const QuantitySelector: React.FC<QuantitySelectorProps> = ({ min, max, onChange, quantity, className = "" }) => {
+const QuantitySelector: React.FC<QuantitySelectorProps> = ({ min, max, onChange, quantity, className = "", compact = false }) => {
   const [showMaxReachedMessage, setShowMaxReachedMessage] = useState(false);
 
   useEffect(() => {
@@ -103,7 +104,7 @@ const QuantitySelector: React.FC<QuantitySelectorProps> = ({ min, max, onChange,
 
   return (
     <div className={`relative ${className}`}>
-      <div className="flex items-center gap-0 font-light">
+      <div className={`flex items-center ${compact ? 'border border-gray-200 rounded-md p-1' : 'gap-0'} font-light`}>
         <QuantityButton
           onClick={() => updateQuantity(quantity - 1)}
           disabled={quantity <= min}
@@ -117,8 +118,9 @@ const QuantitySelector: React.FC<QuantitySelectorProps> = ({ min, max, onChange,
           value={quantity}
           onChange={handleInputChange}
           onBlur={handleBlur}
-          className="!w-8 text-center text-sm font-light outline-none bg-transparent appearance-none 
-                     [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+          className={`text-center text-sm font-light outline-none bg-transparent appearance-none 
+                     [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none
+                     ${compact ? '!w-8' : '!w-8'}`}
           min={min}
           max={max}
         />
@@ -132,7 +134,7 @@ const QuantitySelector: React.FC<QuantitySelectorProps> = ({ min, max, onChange,
         </QuantityButton>
       </div>
       {showMaxReachedMessage && (
-        <div className="absolute left-0 transform mt-1">
+        <div className={`absolute left-0 transform mt-1`}>
           <p className="text-xs text-red-400 whitespace-nowrap bg-white px-1 rounded-sm">Max quantity reached</p>
         </div>
       )}
