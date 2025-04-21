@@ -53,7 +53,7 @@ export default function FAQPage() {
               onClick={() => toggle(index)}
               className="w-full flex justify-between items-center p-5 bg-white hover:bg-gray-50 focus:outline-none"
             >
-              <span className="text-lg font-semibold text-gray-800 text-left break-words w-full">
+              <span className="text-lg text-gray-800 text-left break-words w-full">
                 {faq.question}
               </span>
               <span className="text-gray-500 ml-4">
