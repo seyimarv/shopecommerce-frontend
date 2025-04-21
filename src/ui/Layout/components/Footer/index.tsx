@@ -15,7 +15,7 @@ interface LinkItem {
 const links: LinkItem[] = [
   { title: "FAQ", path: "/faq" },
   { title: "About", path: "/about" },
-  { title: "Shipping and returns", path: "/terms-of-use" },
+  { title: "Shipping and returns", path: "/shipping" },
   { title: "Customer reviews", path: "/privacy-policy" },
 ];
 
