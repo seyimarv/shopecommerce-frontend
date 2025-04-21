@@ -14,7 +14,7 @@ interface LinkItem {
 
 const links: LinkItem[] = [
   { title: "FAQ", path: "/faq" },
-  { title: "About", path: "/team" },
+  { title: "About", path: "/about" },
   { title: "Shipping and returns", path: "/terms-of-use" },
   { title: "Customer reviews", path: "/privacy-policy" },
 ];
@@ -42,7 +42,7 @@ const Footer: React.FC = () => {
 
   return (
     <footer
-      className="bg-gray-900 text-white py-10 md:py-20 mt-auto px-4 md:px-0"
+      className="capitalize bg-gray-900 text-white py-10 md:py-20 mt-auto px-4 md:px-0"
       id="footer"
     >
       <div className="container mx-auto">

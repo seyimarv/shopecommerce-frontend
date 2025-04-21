@@ -20,7 +20,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Shophaul",
+  title: "ShopHaul",
   description: "Your go-to shopping destination.",
 };
 
