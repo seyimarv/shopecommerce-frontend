@@ -9,7 +9,7 @@ const Checkout = () => {
   const { data: cart, isLoading, error } = useRetrieveCart()
   return (
     <WithSkeleton isLoading={isLoading} skeleton={
-      <div className="flex items-center justify-center h-[75vh]">
+      <div className="flex items-center justify-center min-h-screen">
         <AiOutlineLoading3Quarters className="animate-spin" />
       </div>} >
       <CheckoutTemplate />
