@@ -1,69 +1,77 @@
-import React from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
-import { CiMenuBurger, CiSearch, CiShoppingCart } from 'react-icons/ci';
-import { IoMdClose } from 'react-icons/io';
-import { useRetrieveCart } from '@/lib/data/cart';
-import MobileDrawer from './mobile-drawer';
+import React from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { CiMenuBurger, CiSearch, CiShoppingCart } from "react-icons/ci";
+import { IoMdClose } from "react-icons/io";
+import { useRetrieveCart } from "@/lib/data/cart";
+import MobileDrawer from "./mobile-drawer";
 
 interface MenuToggleButtonProps {
-    isOpen: boolean;
-    onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  isOpen: boolean;
+  onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
-const MenuToggleButton: React.FC<MenuToggleButtonProps> = ({ isOpen, onClick }) => {
-    return (
-        <button
-            className="text-gray-800 p-2"
-            onClick={(e) => {
-                e.preventDefault();
-                onClick(e);
-            }}
-            aria-label={isOpen ? "Close menu" : "Open menu"}
-            data-drawer-toggle="true"
-        >
-            {isOpen ? <IoMdClose size={24} /> : <CiMenuBurger size={24} />}
-        </button>
-    );
+const MenuToggleButton: React.FC<MenuToggleButtonProps> = ({
+  isOpen,
+  onClick,
+}) => {
+  return (
+    <button
+      className="text-gray-800 p-2"
+      onClick={(e) => {
+        e.preventDefault();
+        onClick(e);
+      }}
+      aria-label={isOpen ? "Close menu" : "Open menu"}
+      data-drawer-toggle="true"
+    >
+      {isOpen ? <IoMdClose size={24} /> : <CiMenuBurger size={24} />}
+    </button>
+  );
 };
 
 interface MobileNavProps {
-    setSearchOpen: (open: boolean) => void;
-    setOpenCart: (open: boolean) => void;
-    setMobileMenuOpen?: (open: boolean) => void;
-    mobileMenuOpen: boolean;
+  setSearchOpen: (open: boolean) => void;
+  setOpenCart: (open: boolean) => void;
+  setMobileMenuOpen?: (open: boolean) => void;
+  mobileMenuOpen: boolean;
 }
 
 const MobileNav: React.FC<MobileNavProps> = ({
-    setSearchOpen,
-    setOpenCart,
-    setMobileMenuOpen,
-    mobileMenuOpen,
+  setSearchOpen,
+  setOpenCart,
+  setMobileMenuOpen,
+  mobileMenuOpen,
 }) => {
-    const { data: cart, isLoading: cartIsLoading, error: cartError } = useRetrieveCart()
-    return (
-        <>
-            <div className="lg:hidden w-full container">
-                <div className="flex items-center justify-between py-2">
-                    <MenuToggleButton 
-                        isOpen={mobileMenuOpen} 
-                        onClick={(e) => {
-                            setMobileMenuOpen?.(!mobileMenuOpen);
-                        }}
-                    />
-                    <div className="flex-1 flex justify-center">
-                        <Link href="/" className="flex items-center">
-                            <Image src="/logo.png" alt="ShopHaull" width={100} height={32} />
-                        </Link>
-                    </div>
-                    <div className="flex items-center gap-4">
-                        <button
-                            onClick={() => setSearchOpen(true)}
-                            className="text-gray-800 p-1"
-                            aria-label="Search"
-                        >
-                            <CiSearch size={22} />
-                        </button>
+  const {
+    data: cart,
+    isLoading: cartIsLoading,
+    error: cartError,
+  } = useRetrieveCart();
+  return (
+    <>
+      <div className="lg:hidden w-full container">
+        <div className="flex items-center justify-between py-2">
+          <MenuToggleButton
+            isOpen={mobileMenuOpen}
+            onClick={(e) => {
+              setMobileMenuOpen?.(!mobileMenuOpen);
+            }}
+          />
+          <div className="flex-1 flex justify-center">
+            <Link href="/" className="flex items-center">
+              <Image src="/logo.png" alt="ShopHaul" width={100} height={32} />
+            </Link>
+          </div>
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() => setSearchOpen(true)}
+              className="text-gray-800 p-1"
+              aria-label="Search"
+            >
+              <CiSearch size={22} />
+            </button>
+
 
                         <Link
                             href="/cart"
@@ -83,6 +91,7 @@ const MobileNav: React.FC<MobileNavProps> = ({
             <MobileDrawer isOpen={mobileMenuOpen} onClose={() => setMobileMenuOpen?.(false)} />
         </>
     );
+
 };
 
 export default MobileNav;

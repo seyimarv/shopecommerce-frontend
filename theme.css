@@ -1,33 +1,34 @@
 @theme {
-    /* Custom Colors */
-    --color-primary: #fa9c9b;
-    --color-secondary: #f6d3d2;
-    --color-tertiary: #D98886;
-    --color-background: #ffffff;
+  /* Custom Colors */
+  --color-primary: #fa9c9b;
+  --color-secondary: #f6d3d2;
+  --color-tertiary: #d98886;
+  --color-background: #ffffff;
 
-    /* Text Colors */
-    --text-button: #212326;
-    --text-primary: #212326;
-    --text-secondary: #212326;
+  /* Text Colors */
+  --text-button: #212326;
+  --text-primary: #212326;
+  --text-secondary: #212326;
 
-    /* Breakpoints */
-    --breakpoint-sm: 640px;
-    --breakpoint-md: 768px;
-    --breakpoint-lg: 1024px;
-    --breakpoint-xl: 1350px;
-    --breakpoint-2xl: 1536px;
+  /* Breakpoints */
+  --breakpoint-xs: 480px;
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1350px;
+  --breakpoint-2xl: 1536px;
 
-    /* Container Settings */
-    --container-padding: 1rem;
-    --container-padding-sm: 0.5rem;
-    --container-padding-md: 0.5rem;
-    --container-padding-lg: 1rem;
-    --container-padding-xl: 1rem;
-    --container-padding-2xl: 1rem;
+  /* Container Settings */
+  --container-padding: 1rem;
+  --container-padding-sm: 0.5rem;
+  --container-padding-md: 0.5rem;
+  --container-padding-lg: 1rem;
+  --container-padding-xl: 1rem;
+  --container-padding-2xl: 1rem;
 
-    /* Box Shadows */
-    --shadow-outline-icon: 0 0 0px 2px black;
+  /* Box Shadows */
+  --shadow-outline-icon: 0 0 0px 2px black;
 
-    /* Font Family */
-    --font-cactus: "PT Sans Narrow", serif;
+  /* Font Family */
+  --font-cactus: "PT Sans Narrow", serif;
 }

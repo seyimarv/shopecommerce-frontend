@@ -8,17 +8,17 @@ const navItems = [
   { name: "Orders", href: "/account/orders" },
 ];
 
-const AccountNav = () => {
+const AccountSidebar = () => {
   const pathname = usePathname();
 
   return (
-    <nav className="flex w-1/6 tracking-wide border-r-2 border-r-gray-100 mr-5">
-      <ul className="space-y-4">
+    <nav className="w-full lg:w-1/5 border-b-2 lg:border-b-0 lg:border-r-2 border-gray-100 pb-4 lg:pb-0 lg:pr-6">
+      <ul className="flex flex-row lg:flex-col gap-4 lg:gap-6">
         {navItems.map((item) => (
           <li key={item.href}>
             <Link
               href={item.href}
-              className={`text-lg font-medium ${
+              className={`text-base md:text-lg font-medium ${
                 pathname === item.href
                   ? "text-black font-semibold"
                   : "text-gray-500"
@@ -33,4 +33,4 @@ const AccountNav = () => {
   );
 };
 
-export default AccountNav;
+export default AccountSidebar;
