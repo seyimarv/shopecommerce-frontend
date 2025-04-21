@@ -2,7 +2,7 @@
 "use client";
 
 import React, { useState } from "react";
-import Link from "next/link"
+import Link from "next/link";
 import { IoIosArrowRoundForward } from "react-icons/io";
 import { Input } from "@/ui/common/components/input";
 import { socialLinks } from "@/lib/utils/nav-items";
@@ -12,16 +12,12 @@ interface LinkItem {
   path: string;
 }
 
-
-
 const links: LinkItem[] = [
-  { title: "FAQ", path: "/our-mission" },
+  { title: "FAQ", path: "/faq" },
   { title: "About", path: "/team" },
   { title: "Shipping and returns", path: "/terms-of-use" },
   { title: "Customer reviews", path: "/privacy-policy" },
 ];
-
-
 
 const Footer: React.FC = () => {
   const [email, setEmail] = useState<string>("");
@@ -45,7 +41,10 @@ const Footer: React.FC = () => {
   };
 
   return (
-    <footer className="bg-gray-900 text-white py-10 md:py-20 mt-auto px-4 md:px-0" id="footer">
+    <footer
+      className="bg-gray-900 text-white py-10 md:py-20 mt-auto px-4 md:px-0"
+      id="footer"
+    >
       <div className="container mx-auto">
         <div className="flex flex-col md:flex-row gap-8 md:gap-0 md:justify-between">
           <div className="w-full md:w-auto">
@@ -65,7 +64,9 @@ const Footer: React.FC = () => {
           </div>
           <div className="w-full md:w-auto md:min-w-[300px] lg:min-w-[400px]">
             <h2 className="text-base md:text-lg font-medium">SHOPHAUL</h2>
-            <p className="text-gray-400 mt-2 text-sm md:text-base">Your one-stop shop</p>
+            <p className="text-gray-400 mt-2 text-sm md:text-base">
+              Your one-stop shop
+            </p>
             <div className="flex flex-col mt-6">
               <h4 className="text-white uppercase text-sm md:text-base font-medium">
                 SUBSCRIBE TO OUR NEWSLETTER
@@ -84,7 +85,10 @@ const Footer: React.FC = () => {
                       className="cursor-pointer bg-transparent w-fit"
                       aria-label="Subscribe"
                     >
-                      <IoIosArrowRoundForward size={24} className="md:text-[30px]" />
+                      <IoIosArrowRoundForward
+                        size={24}
+                        className="md:text-[30px]"
+                      />
                     </button>
                   }
                 />
@@ -100,7 +104,11 @@ const Footer: React.FC = () => {
           </div>
           <div className="flex gap-4 items-center order-1 md:order-2">
             {socialLinks.map((item, index) => (
-              <Link href={item.path || "#"} key={index} className="text-gray-400 hover:text-white">
+              <Link
+                href={item.path || "#"}
+                key={index}
+                className="text-gray-400 hover:text-white"
+              >
                 <item.Icon size={20} className="md:text-[24px]" />
               </Link>
             ))}
