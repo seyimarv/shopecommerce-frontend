@@ -1,7 +1,5 @@
 @import "tailwindcss";
 
-
-
 /* @utility container-sm {
   padding-inline: 0.5rem;
 }
@@ -14,13 +12,11 @@
   padding-inline: 8rem;
 } */
 
-
-
 @theme {
   /* Custom Colors */
   --color-primary: #fa9c9b;
   --color-secondary: #f6d3d2;
-  --color-tertiary: #D98886;
+  --color-tertiary: #d98886;
   --color-background: #ffffff;
 
   /* Text Colors */
@@ -29,6 +25,7 @@
   --text-secondary: #212326;
 
   /* Breakpoints */
+  --breakpoint-xs: 480px;
   --breakpoint-sm: 640px;
   --breakpoint-md: 768px;
   --breakpoint-lg: 1024px;
@@ -66,18 +63,15 @@
   /* Firefox */
 }
 
-
 :root {
   --background: #ffffff;
   --foreground: #171717;
 }
 
-
 body {
   color: var(--foreground);
   background: var(--background);
 }
-
 
 @layer components {
   /* Medium screens */
@@ -92,7 +86,7 @@ body {
       padding-inline: 0.5rem;
     }
   }
-  
+
   /* Large screens */
   @media (min-width: 1024px) {
     .container {
