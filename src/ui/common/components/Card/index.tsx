@@ -56,7 +56,7 @@ const Card: React.FC<CardProps> = (data) => {
   const title = isCollection ? collection.title : product?.title;
   const thumbnail = isCollection
     ? collection.metadata?.cover_image
-    : product?.thumbnail;
+    : product?.thumbnail || product?.images?.[0]?.url;
 
   const hasVariants = product ? checkHasVariants(product) : false;
   const soldOut = product ? isProductSoldOut(product) : false;

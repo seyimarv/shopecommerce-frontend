@@ -14,6 +14,11 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "medusa-public-images.s3.eu-west-1.amazonaws.com",
       },
+      {
+        protocol: "https",
+        hostname: "sxnovikcvirmrnhtstsx.supabase.co",
+        pathname: "/storage/v1/object/**",
+      }
     ],
   },
 };

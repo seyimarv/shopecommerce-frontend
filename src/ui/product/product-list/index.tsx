@@ -98,11 +98,11 @@ const ProductList: React.FC<ProductListProps> = ({
 }) => {
   return (
     <section className={`mb-8 md:mb-0 ${className}`}>
-      {title && <ProductTitle title={title} />}
+      {(title && (isLoading || (products && products.length > 0))) && <ProductTitle title={title} />}
       <WithSkeleton isLoading={isLoading} skeleton={<ProductsSkeleton />}>
         <ProductItems products={products} hideButtons={hideButtons} />
       </WithSkeleton>
-      {viewMore && href && <ViewMoreLink href={href} />}
+      {(products && products.length > 0) && viewMore && href && <ViewMoreLink href={href} />}
     </section>
   );
 };

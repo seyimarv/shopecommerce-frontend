@@ -9,11 +9,13 @@ import Button from "@/ui/common/components/button";
 import QuantitySelector from "@/ui/common/components/quantityselector";
 import Link from "next/link";
 import OptionSelect from "./variant-select";
-import { useAddToCart, useRetrieveCart } from "@/lib/data/cart";
+import { useAddToCart } from "@/lib/data/cart";
 import { useIsMobile } from "@/lib/hooks/useIsMobile";
 import Thumbnail from "../Thumbnail";
 import { IoMdClose } from "react-icons/io";
 import Divider from "@/ui/common/components/Divider";
+import toast from 'react-hot-toast';
+import CustomToast from "@/ui/common/components/custom-toast";
 
 interface ProductActionsProps {
     product: HttpTypes.StoreProduct;
@@ -113,7 +115,22 @@ const ProductActions = ({ product, onCartOpen, onModalClose }: ProductActionsPro
             },
             {
                 onSuccess: () => {
-                    onCartOpen();
+                    if (onModalClose) {
+                        onModalClose();
+                    }
+                    if (isMobile) {
+                        toast.custom((t) => (
+                            <CustomToast
+                                message="Product has been added to cart"
+                                actionLink="/cart"
+                                actionText="View Cart"
+                                type="success"
+                                onClose={() => toast.dismiss(t.id)}
+                            />
+                        ));
+                    } else {
+                        onCartOpen();
+                    }
                 }
             }
         );

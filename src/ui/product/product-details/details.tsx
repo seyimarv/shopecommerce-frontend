@@ -11,6 +11,9 @@ import OptionSelect from "../product-actions/variant-select";
 import ProductPrice from "../product-price";
 import { GrFavorite } from "react-icons/gr";
 import ProductInfoTab from "./product-info";
+import CustomToast from "@/ui/common/components/custom-toast";
+import toast from "react-hot-toast";
+import { useIsMobile } from "@/lib/hooks/useIsMobile";
 
 interface ProductActionsProps {
   product: HttpTypes.StoreProduct;
@@ -32,6 +35,7 @@ const ProductActions = ({ product, onCartOpen }: ProductActionsProps) => {
     {}
   );
   const { mutate: addToCartMutation, isPending, error } = useAddToCart();
+  const isMobile = useIsMobile();
 
   // If there is only 1 variant, preselect the options
   useEffect(() => {
@@ -108,7 +112,19 @@ const ProductActions = ({ product, onCartOpen }: ProductActionsProps) => {
       },
       {
         onSuccess: () => {
-          onCartOpen();
+          if(isMobile) {
+            toast.custom((t) => (
+              <CustomToast
+                message="Product has been added to cart"
+                actionLink="/cart"
+                actionText="View Cart"
+                type="success"
+                onClose={() => toast.dismiss(t.id)}
+              />
+            ));
+          } else {
+            onCartOpen();
+          }
         }
       }
     );

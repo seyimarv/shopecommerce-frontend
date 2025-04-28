@@ -13,18 +13,15 @@ const CartTemplate = () => {
   return (
     <WithSkeleton isLoading={isLoading} skeleton={<CartTableSkeleton />}>
       {
-        cart && <>
-          {cart?.items?.length === 0 ? (
-            <EmptyCart />
-          ) : (
-            <div className="overflow-x-auto">
-              <CartTable data={cart?.items || []} currencyCode={cart?.currency_code} />
-              <Summary subtotal={convertToLocale({ amount: cart?.subtotal || 0, currency_code: cart?.currency_code })} />
-            </div>
-          )}
-        </>
+        (!cart || cart?.items?.length === 0) ? (
+          <EmptyCart />
+        ) : (
+          <div className="overflow-x-auto">
+            <CartTable data={cart?.items || []} currencyCode={cart?.currency_code} />
+            <Summary subtotal={convertToLocale({ amount: cart?.subtotal || 0, currency_code: cart?.currency_code })} />
+          </div>
+        )
       }
-
     </WithSkeleton>
   );
 };

@@ -9,21 +9,21 @@ import ProfileLayout from "@/ui/profile/profile-layout";
 import Overview from "@/ui/profile/overviewcomponent";
 
 const AccountLayout = ({ children }: { children: React.ReactNode }) => {
-  const { data: customer, isLoading, error } = useRetrieveCustomer();
+  const { data: customer, isLoading, isFetching } = useRetrieveCustomer();
 
-  const { mutate: logout, isPending } = useLogout();
+  const { mutate: logout } = useLogout();
   const router = useRouter();
 
   const logOut = () => {
     logout();
-    router.push("/");
+    router.push("/login");
   };
 
   useEffect(() => {
-    if (!isLoading && !customer) {
+    if (!isFetching && !customer) {
       router.push("/login");
     }
-  }, [isLoading, customer]);
+  }, [isFetching, customer, router]);
 
   return (
     <WithSkeleton isLoading={isLoading}>

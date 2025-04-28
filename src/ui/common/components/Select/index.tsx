@@ -178,7 +178,7 @@ export const SelectContentBase = ({
 };
 
 export const SelectContent = ({ children, className }: SelectContentProps) => {
-  const { open, setOpen, selected, title } = useSelect();
+  const { open, setOpen, title } = useSelect();
 
   return (
     <>
@@ -193,7 +193,7 @@ export const SelectContent = ({ children, className }: SelectContentProps) => {
         isOpen={open}
         onClose={() => setOpen(false)}
         position="bottom"
-        className={`rounded-t-xl max-h-[80vh] ${className}`}
+        className={`rounded-t-xl max-h-[80vh] w-full !max-w-[500px] ${className}`}
         wrapperClassName="md:hidden"
       >
         <div className="p-4">

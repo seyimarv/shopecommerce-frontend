@@ -45,11 +45,9 @@ const OrdersList = ({ orders }: { orders: HttpTypes.StoreOrder[] }) => {
             );
           })
         ) : (
-          <div>
+          <div className="flex flex-col gap-4 md:flex-row md:gap-4 md:items-center">
             <span>You don't have any orders yet, let us change that!</span>
-            <Link href="/products">
-              <Button>Continue Shopping</Button>
-            </Link>
+            <Button isLink href="/products" className="w-fit">Continue Shopping</Button>
           </div>
         )}
       </ul>

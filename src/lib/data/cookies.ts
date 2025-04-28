@@ -64,7 +64,17 @@ const setCookie = (name: string, value: string, maxAge: number) => {
     if (typeof document === "undefined") return;
 
     const expires = new Date(Date.now() + maxAge * 1000).toUTCString();
-    document.cookie = `${name}=${value}; expires=${expires}; path=/; sameSite=strict; secure=${process.env.NODE_ENV === "production"}`;
+    const isProduction = process.env.NODE_ENV === "production";
+
+    let cookieString = `${name}=${value}; expires=${expires}; path=/`;
+
+    if (isProduction) {
+        cookieString += "; SameSite=Strict; Secure";
+    } else {
+        cookieString += "; SameSite=Lax";
+    }
+
+    document.cookie = cookieString;
 };
 
 const removeCookie = (name: string) => {
