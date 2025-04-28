@@ -166,13 +166,15 @@ export async function getOrSetCart(
   return cart;
 }
 
-export async function updateCart(data: HttpTypes.StoreUpdateCart) {
+export async function updateCart(data: HttpTypes.StoreUpdateCart, countryCode?: string) {
   const cartId = getCartId();
 
+  if (!cartId && countryCode) {
+    await getOrSetCart(countryCode);
+  }
+
   if (!cartId) {
-    throw new Error(
-      "No existing cart found, please create one before updating"
-    );
+    return
   }
 
   return sdk.store.cart
@@ -297,19 +299,19 @@ const applyPromotionsToCart = async (codes: string[], prevPromotions: any[]) => 
     );
 
     if (codes.length > 0 && (!response.cart.promotions || response.cart.promotions.length === 0)) {
-        throw new Error(`Unable to apply promo code '${codes.join(', ')}'. It may be invalid or expired.`);
+      throw new Error(`Unable to apply promo code '${codes.join(', ')}'. It may be invalid or expired.`);
     }
     const currentPromotionIds = (response.cart.promotions || []).map(p => p.id).sort();
     const previousPromotionIds = (prevPromotions || []).map(p => p.id).sort();
-    const promotionsAreEqual = 
-      currentPromotionIds.length === previousPromotionIds.length && 
+    const promotionsAreEqual =
+      currentPromotionIds.length === previousPromotionIds.length &&
       currentPromotionIds.every((id, index) => id === previousPromotionIds[index]);
 
     if (promotionsAreEqual && codes.length > 0) {
-        const attemptedCode = codes.find(c => !previousPromotionIds.includes(c));
-        if (attemptedCode || codes.length > previousPromotionIds.length) { 
-             throw new Error(`Unable to apply promo code '${codes.join(', ')}'. It may be invalid, expired, or already applied.`);
-        }
+      const attemptedCode = codes.find(c => !previousPromotionIds.includes(c));
+      if (attemptedCode || codes.length > previousPromotionIds.length) {
+        throw new Error(`Unable to apply promo code '${codes.join(', ')}'. It may be invalid, expired, or already applied.`);
+      }
     }
     console.log(response.cart)
     return response.cart;
@@ -318,7 +320,7 @@ const applyPromotionsToCart = async (codes: string[], prevPromotions: any[]) => 
   }
 };
 
-export const useApplyPromotions = ({prevPromtions = []}: {prevPromtions: any[]}) => {
+export const useApplyPromotions = ({ prevPromtions = [] }: { prevPromtions: any[] }) => {
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
@@ -369,11 +371,11 @@ export const useGetOrSetCart = (countryCode: string) => {
   });
 };
 
-export const useUpdateCart = () => {
+export const useUpdateCart = (countryCode?: string) => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: HttpTypes.StoreUpdateCart) => updateCart(data),
+    mutationFn: (data: HttpTypes.StoreUpdateCart) => updateCart(data, countryCode),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["cart"] });
     },

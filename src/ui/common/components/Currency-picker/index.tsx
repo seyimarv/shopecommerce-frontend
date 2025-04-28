@@ -15,7 +15,7 @@ interface CurrencyPickerProps {
 
 export default function CurrencyPicker({ regions }: CurrencyPickerProps) {
   const { countryCode, setCountryCode, setStoredCountryCode } = useRegion();
-  const { mutate: updateCart, isPending } = useUpdateCart();
+  const { mutate: updateCart } = useUpdateCart(countryCode);
 
   const selectRegion = (countryCode: string) => {
     return regions?.find((region) =>
