@@ -25,20 +25,21 @@ const SearchResults = () => {
     }, [initialSearchQuery]);
 
     return (
-        <div className="container py-10">
-            <div className="max-w-md mx-auto mb-8">
+        <div className="container py-8 md:py-10">
+            <div className="w-full px-4 md:max-w-md md:px-0 mx-auto mb-4 md:mb-8">
                 {
                     !!initialSearchQuery ? (
-                        <h1 className="text-4xl mb-6 text-center">
+                        <h1 className="text-3xl md:text-4xl mb-6 text-center">
                             Search Results for "{initialSearchQuery}"
                         </h1>
                     ) : (
-                        <h1 className="text-4xl mb-6 text-center">
+                        <h1 className="text-3xl md:text-4xl mb-6 text-center">
                             Search Products
                         </h1>
                     )
                 }
                 <SearchInput
+                    className="w-full text-base" // Ensure full width and prevent mobile zoom
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                     onKeyDown={handleKeyDown}

@@ -6,12 +6,12 @@ import { useListProducts } from "@/lib/data/products";
 import { debounce } from "@/lib/utils/debounce";
 import { HttpTypes } from "@medusajs/types";
 import { useRouter, usePathname } from "next/navigation";
+import { useInView } from "@/lib/hooks/useInView";
 
 const customContentAnimation = {
   hidden: { y: "0", opacity: 0 },
   visible: { y: "0%", opacity: 1 },
 };
-
 
 const ProductSearch = ({
   isOpen,
@@ -19,43 +19,55 @@ const ProductSearch = ({
 }: {
   isOpen: boolean;
   onClose: () => void;
-}) => { 
+}) => {
+  const { isInView: isBannerInView } = useInView({ id: "banner" });
+  const { isInView: isHeaderInView } = useInView({ id: "header" });
   const router = useRouter();
   const pathname = usePathname();
   const prevPathnameRef = useRef(pathname);
   const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedQuery, setDebouncedQuery] = useState("");
   const [searchResults, setSearchResults] = useState<HttpTypes.StoreProduct[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
 
+  const debouncedSetQuery = useCallback(
+    debounce((query: string) => {
+      setDebouncedQuery(query);
+      setHasSearched(query.trim() !== "");
+    }, 300),
+    []
+  );
+
+  useEffect(() => {
+    debouncedSetQuery(searchQuery);
+  }, [searchQuery, debouncedSetQuery]);
+
   const { data: products, isLoading, error } = useListProducts({
     queryParams: {
       limit: 12,
-      q: searchQuery,
+      //@ts-ignore
+      q: debouncedQuery,
     },
+    enabled: debouncedQuery.trim() !== "",
   });
-  const debouncedSearch = useCallback(
-    debounce((query: string) => {
-      if (query.trim() === "") {
-        setSearchResults([]);
-        setHasSearched(false);
-        return;
-      }
 
-      setIsSearching(true);
-      setHasSearched(true);
-      if (products?.response?.products) {
-        setSearchResults(products.response.products);
-      }
-      setIsSearching(false);
-    }, 300),
-    [products]
-  );
+  useEffect(() => {
+    setIsSearching(isLoading);
+    if (!isLoading && products?.response?.products) {
+      setSearchResults(products.response.products);
+    } else if (!isLoading && debouncedQuery.trim() === "") {
+      setSearchResults([]);
+    }
+    if (error) {
+      console.error("Search error:", error);
+      setSearchResults([]);
+    }
+  }, [isLoading, products, debouncedQuery, error]);
 
   const handleSearch = useCallback((query: string) => {
     setSearchQuery(query);
-    debouncedSearch(query);
-  }, [debouncedSearch]);
+  }, []);
 
   useEffect(() => {
     if (isOpen) {
@@ -77,17 +89,25 @@ const ProductSearch = ({
       onClose();
     }
   };
+
+  const drawerClassName =
+    isBannerInView && isHeaderInView
+      ? "!top-[2.5rem] h-[calc(100vh-2.5rem)]"
+      : isHeaderInView
+        ? "!top-[0] h-[calc(100vh)]"
+        : "h-full";
+
   return (
     <Drawer
       isOpen={isOpen}
       onClose={onClose}
       position="top"
-      wrapperClassName="!top-[2.5rem]"
+      wrapperClassName={drawerClassName}
       contentAnimation={customContentAnimation}
     >
-      <div className="max-w-lg mx-auto mt-5 mb-6">
+      <div className="w-full px-4 md:max-w-lg md:px-0 mx-auto mt-5 mb-6 overflow-hidden">
         <SearchInput
-          className="border border-gray-200 rounded-full self-center bg-gray-50"
+          className="border border-gray-200 rounded-full self-center bg-gray-50 w-full text-base"
           value={searchQuery}
           onChange={(e) => handleSearch(e.target.value)}
           placeholder="Search products..."
@@ -102,9 +122,9 @@ const ProductSearch = ({
           loading={isSearching || isLoading}
           hasSearch={hasSearched && !!searchQuery}
           searchQuery={searchQuery}
+          onClose={onClose}
         />
       )}
-     
     </Drawer>
   );
 };

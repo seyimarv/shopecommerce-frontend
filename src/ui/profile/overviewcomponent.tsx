@@ -39,8 +39,6 @@ const getProfileCompletion = (customer: HttpTypes.StoreCustomer | null) => {
 };
 
 const OverviewComponent = ({ customer, orders }: OverviewComponentProps) => {
-  console.log("Customer:", customer);
-  console.log("Orders:", orders);
 
   return (
     <div className=" flex flex-col gap-y-2 tracking-wide">

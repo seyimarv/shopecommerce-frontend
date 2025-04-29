@@ -14,7 +14,7 @@ const inputVariants = cva(
         error: "border-red-500 text-red-500 focus:border-red-500 focus:ring-red-500",
       },
       size: {
-        default: "h-10",
+        default: "h-10 text-base",
         sm: "h-8 px-2 text-xs",
         lg: "h-12 px-4 text-base",
       },

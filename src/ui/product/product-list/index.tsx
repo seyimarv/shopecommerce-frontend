@@ -47,7 +47,7 @@ const ProductItems: React.FC<ProductItemsProps> = ({
   className = "",
 }) => (
   <div
-    className={`grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 gap-y-10 md:gap-y-20 ${className}`}
+    className={`grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-4 gap-y-6 md:gap-y-20 ${className}`}
   >
     {products?.map((product) => (
       <ProductPreview
@@ -97,7 +97,7 @@ const ProductList: React.FC<ProductListProps> = ({
   isLoading,
 }) => {
   return (
-    <section className={`mb-8 md:mb-0 ${className}`}>
+    <section className={`${className}`}>
       {(title && (isLoading || (products && products.length > 0))) && <ProductTitle title={title} />}
       <WithSkeleton isLoading={isLoading} skeleton={<ProductsSkeleton />}>
         <ProductItems products={products} hideButtons={hideButtons} />

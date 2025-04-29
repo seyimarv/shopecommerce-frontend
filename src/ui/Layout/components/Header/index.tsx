@@ -57,11 +57,6 @@ const Header: React.FC = () => {
     error: cartError,
   } = useRetrieveCart();
 
-  const {
-    data: customer,
-    isLoading: customerIsLoading,
-    error: customerError,
-  } = useRetrieveCustomer();
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 

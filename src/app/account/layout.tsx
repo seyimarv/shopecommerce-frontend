@@ -6,7 +6,6 @@ import { useRouter } from "next/navigation";
 import { useLogout } from "@/lib/data/customer";
 import { useEffect } from "react";
 import ProfileLayout from "@/ui/profile/profile-layout";
-import Overview from "@/ui/profile/overviewcomponent";
 
 const AccountLayout = ({ children }: { children: React.ReactNode }) => {
   const { data: customer, isLoading, isFetching } = useRetrieveCustomer();
@@ -27,7 +26,11 @@ const AccountLayout = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <WithSkeleton isLoading={isLoading}>
-      <ProfileLayout logOut={logOut}>{children}</ProfileLayout>
+      {
+        customer && (
+          <ProfileLayout logOut={logOut}>{children}</ProfileLayout>
+        )
+      }
     </WithSkeleton>
   );
 };
