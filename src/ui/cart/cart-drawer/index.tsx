@@ -43,8 +43,6 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
     });
   };
 
-  const checkoutStep = getCheckoutStep(cart)
-
   const drawerClassName =
     isBannerInView && isHeaderInView
       ? "top-[6.375rem] h-[calc(100vh-6.375rem)]"
@@ -128,7 +126,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                 </div>
                 <div className="flex w-full justify-between mt-4 px-4 pb-4">
                   <Button
-                    href={cart?.id ? `/checkout?step=` + checkoutStep : '#'}
+                    href={cart?.id ? `/checkout?step=${getCheckoutStep(cart)}` : '#'}
                     disabled={!cart?.id || isLoading || cart?.items?.length === 0}
                     isLink
                   >
