@@ -1,18 +1,34 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import TextArea from "@/ui/common/components/text-area";
 import Button from "@/ui/common/components/button";
-import { useRetrieveCart } from "@/lib/data/cart";
+import { useRetrieveCart, useUpdateCart } from "@/lib/data/cart";
 import { getCheckoutStep } from "@/lib/utils/checkout";
+import { useRouter } from "next/navigation";
 
 interface SummaryProps {
   subtotal: string;
 }
 
 export default function Summary({ subtotal }: SummaryProps) {
-  const [note, setNote] = useState("");
   const { data: cart, isLoading } = useRetrieveCart();
+  const {mutate: updateCart, isPending, error } = useUpdateCart();
+  const [note, setNote] = useState("");
+  const router = useRouter();
 
-  const checkoutStep = getCheckoutStep(cart);
+  useEffect(() => {
+    if (cart?.metadata?.note && typeof cart.metadata.note === 'string') {
+      setNote(cart.metadata.note);
+    }
+  }, [cart]);
+
+  const onSubmitNote = () => {
+    if (!cart) return;
+    updateCart({ metadata: { note } }, {
+      onSuccess: () => {
+        router.push(`/checkout?step=${getCheckoutStep(cart)}`);
+      },
+    });
+  };
 
   return (
     <div className="w-full">
@@ -43,8 +59,9 @@ export default function Summary({ subtotal }: SummaryProps) {
 
           <Button
             className="w-full md:w-auto mt-2"
-            href={cart?.id ? `/checkout?step=` + checkoutStep : "#"}
+            onClick={onSubmitNote}
             disabled={!cart?.id || isLoading || cart?.items?.length === 0}
+            isLoading={isPending}
             isLink
           >
             Check Out

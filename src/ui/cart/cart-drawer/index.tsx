@@ -2,7 +2,7 @@ import { useInView } from "@/lib/hooks/useInView";
 import { Drawer } from "../../Layout/components/Drawer";
 import CartProduct from "@/ui/product/cart-product";
 import Button from "@/ui/common/components/button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import TextArea from "@/ui/common/components/text-area";
 import { GoPencil } from "react-icons/go";
 import { useRetrieveCart } from "@/lib/data/cart";
@@ -10,6 +10,7 @@ import { convertToLocale } from "@/lib/utils/money";
 import WithSkeleton from "@/ui/common/components/Skeleton/with-skeleton";
 import { getCheckoutStep } from "@/lib/utils/checkout";
 import { useIsMobile } from "@/lib/hooks/useIsMobile";
+import { useUpdateCart } from "@/lib/data/cart";
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -24,7 +25,23 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
 
   const isMobile = useIsMobile()
 
-  const { data: cart, isLoading, error } = useRetrieveCart();
+  const { data: cart, isLoading } = useRetrieveCart();
+  const { mutate: updateCart, isPending } = useUpdateCart();
+
+  useEffect(() => {
+    if (cart?.metadata?.note && typeof cart.metadata.note === 'string') {
+      setNote(cart.metadata.note);
+    }
+  }, [cart]);
+
+  const onSubmitNote = () => {
+    if (!cart) return;
+    updateCart({ metadata: { note } }, {
+      onSuccess: () => {
+        setOpenNote(false);
+      },
+    });
+  };
 
   const checkoutStep = getCheckoutStep(cart)
 
@@ -143,7 +160,14 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                     rows={6}
                     className="border-gray-300"
                   />
-                  <Button className="mt-4 w-full">Apply</Button>
+                  <Button 
+                    className="mt-4 w-full" 
+                    onClick={onSubmitNote} 
+                    isLoading={isPending}
+                    disabled={isPending || !cart}
+                  >
+                    Apply
+                  </Button>
                 </div>
               </Drawer>
             </>
