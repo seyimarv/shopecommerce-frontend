@@ -7,10 +7,13 @@ import { notFound, useParams } from "next/navigation";
 
 const OrderConfirmedPage = () => {
   const params = useParams();
-  const { id } = params;
+  const idParam = params.id;
 
-  const { data: order, isPending, error } = useRetrieveOrder(id);
-  console.log(order);
+  if (typeof idParam !== 'string') {
+    return notFound();
+  }
+
+  const { data: order, isPending, error } = useRetrieveOrder(idParam);
   if (!order && !isPending) {
     return notFound();
   }

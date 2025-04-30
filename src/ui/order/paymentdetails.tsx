@@ -9,24 +9,23 @@ type PaymentDetailsProps = {
 
 const PaymentDetails = ({ order }: PaymentDetailsProps) => {
   const payment = order.payment_collections?.[0].payments?.[0];
-  console.log(isPaystack(payment?.provider_id));
-  console.log(payment?.provider_id);
+
   return (
     <div>
       <div>
-        <h2 className="text-2xl font-semibold tracking-wide my-3 ">Payment</h2>
-
+        <h2 className="text-xl md:text-2xl font-semibold tracking-wide my-3 ">Payment</h2>
         {payment && (
-          <div className="flex items-start gap-x-8">
-            <div className="flex flex-col gap-2 w-1/3">
-              <h3 className="font-medium text-xl">Payment Method</h3>
-              <h3 className="uppercase">
-                {paymentInfoMap[payment.provider_id].title}
+          <div className="flex flex-col md:flex-row items-start gap-y-6 md:gap-x-8">
+            <div className="flex flex-col gap-y-1 w-full md:w-1/3">
+        
+              <h3 className="font-medium text-lg md:text-xl">Payment Method</h3>
+              <h3 className="uppercase text-sm md:text-base">
+                {paymentInfoMap[payment.provider_id]?.title || payment.provider_id}
               </h3>
             </div>
-            <div className="flex flex-col gap-2 w-2/3">
-              <h3 className="font-medium text-xl">Payment Details</h3>
-              <div className="flex gap-2 txt-medium items-center">
+            <div className="flex flex-col gap-y-1 w-full md:w-2/3">
+              <h3 className="font-medium text-lg md:text-xl">Payment Details</h3>
+              <div className="flex gap-2 txt-medium items-center text-sm md:text-base">
                 {isPaystack(payment.provider_id) && (
                   <>
                     <div className="flex items-center h-7 w-fit">
@@ -44,7 +43,7 @@ const PaymentDetails = ({ order }: PaymentDetailsProps) => {
                     </h3>
                   </>
                 )}
-                <h3>
+                <h3 className="break-all">
                   {isManual(payment.provider_id) &&
                     `${convertToLocale({
                       amount: payment.amount,

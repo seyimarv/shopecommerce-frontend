@@ -49,7 +49,7 @@ const OrderCartSummary = ({ order }: OrderProps) => {
         ))}
       </div>
 
-      <div className="mt-3 space-y-2 text-lg text-gray-700">
+      <div className="mt-3 space-y-2 text-base md:text-lg text-gray-700">
         <div className="flex justify-between">
           <span>Subtotal</span>
           <span>
@@ -96,7 +96,7 @@ const OrderCartSummary = ({ order }: OrderProps) => {
         </div>
       )}
       <Divider className="mt-3" />
-      <div className="flex justify-between text-xl font-bold mt-2">
+      <div className="flex justify-between text-lg md:text-xl font-bold mt-2">
         <span>Total</span>
         <span>
           {convertToLocale({

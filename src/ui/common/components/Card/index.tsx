@@ -161,7 +161,7 @@ const Card: React.FC<CardProps> = (data) => {
           !hideButtons && product &&
           <div className="lg:hidden absolute bottom-4 right-2 z-10">
             {soldOut ? (
-              <div className="p-1 bg-red-50 border border-red-200 rounded-sm text-xs text-red-600">
+              <div className="p-1 bg-red-50 border border-red-200 rounded-sm text-xs text-red-600 uppercase">
                 <div>
                   Sold out
                 </div>

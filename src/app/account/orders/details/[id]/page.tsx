@@ -8,22 +8,30 @@ import { notFound, useParams } from "next/navigation";
 
 const OrderDetailsPage = () => {
   const params = useParams();
-  const { id } = params;
+  const idParam = params.id;
 
-  const { data: order, isPending, error } = useRetrieveOrder(id);
-  console.log(order);
-  if (!order && !isPending) {
+  if (typeof idParam !== 'string') {
+    return notFound();
+  }
+
+  const { data: order, isPending, error } = useRetrieveOrder(idParam);
+
+  if (!order && !isPending && error) {
     return notFound();
   }
 
   return (
     <WithSkeleton isLoading={isPending}>
       {order && (
-        <div className="flex flex-col gap-3">
-          <h1 className="text-3xl">Order Details</h1>
-          <OrderDetails order={order} />
-          <h2 className="font-semibold tracking-wide text-2xl">Summary</h2>
-          <OrderItems order={order} />
+        <div className="flex flex-col gap-y-8 py-8">
+          <h1 className="text-xl md:text-3xl">Order Details</h1>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <OrderDetails order={order} />
+            <div className="flex flex-col gap-y-4">
+              <h2 className="font-semibold tracking-wide text-lg md:text-2xl">Summary</h2>
+              <OrderItems order={order} />
+            </div>
+          </div>
         </div>
       )}
     </WithSkeleton>

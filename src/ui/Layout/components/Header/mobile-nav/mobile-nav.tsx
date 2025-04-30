@@ -17,7 +17,7 @@ const MenuToggleButton: React.FC<MenuToggleButtonProps> = ({
 }) => {
   return (
     <button
-      className="text-gray-800 p-2"
+      className="text-gray-800 py-2"
       onClick={(e) => {
         e.preventDefault();
         onClick(e);

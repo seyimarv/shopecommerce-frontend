@@ -5,9 +5,7 @@ import {
   getAuthHeaders,
   setAuthToken,
   removeAuthToken,
-  getCacheTag,
 } from "./cookies";
-// import { revalidateTag } from "next/cache";
 import { HttpTypes } from "@medusajs/types";
 
 type AddressInput = {
@@ -122,7 +120,7 @@ export const useDeleteCustomerAddress = () => {
   return useMutation({
     mutationFn: async (addressId: string) => {
       const headers = {
-        ...(await getAuthHeaders()),
+        ...getAuthHeaders(),
       };
 
       await sdk.store.customer.deleteAddress(addressId, headers);

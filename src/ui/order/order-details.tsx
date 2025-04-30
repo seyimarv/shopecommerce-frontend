@@ -8,13 +8,13 @@ type OrderDetailsProps = {
 
 const OrderDetails = ({ order }: OrderDetailsProps) => {
   return (
-    <div className="flex flex-col gap-2 text-lg">
+    <div className="flex flex-col gap-3 text-base md:text-lg">
       <h3 className="">
         We have sent the order confirmation details to:{" "}
-        <span className="font-bold">{order.email}</span>
+        <span className="font-bold break-all">{order.email}</span>
       </h3>
-      <div className="flex gap-5 tracking-wide">
-        <div>
+      <div className="flex flex-col md:flex-row gap-y-2 md:gap-x-5 tracking-wide">
+        <div className="flex flex-col">
           <h3 className="">
             Order Date:
             <span> {new Date(order.created_at).toDateString()}</span>
@@ -23,7 +23,7 @@ const OrderDetails = ({ order }: OrderDetailsProps) => {
             Order Number: <span>{order.display_id}</span>
           </h3>
         </div>
-        <div>
+        <div className="flex flex-col">
           <h3>
             Order Status:{" "}
             <span className=" uppercase">

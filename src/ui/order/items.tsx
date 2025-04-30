@@ -7,7 +7,6 @@ type ItemsProps = {
   order: HttpTypes.StoreOrder;
 };
 const OrderItems = ({ order }: ItemsProps) => {
-  const data = order.items;
   return (
     <div>
       <Divider className="mb-4" />

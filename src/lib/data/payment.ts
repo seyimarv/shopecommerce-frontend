@@ -1,4 +1,4 @@
-let MEDUSA_BACKEND_URL = "http://localhost:9000"
+let MEDUSA_BACKEND_URL = "https://shopecommerc-backend-copy-production.up.railway.app"
 if (typeof window !== "undefined" && process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL) {
   MEDUSA_BACKEND_URL = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL
 }
