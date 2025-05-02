@@ -1,19 +1,18 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { HttpTypes } from "@medusajs/types";
-import { useParams } from "next/navigation";
-import { useState, useEffect, useMemo, useRef } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { isEqual } from "lodash";
-import ProductPrice from "../product-price";
 import Accordion from "@/ui/common/components/Accordion";
 import Button from "@/ui/common/components/button";
+import Divider from "@/ui/common/components/Divider";
 import QuantitySelector from "@/ui/common/components/quantityselector";
 import Link from "next/link";
+import ProductPrice from "../product-price";
 import OptionSelect from "./variant-select";
-import { useAddToCart } from "@/lib/data/cart";
+import { useAddToCart, useRetrieveCart } from "@/lib/data/cart";
 import { useIsMobile } from "@/lib/hooks/useIsMobile";
 import Thumbnail from "../Thumbnail";
 import { IoMdClose } from "react-icons/io";
-import Divider from "@/ui/common/components/Divider";
 import toast from 'react-hot-toast';
 import CustomToast from "@/ui/common/components/custom-toast";
 
@@ -37,8 +36,8 @@ const ProductActions = ({ product, onCartOpen, onModalClose }: ProductActionsPro
     const [options, setOptions] = useState<Record<string, string | undefined>>(
         {}
     );
-    const { mutate: addToCartMutation, isPending, error } = useAddToCart();
-    const countryCode = useParams().countryCode as string;
+    const { mutate: addToCartMutation, isPending } = useAddToCart();
+    const { data: cart } = useRetrieveCart();
 
     // If there is only 1 variant, preselect the options
     useEffect(() => {
@@ -106,6 +105,27 @@ const ProductActions = ({ product, onCartOpen, onModalClose }: ProductActionsPro
     }, [selectedVariant]);
     const handleAddToCart = async () => {
         if (!selectedVariant?.id) return null;
+
+        // Check max quantity based on inventory and cart
+        if (selectedVariant.manage_inventory) {
+            const inventoryQuantity = selectedVariant.inventory_quantity ?? 0;
+            const cartItem = cart?.items?.find(
+                (item) => item.variant_id === selectedVariant.id
+            );
+            const quantityInCart = cartItem?.quantity ?? 0;
+
+            if (inventoryQuantity < quantityInCart + quantity) {
+                const availableToAdd = inventoryQuantity - quantityInCart;
+                let message = "Maximum available quantity already in cart.";
+                if (availableToAdd > 0) {
+                   message = `You can only add ${availableToAdd} more of this item.`
+                } else if (inventoryQuantity === 0) {
+                   message = "This item is currently out of stock.";
+                }
+                toast.error(message);
+                return;
+            }
+        }
 
         addToCartMutation(
             {
@@ -219,6 +239,7 @@ const ProductActions = ({ product, onCartOpen, onModalClose }: ProductActionsPro
                     className="w-full"
                     isLoading={isPending}
                     onClick={handleAddToCart}
+                    disabled={selectedVariant?.manage_inventory && selectedVariant?.inventory_quantity !== null && selectedVariant?.inventory_quantity !== undefined && selectedVariant.inventory_quantity < quantity}
                 >
                     {!selectedVariant || Object.keys(options).length === 0
                         ? "Select variant"

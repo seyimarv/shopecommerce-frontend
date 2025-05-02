@@ -1,10 +1,8 @@
 import React, { useState } from "react";
-import { Formik, Form, Field } from "formik";
-import * as Yup from "yup";
+import { Formik, Form } from "formik";
 import Image from "next/image";
-import { HttpTypes } from "@medusajs/types";
 import Button from "@/ui/common/components/button";
-import { usePlaceOrder } from "@/lib/data/cart";
+import { CartWithInventory, usePlaceOrder } from "@/lib/data/cart";
 import { useRouter } from "next/navigation";
 
 interface FormValues {
@@ -12,7 +10,7 @@ interface FormValues {
 }
 
 interface UploadImageFormProps {
-  cart: HttpTypes.StoreCart;
+  cart: CartWithInventory;
 }
 
 const UploadImageForm: React.FC<UploadImageFormProps> = ({ cart }) => {
@@ -25,15 +23,12 @@ const UploadImageForm: React.FC<UploadImageFormProps> = ({ cart }) => {
     image: null,
   };
 
-  const validationSchema = Yup.object({
-    image: Yup.mixed().required("Image is required"),
-  });
-
-  const handleSubmit = (values: FormValues) => {
+  const handleSubmit = async (values: FormValues) => {
     mutate(
       {
         cartId: cart.id,
-        receipt: values.image!,
+        receipt: values.image || undefined,
+        cart: cart,
       },
       {
         onSuccess: (data) => {
@@ -49,7 +44,6 @@ const UploadImageForm: React.FC<UploadImageFormProps> = ({ cart }) => {
   return (
     <Formik
       initialValues={initialValues}
-      validationSchema={validationSchema}
       onSubmit={handleSubmit}
     >
       {({ setFieldValue, values, errors, touched, isSubmitting }) => (
@@ -94,7 +88,6 @@ const UploadImageForm: React.FC<UploadImageFormProps> = ({ cart }) => {
             type="submit"
             className="max-w-md mx-auto my-5"
             isLoading={isPending}
-            disabled={!values.image}
           >
             I have made the payment
           </Button>

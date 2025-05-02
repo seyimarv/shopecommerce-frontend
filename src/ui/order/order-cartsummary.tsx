@@ -8,8 +8,6 @@ type OrderProps = {
 };
 const OrderCartSummary = ({ order }: OrderProps) => {
   const { items } = order;
-
-  console.log(order);
   return (
     <div className="">
       <div className="space-y-6">
@@ -20,7 +18,7 @@ const OrderCartSummary = ({ order }: OrderProps) => {
           >
             <div className="relative w-20 h-20 rounded overflow-hidden">
               <Image
-                src={item.thumbnail ?? "/placeholder-image.png"}
+                src={item.thumbnail ?? item?.product?.images?.[0]?.url ?? "/placeholder-image.png"}
                 alt={`Thumbnail ${item.id}`}
                 fill
                 className="object-cover"

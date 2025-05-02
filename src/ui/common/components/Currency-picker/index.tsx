@@ -44,9 +44,9 @@ export default function CurrencyPicker({ regions }: CurrencyPickerProps) {
           region_id: selectedRegion?.id || '',
         },
         {
-          onSuccess: () => {
+          onSettled: () => {
             window.location.reload();
-          }
+          },
         }
       );
     }

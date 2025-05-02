@@ -18,6 +18,7 @@ type AddressInput = {
   country_code: string;
   phone: string;
   formData: FormData;
+  currentState: any;
 };
 
 type UpdateCustomerAddressInput = {
@@ -331,7 +332,6 @@ export const useUpdateCustomer = () => {
       return updateRes;
     },
     onSuccess: () => {
-      // Optionally invalidate or refetch specific queries
       queryClient.invalidateQueries({ queryKey: ["customer"] });
     },
   });

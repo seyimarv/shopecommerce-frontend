@@ -2,22 +2,24 @@
 import { isManual, isPaystack, isStripe } from "@/lib/constants"
 import { HttpTypes } from "@medusajs/types"
 import Button from "@/ui/common/components/button"
-import React, { useRef, useState } from "react"
+import React, { useRef } from "react"
 import Paystack from "paystack-inline-ts"
 import { useRouter } from "next/navigation"
-import { usePlaceOrder } from "@/lib/data/cart"
+import { CartWithInventory, usePlaceOrder } from "@/lib/data/cart"
 import { AiOutlineLoading3Quarters } from "react-icons/ai"
 
 type PaymentButtonProps = {
-    cart: HttpTypes.StoreCart
+    cart: CartWithInventory
 }
 
 const PaystackPaymentButton = ({
     session,
     notReady,
+    cart
 }: {
     session: HttpTypes.StorePaymentSession | undefined
     notReady: boolean
+    cart: CartWithInventory
 }) => {
     const paystackRef = useRef<InstanceType<typeof Paystack>>(null)
     const router = useRouter();
@@ -26,13 +28,14 @@ const PaystackPaymentButton = ({
     if (notReady || !session) return null
 
     const accessCode = session.data.access_code as string
-    console.log(accessCode)
 
     if (!accessCode) throw new Error("Transaction access code is not defined")
 
     const handlePlaceOrder = () => {
         mutate(
-            {},
+            {
+                cart: cart
+            },
             {
                 onSuccess: (data) => {
                     if (data.orderId) {
@@ -53,6 +56,7 @@ const PaystackPaymentButton = ({
         <Button
             onClick={() => {
                 if (!paystackRef.current) {
+                    //@ts-ignore
                     paystackRef.current = new Paystack()
                 }
 
@@ -102,7 +106,7 @@ const PaymentButton: React.FC<PaymentButtonProps> = ({
             )
         case isPaystack(paymentSession?.provider_id):
             return (
-                <PaystackPaymentButton notReady={notReady} session={paymentSession} />
+                <PaystackPaymentButton cart={cart} notReady={notReady} session={paymentSession} />
             )
         default:
             return <Button disabled>Select a payment method</Button>

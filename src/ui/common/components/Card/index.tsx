@@ -14,11 +14,12 @@ import { getProductPrice, subtractPrices } from "@/lib/utils/prices";
 import { isProductSoldOut } from "@/lib/utils/soldout";
 import { checkHasVariants } from "@/lib/utils/variants";
 import Link from "next/link";
-import { useAddToCart } from "@/lib/data/cart";
+import { useAddToCart, useRetrieveCart } from "@/lib/data/cart";
 import { LiaCartPlusSolid } from "react-icons/lia";
 import toast from 'react-hot-toast';
 import { useIsMobile } from "@/lib/hooks/useIsMobile";
 import CustomToast from "../custom-toast";
+import isMaxQuantityInCart from "@/lib/utils/cart-helpers";
 
 interface Collection {
   id: string;
@@ -42,6 +43,7 @@ const Card: React.FC<CardProps> = (data) => {
   const [isHovered, setIsHovered] = useState(false);
   const { isOpen, openCart, closeCart } = useCart();
   const isMobile = useIsMobile();
+  const { data: cart } = useRetrieveCart()
 
   const {
     product,
@@ -89,6 +91,9 @@ const Card: React.FC<CardProps> = (data) => {
       if (!allowAddToCart(product.variants[0])) {
         return;
       }
+      if (cart && isMaxQuantityInCart(product.variants[0], cart)) {
+        return;
+      }
       addToCartMutation(
         {
           variantId,
@@ -97,7 +102,6 @@ const Card: React.FC<CardProps> = (data) => {
         {
           onSuccess: () => {
             if (isMobile) {
-              // On mobile, show toast with link to cart
               toast.custom((t) => (
                 <CustomToast
                   message="Product has been added to cart"

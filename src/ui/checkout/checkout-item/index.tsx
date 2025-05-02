@@ -1,5 +1,4 @@
 import React from 'react';
-import Link from 'next/link';
 import { CartItemWithInventory } from '@/lib/data/cart';
 import { convertToLocale } from '@/lib/utils/money';
 import Thumbnail from '@/ui/product/Thumbnail';
@@ -20,9 +19,7 @@ const CheckoutItem: React.FC<CheckoutItemProps> = ({ item, currencyCode }) => {
     return (
         <div className="flex gap-4 py-4 border-b border-gray-200 last-of-type:border-none justify-between w-full">
             <div className='flex gap-2'>
-                {item.thumbnail && (
-                    <Thumbnail image={item.thumbnail} size='full' className='!w-16 !h-16' />
-                )}
+                <Thumbnail image={item.thumbnail} size='full' className='!w-16 !h-16' images={item.images || []} />
                 <div className="flex flex-col flex-grow justify-between min-w-0">
                     <div>
                         <h3 className="text-sm font-medium truncate">
@@ -36,6 +33,16 @@ const CheckoutItem: React.FC<CheckoutItemProps> = ({ item, currencyCode }) => {
                         <p className="text-xs text-gray-500 mt-0.5">
                             Quantity: {item.quantity}
                         </p>
+                        {typeof item.inventory_quantity === 'number' && item.inventory_quantity <= 0 && (
+                            <p className="text-xs text-red-500 mt-0.5">
+                                Out of stock.
+                            </p>
+                        )}
+                        {typeof item.inventory_quantity === 'number' && item.inventory_quantity > 0 && item.quantity > item.inventory_quantity && (
+                            <p className="text-xs text-red-500 mt-0.5">
+                                Only {item.inventory_quantity} available.
+                            </p>
+                        )}
                     </div>
                 </div>
             </div>

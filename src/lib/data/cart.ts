@@ -1,12 +1,13 @@
 import { HttpTypes } from "@medusajs/types";
 import { getAuthHeaders, getCartId, removeCartId, setCartId } from "./cookies";
 import { sdk } from "../../../config";
-import { getRegion, useListRegions } from "./region";
+import { getRegion } from "./region";
 import medusaError from "../utils/medusa-error";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRegion } from "../context/region-context";
 import { uploadReceipt } from "./payment";
 import { queryKeys } from "../keys";
+import toast from 'react-hot-toast';
 
 type StoreCart = HttpTypes.StoreCartResponse["cart"];
 type StoreCartLineItem = NonNullable<StoreCart["items"]>[0];
@@ -15,6 +16,11 @@ type Product = HttpTypes.StoreProductResponse["product"];
 export type CartItemWithInventory = StoreCartLineItem & {
   inventory_quantity?: number;
   is_in_stock?: boolean;
+  images?: Product["images"];
+};
+
+export type StoreCartWithInventory = Omit<HttpTypes.StoreCart, 'items'> & {
+  items: CartItemWithInventory[];
 };
 
 export type CartWithInventory = Omit<StoreCart, "items"> & {
@@ -118,8 +124,7 @@ export async function retrieveCart(
         return {
           ...item,
           inventory_quantity: variant.inventory_quantity,
-          is_in_stock:
-            !variant.manage_inventory || variant.inventory_quantity > 0,
+          images: productData.product.images,
         };
       })
     );
@@ -182,7 +187,26 @@ export async function updateCart(data: HttpTypes.StoreUpdateCart, countryCode?: 
     .then(async ({ cart }) => {
       return cart;
     })
-    .catch(medusaError);
+    .catch(async (medusaError) => {
+      if (medusaError.message.includes("price")) {
+        if (countryCode) {
+          const region = await getRegion(countryCode);
+          if (!region) {
+            throw new Error(`Region not found for country code: ${countryCode}`);
+          }
+          const cartResp = await sdk.store.cart.create({ region_id: region.id }, {});
+          const cart = cartResp.cart as CartWithInventory;
+          if (cart) {
+            setCartId(cart.id);
+            return cart;
+          } else {
+            throw medusaError
+          }
+        }
+      } else {
+        throw medusaError;
+      }
+    });
 }
 
 export async function addToCart({
@@ -313,7 +337,6 @@ const applyPromotionsToCart = async (codes: string[], prevPromotions: any[]) => 
         throw new Error(`Unable to apply promo code '${codes.join(', ')}'. It may be invalid, expired, or already applied.`);
       }
     }
-    console.log(response.cart)
     return response.cart;
   } catch (error) {
     throw error instanceof Error ? error : new Error('Failed to apply Promo code.');
@@ -332,6 +355,85 @@ export const useApplyPromotions = ({ prevPromtions = [] }: { prevPromtions: any[
   return mutation
 };
 
+interface MedusaError {
+  status?: number;
+  message: string;
+  type?: string;
+}
+
+function isMedusaError(error: unknown): error is MedusaError {
+  return (
+    typeof error === 'object' &&
+    error !== null &&
+    typeof (error as MedusaError).message === 'string' &&
+    (!('status' in error) || typeof (error as MedusaError).status === 'number' || typeof (error as MedusaError).status === 'undefined') &&
+    (!('type' in error) || typeof (error as MedusaError).type === 'string' || typeof (error as MedusaError).type === 'undefined')
+  );
+}
+
+export const useAddToCart = () => {
+  const queryClient = useQueryClient();
+  const { countryCode } = useRegion();
+
+  return useMutation({
+    mutationFn: (params: {
+      variantId: string;
+      quantity: number;
+    }) =>
+      addToCart({
+        ...params,
+        countryCode,
+      }),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["cart"] });
+    },
+    onError: (error: unknown) => {
+      let errorMessage = "An unexpected error occurred adding the item. Please try again.";
+      console.error("Error adding item to cart:", error);
+
+      if (isMedusaError(error)) {
+        const status = error.status;
+
+        switch (status) {
+          case 400:
+            errorMessage = "Invalid request. Please check product options or quantity.";
+            console.error(`[useAddToCart] Invalid request (400): ${error.message}`);
+            break;
+          case 404:
+            if (error.message?.toLowerCase().includes("variant")) {
+              errorMessage = "The selected product option is not available.";
+              console.error(`[useAddToCart] Product variant not found (404): ${error.message}`);
+            } else {
+              errorMessage = "Requested item not found.";
+              console.error(`[useAddToCart] Not found (404): ${error.message}`);
+            }
+            break;
+          case 409:
+            errorMessage = "There was a conflict processing your request. Please try again.";
+            console.error(`[useAddToCart] Conflict (409): ${error.message}`);
+            break;
+          default:
+            if (error.type === "not_allowed") {
+              errorMessage = "Sorry, there's not enough stock available for this item.";
+              console.error(`[useAddToCart] Inventory not available (not_allowed): ${error.message}`);
+            } else {
+              errorMessage = `An error occurred Please try again.`;
+              console.error(`[useAddToCart] Medusa Error (Status: ${status ?? 'N/A'}, Type: ${error.type ?? 'N/A'}): ${error.message}`);
+            }
+            break;
+        }
+      } else if (error instanceof Error) {
+        errorMessage = "An error occured. Please check connection and try again.";
+        console.error("[useAddToCart] Client/Network error:", error.message);
+      } else {
+        errorMessage = "An unknown error occurred.";
+        console.error("[useAddToCart] Unknown error type:", String(error));
+      }
+
+      toast.error(errorMessage);
+    },
+  });
+};
 
 export const useUpdateLineItem = () => {
   const queryClient = useQueryClient();
@@ -360,7 +462,7 @@ export const useRetrieveCart = (id?: string) => {
   return useQuery({
     queryKey: ["cart", id || getCartId()],
     queryFn: () => retrieveCart(id),
-    enabled: !!id || !!getCartId(),
+    // enabled: !!id || !!getCartId(),
   });
 };
 
@@ -379,24 +481,8 @@ export const useUpdateCart = (countryCode?: string) => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["cart"] });
     },
-  });
-};
-
-export const useAddToCart = () => {
-  const queryClient = useQueryClient();
-  const { countryCode } = useRegion();
-
-  return useMutation({
-    mutationFn: (params: {
-      variantId: string;
-      quantity: number;
-    }) =>
-      addToCart({
-        ...params,
-        countryCode,
-      }),
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ["cart"] });
+    onError: async (error) => {
+      queryClient.invalidateQueries({ queryKey: ["cart"] });
     },
   });
 };
@@ -461,36 +547,157 @@ export const usePlaceOrder = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ cartId, receipt }: { cartId?: string; receipt?: File }) => {
+    mutationFn: async ({ cartId, receipt, cart }: { cartId?: string; receipt?: File; cart?: StoreCartWithInventory }) => {
       const id = cartId || getCartId();
-
       if (!id) {
         throw new Error("No existing cart found when placing an order");
       }
+      if (cart && cart.items) {
+        for (const item of cart.items) {
+          const managesInventory = item.variant?.manage_inventory === true;
+          const allowsBackorder = item.variant?.allow_backorder === true;
+          const inventoryQuantity = typeof item.inventory_quantity === 'number' ? item.inventory_quantity : Infinity;
 
+          if (managesInventory && !allowsBackorder && (item.quantity > inventoryQuantity || inventoryQuantity === 0)) {
+            const variantTitle = item.variant?.title ? ` (${item.variant.title})` : '';
+            throw new Error(`Cannot place order: Item '${item.product?.title}${variantTitle}' exceeds available stock. Please review your cart.`);
+          }
+        }
+      }
       if (receipt) {
         await uploadReceipt(receipt, id);
       }
 
-      const cartRes = await sdk.store.cart
-        .complete(id, {})
-        .then(async (cartRes) => {
-          return cartRes;
-        })
-        .catch(medusaError);
-      console.log(cartRes);
-      if (cartRes?.type === "order") {
-        const countryCode =
-          cartRes.order.shipping_address?.country_code?.toLowerCase();
+      try {
+        const cartRes = await sdk.store.cart.complete(id, {});
 
-        removeCartId();
-        return { orderId: cartRes.order.id, countryCode };
+        if (cartRes?.type === "order") {
+          const countryCode =
+            cartRes.order.shipping_address?.country_code?.toLowerCase();
+          removeCartId();
+          queryClient.invalidateQueries({ queryKey: ["cart", "order"] });
+          return { orderId: cartRes.order.id, countryCode };
+        } else {
+          queryClient.invalidateQueries({ queryKey: ["cart"] });
+          return { cart: cartRes?.cart };
+        }
+
+      } catch (error) {
+        console.error("Error during cart completion attempt:", error);
+        let shouldRecover = false;
+        let initialErrorMessage = "Failed to place order. Please try again.";
+        if (isMedusaError(error)) {
+          initialErrorMessage = error.message || `An unexpected error occurred (${error.status}).`;
+          if (error.message?.includes("Order address with id")) {
+            shouldRecover = true;
+          } else {
+            switch (error.status) {
+              case 400:
+              case 409:
+                if (error.type === 'insufficient_stock' || error.message?.toLowerCase().includes('stock')) {
+                  initialErrorMessage = "One or more items in your cart are out of stock. Please review your cart.";
+                } else {
+                  initialErrorMessage = error.message || "There was a conflict processing your order. Please try again.";
+                }
+                break;
+            }
+          }
+        } else if (error instanceof Error) {
+          initialErrorMessage = error.message || "An unexpected error occurred. Please try again later.";
+          if (error.message.toLowerCase().includes('network')) {
+            initialErrorMessage = "Network error. Please check your connection and try again.";
+          }
+          if (error.message?.includes("Order address with id")) {
+            shouldRecover = true;
+          }
+        } else {
+          initialErrorMessage = "An unknown error occurred. Please try again.";
+        }
+        if (shouldRecover) {
+          console.log("Attempting cart recovery due to specific error...");
+          try {
+            await recoverFromCheckoutError(id);
+            console.log("Cart recovery successful (original order failed).");
+            queryClient.invalidateQueries({ queryKey: ["cart", "order"] });
+            throw new Error("Order failed, but your cart session was reset. Please review and try again.");
+          } catch (recoveryError: any) {
+            console.error("Cart recovery failed:", recoveryError);
+            let recoveryToastMessage = "Could not recover your cart session after the initial error.";
+            if (recoveryError?.message?.includes("Some variant does not have the required inventory")) {
+              recoveryToastMessage = "Cart recovery failed: Some items went out of stock.";
+            } else if (recoveryError?.message) {
+              recoveryToastMessage = `Cart recovery failed: ${recoveryError.message}`;
+            }
+            throw new Error(recoveryToastMessage);
+          }
+        } else {
+          throw new Error(initialErrorMessage);
+        }
       }
-
-      return { cart: cartRes.cart };
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["cart", "order"] });
+      queryClient.invalidateQueries({ queryKey: ["cart"] });
+    },
+    onError: (error: Error) => {
+      toast.error(error.message)
+      queryClient.invalidateQueries({ queryKey: ["cart"] });
     },
   });
-}
+};
+
+export const recoverFromCheckoutError = async (oldCartId: string | undefined | null): Promise<HttpTypes.StoreCart | null> => {
+  if (!oldCartId) {
+    return null;
+  }
+
+  try {
+    const oldCart = await sdk.store.cart.retrieve(oldCartId).then(res => res.cart).catch(err => {
+      console.error(`Recovery failed: Could not retrieve old cart ${oldCartId}.`, medusaError(err));
+      return null;
+    });
+
+    if (!oldCart) {
+      removeCartId();
+      const { cart: newEmptyCart } = await sdk.store.cart.create({}).catch(medusaError);
+      if (newEmptyCart) setCartId(newEmptyCart.id);
+      return newEmptyCart || null;
+    }
+
+    const { cart: newCart } = await sdk.store.cart.create({ region_id: oldCart.region_id }).catch(err => {
+      throw new Error("Failed to create new cart during recovery.");
+    });
+
+    if (!newCart) {
+      throw new Error("Failed to create new cart during recovery.");
+    }
+
+    if (oldCart.items && oldCart.items.length > 0) {
+      console.log(`Transferring ${oldCart.items.length} item(s) from ${oldCartId} to ${newCart.id}...`);
+      const transferPromises = oldCart.items.map(item => {
+        console.log(` - Adding variant ${item.variant_id} (qty: ${item.quantity})`);
+        return sdk.store.cart.createLineItem(newCart.id,
+          {
+            variant_id: item.variant_id!,
+            quantity: item.quantity,
+          },
+          {}).catch((err: unknown) => {
+            console.error(`Recovery warning: Failed to transfer item variant ${item.variant_id} to new cart ${newCart.id}.`, medusaError(err));
+            return null;
+          });
+      });
+
+      await Promise.all(transferPromises);
+    }
+
+    setCartId(newCart.id);
+
+    const finalNewCart = await sdk.store.cart.retrieve(newCart.id).then(res => res.cart).catch(err => {
+      return newCart;
+    });
+
+    return finalNewCart;
+
+  } catch (error) {
+    return medusaError(error);
+  }
+};

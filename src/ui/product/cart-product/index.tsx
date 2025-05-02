@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useState, useEffect } from "react";
 import { MdOutlineCancel } from "react-icons/md";
 import QuantitySelector from "@/ui/common/components/quantityselector";
 import Thumbnail from "../Thumbnail";
@@ -13,7 +13,7 @@ interface CartProductProps {
   title: string;
   thumbnail?: string;
   price: number;
-  quantity?: number;
+  quantity: number;
   productTitle?: string;
   max: number;
   currencyCode: string;
@@ -31,27 +31,51 @@ const CartProduct: React.FC<CartProductProps> = ({
   currencyCode,
   handle
 }) => {
-  const [quantity, setQuantity] = useState(initialQuantity)
-  const { mutate: updateItem, isPending: isUpdatePending } =
-    useUpdateLineItem();
-  const { mutate: deleteItem, isPending: isDeletePending } =
-    useDeleteLineItem();
+      const [quantity, setQuantity] = useState(initialQuantity)
+      const { mutate: updateItem, isPending: isUpdatePending } =
+          useUpdateLineItem();
+      const { mutate: deleteItem, isPending: isDeletePending } =
+          useDeleteLineItem();
+  
+      useEffect(() => {
+          if (typeof max === 'number' && quantity > max) {
+              setQuantity(max); 
+              updateItem({ lineId: id, quantity: max }); 
+          }
+          if (typeof max === 'number' && initialQuantity > max) {
+              setQuantity(max);
+          } else if (quantity !== initialQuantity && initialQuantity <= max) {
+              setQuantity(initialQuantity);
+          }
+      }, [id, max, quantity, updateItem, initialQuantity]);
+  
+      const debouncedUpdateQuantity = useCallback(
+          debounce((newQuantity: number) => {
+              if (typeof newQuantity === 'number' && !isNaN(newQuantity)) {
+                  updateItem({ lineId: id, quantity: newQuantity });
+              }
+          }, 500), 
+          [id, updateItem] 
+      );
+  
+      const handleQuantityChange = (newQuantity: number) => {
+          if (typeof newQuantity !== 'number' || isNaN(newQuantity)) {
+              return;
+          }
+          const clampedQuantity = Math.max(1, typeof max === 'number' ? Math.min(newQuantity, max) : newQuantity);
+          if (clampedQuantity !== quantity) {
+              setQuantity(clampedQuantity);
+              debouncedUpdateQuantity(clampedQuantity);
+          }
+      };
+  
+      const handleRemove = () => {
+          if (isUpdatePending) return;
+          deleteItem(id); 
+      };
+  
+      const isLoading = isUpdatePending || isDeletePending;
 
-  const debouncedUpdateQuantity = useCallback(
-    debounce((quantity: number) => {
-      updateItem({ lineId: id, quantity });
-    }),
-    [id, updateItem]
-  );
-
-  const handleQuantityChange = (quantity: number) => {
-    setQuantity(quantity)
-    debouncedUpdateQuantity(quantity);
-  };
-
-  const handleRemove = () => {
-    deleteItem(id);
-  };
 
   return (
     <div className="py-6 w-full border-b border-b-gray-200 last:border-b-0">
@@ -102,8 +126,8 @@ const CartProduct: React.FC<CartProductProps> = ({
           <div className="flex w-full justify-between items-center mt-4">
             <QuantitySelector
               min={1}
-              max={max}
-              quantity={quantity || 1}
+              max={max ?? Infinity}
+              quantity={quantity}
               onChange={handleQuantityChange}
             />
             <span className="text-lg font-medium">

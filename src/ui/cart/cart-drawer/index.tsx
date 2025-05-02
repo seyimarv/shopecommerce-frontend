@@ -96,8 +96,8 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                         productTitle={item?.product?.title || ""}
                         price={item.unit_price || 0}
                         quantity={item.quantity}
-                        max={item?.inventory_quantity || Infinity}
-                        thumbnail={item.thumbnail || ""}
+                        max={item?.inventory_quantity}
+                        thumbnail={item.thumbnail || item?.images?.[0]?.url || item?.variant?.product?.images?.[0]?.url || ""}
                         handle={item?.product?.handle}
                         currencyCode={cart?.currency_code || ""}
                       />
