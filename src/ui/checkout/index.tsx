@@ -1,3 +1,5 @@
+"use client"
+
 import { useRetrieveCart } from "@/lib/data/cart";
 import Addresses from "./addresses";
 import CartSummary from "./cartsummary";
@@ -6,9 +8,12 @@ import ShippingOptions from "./shippingoptions";
 import { useEffect } from "react";
 import { getCheckoutStep } from "@/lib/utils/checkout";
 import { useRouter } from "next/navigation";
+import WithSkeleton from "../common/components/Skeleton/with-skeleton";
+import EmptyCart from "../cart/empty-cart";
+import PageSpinner from "../common/components/spinner/page-spinner";
 
 const CheckoutTemplate = () => {
-    const { data: cart } = useRetrieveCart()
+    const { data: cart, isLoading } = useRetrieveCart()
     const router = useRouter();
 
     useEffect(() => {
@@ -23,9 +28,11 @@ const CheckoutTemplate = () => {
     }, [router]);
 
     return (
-        <>
+        <WithSkeleton isLoading={isLoading} skeleton={
+            <PageSpinner />
+        }>
             {
-                cart &&
+                cart && cart.items.length > 0 ? (
                 <div className="container mx-auto px-4 mt-8 lg:mt-16 flex flex-col lg:flex-row gap-y-8 lg:gap-x-24">
                     <div className="w-full lg:w-3/5 order-2 lg:order-1 space-y-8">
                         <Addresses />
@@ -36,8 +43,11 @@ const CheckoutTemplate = () => {
                         <CartSummary cart={cart} />
                     </div>
                 </div>
+            ) : (
+                <EmptyCart />
+            )
             }
-        </>
+        </WithSkeleton>
     )
 }
 
