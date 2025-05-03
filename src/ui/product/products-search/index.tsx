@@ -46,7 +46,7 @@ const ProductSearch = ({
   const { data: products, isLoading, error } = useListProducts({
     queryParams: {
       limit: 12,
-      //@ts-ignore
+      // @ts-expect-error
       q: debouncedQuery,
     },
     enabled: debouncedQuery.trim() !== "",

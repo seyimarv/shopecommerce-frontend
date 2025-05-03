@@ -6,7 +6,6 @@ import {
   useDeleteCustomerAddress,
   useUpdateCustomerAddress,
 } from "@/lib/data/customer";
-import { countries } from "@/lib/utils/countries";
 import { useFormik } from "formik";
 import Modal from "../common/components/Modal";
 import { Input } from "../common/components/input";

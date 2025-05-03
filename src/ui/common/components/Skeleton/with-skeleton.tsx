@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ReactNode, FC } from "react";
 import Spinner from "../spinner";
 

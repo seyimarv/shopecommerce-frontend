@@ -1,7 +1,6 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
-import React, { forwardRef, useState, InputHTMLAttributes, ReactNode } from "react";
+import React, { forwardRef, useState, InputHTMLAttributes, ReactNode, useId } from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils/cn";
 
@@ -65,7 +64,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     {
       className,
       type = "text",
-      variant = "default",
+      // variant = "default",
       size = "default",
       spacing = "default",
       label,
@@ -86,8 +85,10 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     ref
   ) => {
     const [isFocused, setIsFocused] = useState(false);
-    const inputId = id || `input-${Math.random().toString(36).substring(2, 9)}`;
+    const generatedId = useId();
+    const inputId = id || generatedId;
     const hasError = !!errorMessage;
+    console.log(isFocused)
 
     return (
       <div className={cn(wrapperVariants({ spacing }), containerClassName)}>
@@ -151,7 +152,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
           />
           
           {endContent && (
-            <div className="absolute right-2 flex items-center">
+            <div className="absolute right-2 flex items-center" suppressHydrationWarning={true}>
               {endContent}
             </div>
           )}

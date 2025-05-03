@@ -7,7 +7,6 @@ import ProductActions from "../product-actions";
 import useCart from "@/lib/hooks/useCart";
 import CartDrawer from "@/ui/cart/cart-drawer";
 import { Drawer } from "@/ui/Layout/components/Drawer";
-import { IoMdClose } from 'react-icons/io';
 import { motion } from 'framer-motion';
 import { useIsMobile } from "@/lib/hooks/useIsMobile";
 
@@ -22,9 +21,9 @@ const ProductModal: React.FC<ProductModalProps> = ({
   onClose,
   productId
 }) => {
-  const { data, isLoading, error } = useListProducts({
+  const { data } = useListProducts({
     queryParams: {
-      // @ts-ignore
+      // @ts-expect-error
       id: productId
     }
   });

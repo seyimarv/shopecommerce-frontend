@@ -12,7 +12,6 @@ import CartDrawer from "../../../cart/cart-drawer";
 import ProductSearch from "@/ui/product/products-search";
 import { useRetrieveCart } from "@/lib/data/cart";
 import { useListRegions } from "@/lib/data/region";
-import { useRetrieveCustomer } from "@/lib/data/customer";
 import MobileNav from "./mobile-nav/mobile-nav";
 
 const Header: React.FC = () => {
@@ -53,8 +52,6 @@ const Header: React.FC = () => {
 
   const {
     data: cart,
-    isLoading: cartIsLoading,
-    error: cartError,
   } = useRetrieveCart();
 
 

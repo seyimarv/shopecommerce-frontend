@@ -1,7 +1,6 @@
-// components/Footer.tsx
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { IoIosArrowRoundForward } from "react-icons/io";
 import { Input } from "@/ui/common/components/input";
@@ -22,6 +21,11 @@ const links: LinkItem[] = [
 const Footer: React.FC = () => {
   const [email, setEmail] = useState<string>("");
   const [emailError, setEmailError] = useState<string>("");
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const handleSubscribe = () => {
     if (!email) {
@@ -34,10 +38,8 @@ const Footer: React.FC = () => {
       return;
     }
 
-    // Here you would typically handle the subscription logic
     setEmailError("");
     setEmail("");
-    // Handle subscription success
   };
 
   return (
@@ -72,26 +74,28 @@ const Footer: React.FC = () => {
                 SUBSCRIBE TO OUR NEWSLETTER
               </h4>
               <div className="mt-3">
-                <Input
-                  type="email"
-                  placeholder="Email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  errorMessage={emailError}
-                  className="border border-[#FFFFFF33] rounded-xl py-3 md:py-4 px-3 md:px-4 pr-12 md:pr-14 focus:outline-none focus:border-blue-500 h-full bg-transparent w-full text-white text-sm md:text-base"
-                  endContent={
-                    <button
-                      onClick={handleSubscribe}
-                      className="cursor-pointer bg-transparent w-fit"
-                      aria-label="Subscribe"
-                    >
-                      <IoIosArrowRoundForward
-                        size={24}
-                        className="md:text-[30px]"
-                      />
-                    </button>
-                  }
-                />
+                {isMounted && (
+                  <Input
+                    type="email"
+                    placeholder="Email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    errorMessage={emailError}
+                    className="border border-[#FFFFFF33] rounded-xl py-3 md:py-4 px-3 md:px-4 pr-12 md:pr-14 focus:outline-none focus:border-blue-500 h-full bg-transparent w-full text-white text-sm md:text-base"
+                    endContent={
+                      <button
+                        onClick={handleSubscribe}
+                        className="cursor-pointer bg-transparent w-fit"
+                        aria-label="Subscribe"
+                      >
+                        <IoIosArrowRoundForward
+                          size={24}
+                          className="md:text-[30px]"
+                        />
+                      </button>
+                    }
+                  />
+                )}
               </div>
             </div>
           </div>

@@ -18,16 +18,6 @@ export const getCacheTag = (tag: string): string => {
     return `${tag}-${cacheId}`;
 };
 
-export const getCacheOptions = (tag: string): { tags: string[] } | {} => {
-    if (typeof window !== "undefined") {
-        const cacheTag = getCacheTag(tag);
-        if (!cacheTag) {
-            return {};
-        }
-        return { tags: [cacheTag] };
-    }
-    return {};
-};
 
 export const setAuthToken = (token: string) => {
     setCookie("_medusa_jwt", token, 1000 * 60 * 60 * 24 * 7);

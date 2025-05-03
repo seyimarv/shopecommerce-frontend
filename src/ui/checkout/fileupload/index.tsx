@@ -46,7 +46,7 @@ const UploadImageForm: React.FC<UploadImageFormProps> = ({ cart }) => {
       initialValues={initialValues}
       onSubmit={handleSubmit}
     >
-      {({ setFieldValue, values, errors, touched, isSubmitting }) => (
+      {({ setFieldValue, errors, touched }) => (
         <Form className=" max-w-md">
           <div>
             <label className="block mb-1 font-medium">

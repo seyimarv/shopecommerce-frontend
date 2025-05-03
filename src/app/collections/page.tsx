@@ -5,7 +5,7 @@ import CollectionList from "@/ui/collections/collection-list";
 import { Pagination } from "@/ui/common/components/pagination";
 
 const Collections = () => {
-  const { data, isLoading, error } = useFetchCollections();
+  const { data, isLoading } = useFetchCollections();
   return (
     <>
       <CollectionList

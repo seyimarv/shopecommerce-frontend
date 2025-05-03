@@ -2,7 +2,6 @@ import Link from "next/link";
 import Button from "../common/components/button";
 import { FaChevronDown } from "react-icons/fa";
 import { convertToLocale } from "@/lib/utils/money";
-import { useListOrders } from "@/lib/data/order";
 import { HttpTypes } from "@medusajs/types";
 
 const OrdersList = ({ orders }: { orders: HttpTypes.StoreOrder[] }) => {

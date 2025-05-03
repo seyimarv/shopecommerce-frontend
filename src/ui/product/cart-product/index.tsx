@@ -74,7 +74,6 @@ const CartProduct: React.FC<CartProductProps> = ({
           deleteItem(id); 
       };
   
-      const isLoading = isUpdatePending || isDeletePending;
 
 
   return (

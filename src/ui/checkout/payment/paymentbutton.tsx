@@ -56,7 +56,7 @@ const PaystackPaymentButton = ({
         <Button
             onClick={() => {
                 if (!paystackRef.current) {
-                    //@ts-ignore
+                    // @ts-expect-error
                     paystackRef.current = new Paystack()
                 }
 

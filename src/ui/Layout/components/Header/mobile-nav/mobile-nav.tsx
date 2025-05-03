@@ -39,14 +39,11 @@ interface MobileNavProps {
 
 const MobileNav: React.FC<MobileNavProps> = ({
   setSearchOpen,
-  setOpenCart,
   setMobileMenuOpen,
   mobileMenuOpen,
 }) => {
   const {
     data: cart,
-    isLoading: cartIsLoading,
-    error: cartError,
   } = useRetrieveCart();
   return (
     <>
@@ -55,6 +52,7 @@ const MobileNav: React.FC<MobileNavProps> = ({
           <MenuToggleButton
             isOpen={mobileMenuOpen}
             onClick={(e) => {
+              e.preventDefault();
               setMobileMenuOpen?.(!mobileMenuOpen);
             }}
           />

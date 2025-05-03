@@ -11,7 +11,6 @@ export const listProducts = async ({
   queryParams,
   countryCode = "gb",
   regionId,
-  metadata,
 }: {
   pageParam?: number;
   queryParams?: HttpTypes.FindParams & HttpTypes.StoreProductParams;

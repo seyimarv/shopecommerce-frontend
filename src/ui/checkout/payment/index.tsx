@@ -42,7 +42,7 @@ const PaymentOptions = () => {
         <Formik
           initialValues={{ paymentOption: activeSession?.provider_id ?? "" }}
           onSubmit={(value) => {
-
+            console.log(value)
           }}
         >
           {({ values, setFieldValue }) => (

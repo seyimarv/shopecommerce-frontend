@@ -1,5 +1,4 @@
 import Divider from "../common/components/Divider";
-import CartTable from "../cart/cart-table";
 import { HttpTypes } from "@medusajs/types";
 import OrderSummary from "./ordersummary";
 

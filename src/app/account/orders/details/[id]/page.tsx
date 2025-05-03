@@ -10,12 +10,12 @@ const OrderDetailsPage = () => {
   const params = useParams();
   const idParam = params.id;
 
+  const { data: order, isPending, error } = useRetrieveOrder(idParam as string);
+
   if (typeof idParam !== 'string') {
     return notFound();
   }
-
-  const { data: order, isPending, error } = useRetrieveOrder(idParam);
-
+  
   if (!order && !isPending && error) {
     return notFound();
   }

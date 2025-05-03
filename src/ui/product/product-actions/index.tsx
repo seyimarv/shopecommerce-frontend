@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { HttpTypes } from "@medusajs/types";
 import { useState, useEffect, useMemo } from "react";
 import { isEqual } from "lodash";
@@ -239,7 +238,7 @@ const ProductActions = ({ product, onCartOpen, onModalClose }: ProductActionsPro
                     className="w-full"
                     isLoading={isPending}
                     onClick={handleAddToCart}
-                    disabled={selectedVariant?.manage_inventory && selectedVariant?.inventory_quantity !== null && selectedVariant?.inventory_quantity !== undefined && selectedVariant.inventory_quantity < quantity}
+                    disabled={(selectedVariant?.manage_inventory && selectedVariant?.inventory_quantity !== null && selectedVariant?.inventory_quantity !== undefined && selectedVariant.inventory_quantity < quantity) ?? false}
                 >
                     {!selectedVariant || Object.keys(options).length === 0
                         ? "Select variant"

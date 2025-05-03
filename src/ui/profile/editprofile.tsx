@@ -3,8 +3,7 @@
 import { useState } from "react";
 import { useFormik } from "formik";
 
-import { useUpdateCustomer, useUpdatePassword } from "@/lib/data/customer";
-import { removeAuthToken, getAuthHeaders } from "@/lib/data/cookies";
+import { useUpdateCustomer } from "@/lib/data/customer";
 import { HttpTypes } from "@medusajs/types";
 import Button from "../common/components/button";
 import Divider from "../common/components/Divider";

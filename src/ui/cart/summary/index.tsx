@@ -11,7 +11,7 @@ interface SummaryProps {
 
 export default function Summary({ subtotal }: SummaryProps) {
   const { data: cart, isLoading } = useRetrieveCart();
-  const {mutate: updateCart, isPending, error } = useUpdateCart();
+  const {mutate: updateCart, isPending } = useUpdateCart();
   const [note, setNote] = useState("");
   const router = useRouter();
 

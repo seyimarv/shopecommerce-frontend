@@ -42,8 +42,6 @@ const CartItem = ({ item, currencyCode, isMobile }: CartItemProps) => {
     );
 
     const handleQuantityChange = (newQuantity: number) => {
-        const maxInv = item.inventory_quantity;
-
         if (typeof newQuantity !== 'number' || isNaN(newQuantity)) {
             return;
         }

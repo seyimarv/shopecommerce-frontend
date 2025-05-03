@@ -9,11 +9,14 @@ const OrderConfirmedPage = () => {
   const params = useParams();
   const idParam = params.id;
 
+
+  const { data: order, isPending } = useRetrieveOrder(idParam as string);
+
+
   if (typeof idParam !== 'string') {
     return notFound();
   }
 
-  const { data: order, isPending, error } = useRetrieveOrder(idParam);
   if (!order && !isPending) {
     return notFound();
   }

@@ -1,11 +1,10 @@
 "use client";
 
-import { useInView } from "@/lib/hooks/useInView";
+// import { useInView } from "@/lib/hooks/useInView";
 import { Drawer } from "@/ui/Layout/components/Drawer";
 import Link from "next/link";
-import Image from "next/image";
-import navItems, { mobileNavItems, socialLinks } from "@/lib/utils/nav-items";
-import { CiUser, CiShoppingCart, CiLogout } from "react-icons/ci";
+import { mobileNavItems, socialLinks } from "@/lib/utils/nav-items";
+import { CiUser, CiLogout } from "react-icons/ci";
 import { usePathname } from "next/navigation";
 import { useRetrieveCustomer } from "@/lib/data/customer";
 import { useListRegions } from "@/lib/data/region";
@@ -20,18 +19,18 @@ interface MobileDrawerProps {
 }
 
 export default function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
-    const { isInView: isBannerInView } = useInView({ id: "banner" });
-    const { isInView: isHeaderInView } = useInView({ id: "header" });
+    // const { isInView: isBannerInView } = useInView({ id: "banner" });
+    // const { isInView: isHeaderInView } = useInView({ id: "header" });
     const pathname = usePathname();
     const { data: customer } = useRetrieveCustomer();
     const { data: regions } = useListRegions();
 
-    const drawerClassName =
-        isBannerInView && isHeaderInView
-            ? "top-[6.375rem]"
-            : isHeaderInView
-                ? "top-[3.875rem]"
-                : "";
+    // const drawerClassName =
+    //     isBannerInView && isHeaderInView
+    //         ? "top-[6.375rem]"
+    //         : isHeaderInView
+    //             ? "top-[3.875rem]"
+    //             : "";
 
     // Framer Motion variants
     const listVariants = {
@@ -96,7 +95,7 @@ export default function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
                         initial="hidden"
                         animate="visible"
                     >
-                        {mobileNavItems.map(({ title, path, hasDropdown, dropdown }, i) => (
+                        {mobileNavItems.map(({ title, path }, i) => (
                             <>
                                 <motion.li key={i} className="py-2" variants={itemVariants}>
                                     <Link

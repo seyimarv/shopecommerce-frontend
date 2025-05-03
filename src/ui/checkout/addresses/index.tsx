@@ -3,16 +3,14 @@
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { FiCheckCircle } from "react-icons/fi";
 import AddressForm from "./address-form";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useRetrieveCart } from "@/lib/data/cart";
 
 const Addresses = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
-  const { data: cart, isLoading, isFetching, error } = useRetrieveCart()
-
-  console.log(cart)
+  const { data: cart } = useRetrieveCart()
 
   const currentStep = searchParams.get("step");
   const isEditing = searchParams.get("step") === "address";

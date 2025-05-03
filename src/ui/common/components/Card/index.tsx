@@ -3,7 +3,6 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import Button from "@/ui/common/components/button";
 import { GrLinkNext } from "react-icons/gr";
-import { FaShoppingCart } from "react-icons/fa";
 import PreviewPrice from "./PreviewPrice";
 import Thumbnail from "../../../product/Thumbnail";
 import ProductModal from "../../../product/product-modal";
@@ -64,7 +63,7 @@ const Card: React.FC<CardProps> = (data) => {
   const soldOut = product ? isProductSoldOut(product) : false;
   const { cheapestPrice } = product ? getProductPrice({ product }) : {};
 
-  const { mutate: addToCartMutation, isPending, error } = useAddToCart();
+  const { mutate: addToCartMutation, isPending } = useAddToCart();
 
   const allowAddToCart = (variant: HttpTypes.StoreProductVariant) => {
     if (variant && !variant.manage_inventory) {

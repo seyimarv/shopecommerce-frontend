@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { HttpTypes } from "@medusajs/types";
 import { convertToLocale } from "./money";
 import { getPercentageDiff } from "./get-precentage-diff";

@@ -348,7 +348,7 @@ export const useApplyPromotions = ({ prevPromtions = [] }: { prevPromtions: any[
 
   const mutation = useMutation({
     mutationFn: (codes: string[]) => applyPromotionsToCart(codes, prevPromtions),
-    onSuccess: (data) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: queryKeys.cart });
     },
   });
@@ -481,7 +481,7 @@ export const useUpdateCart = (countryCode?: string) => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["cart"] });
     },
-    onError: async (error) => {
+    onError: async () => {
       queryClient.invalidateQueries({ queryKey: ["cart"] });
     },
   });
@@ -663,9 +663,7 @@ export const recoverFromCheckoutError = async (oldCartId: string | undefined | n
       return newEmptyCart || null;
     }
 
-    const { cart: newCart } = await sdk.store.cart.create({ region_id: oldCart.region_id }).catch(err => {
-      throw new Error("Failed to create new cart during recovery.");
-    });
+    const { cart: newCart } = await sdk.store.cart.create({ region_id: oldCart.region_id }).catch(medusaError);
 
     if (!newCart) {
       throw new Error("Failed to create new cart during recovery.");
@@ -691,9 +689,7 @@ export const recoverFromCheckoutError = async (oldCartId: string | undefined | n
 
     setCartId(newCart.id);
 
-    const finalNewCart = await sdk.store.cart.retrieve(newCart.id).then(res => res.cart).catch(err => {
-      return newCart;
-    });
+    const finalNewCart = await sdk.store.cart.retrieve(newCart.id).then(res => res.cart).catch(medusaError);
 
     return finalNewCart;
 

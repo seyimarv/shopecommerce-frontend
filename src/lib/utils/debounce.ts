@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-this-alias */
 export function debounce<T extends (...args: any[]) => void>(
     func: T,
     delay: number = 300

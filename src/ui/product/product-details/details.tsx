@@ -34,7 +34,7 @@ const ProductActions = ({ product, onCartOpen }: ProductActionsProps) => {
   const [options, setOptions] = useState<Record<string, string | undefined>>(
     {}
   );
-  const { mutate: addToCartMutation, isPending, error } = useAddToCart();
+  const { mutate: addToCartMutation, isPending } = useAddToCart();
   const isMobile = useIsMobile();
   const { data: cart } = useRetrieveCart();
 
