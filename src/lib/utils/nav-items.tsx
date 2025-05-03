@@ -4,7 +4,7 @@ const navItems = [
   {
     title: "Collections",
     path: "/collections",
-    // hasDropdown: true,
+    hasDropdown: true,
     dropdown: [
       {
         title: "New Arrivals",
