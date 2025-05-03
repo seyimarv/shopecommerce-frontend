@@ -197,7 +197,7 @@ const ProductsFilter = ({ title, collectionId, isCollectionLoading, isSearch, hi
           </div>
         </div>
 
-        <ProductList products={sortProducts(data?.response.products ?? [], selectedSort?.value as SortOptions)} isLoading={isLoading || isCollectionLoading} />
+        <ProductList products={sortProducts(data?.response.products ?? [], selectedSort?.value as SortOptions)} isLoading={isLoading! || isCollectionLoading!} />
         {isSearch && !isLoading && !isCollectionLoading && data?.response.count === 0 && (
           <div className="text-center py-8 sm:py-12 md:py-16 text-gray-500 text-sm sm:text-base">
             No products found matching "{searchQuery}". Try a different search.

@@ -17,7 +17,7 @@ import { useIsMobile } from "@/lib/hooks/useIsMobile";
 
 interface ProductActionsProps {
   product: HttpTypes.StoreProduct;
-  onCartOpen: () => void;
+  onCartOpen?: () => void;
 }
 
 const optionsAsKeymap = (

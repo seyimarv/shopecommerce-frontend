@@ -4,6 +4,7 @@ export interface VariantOption {
   name: string;
   value: string;
   className?: string; // Optional for non-color variants
+  id?: string;
 }
 
 interface VariantSelectorProps {
@@ -40,15 +41,13 @@ const VariantSelector: React.FC<VariantSelectorProps> = ({
         {options.map((option) => (
           <button
             key={option.id}
-            className={`transition border-2 flex items-center justify-center ${
-              selected === option.id
+            className={`transition border-2 flex items-center justify-center ${selected === option.id
                 ? "border-black scale-105"
                 : "border-gray-300"
-            } ${
-              isColor
-                ? `w-8 h-8 rounded-full ${option.className}` 
+              } ${isColor
+                ? `w-8 h-8 rounded-full ${option.className}`
                 : "px-4 py-2 rounded-md text-sm font-medium"
-            }`}
+              }`}
             onClick={() => handleSelect(option.value)}
             aria-label={`Select ${option.name}`}
           >

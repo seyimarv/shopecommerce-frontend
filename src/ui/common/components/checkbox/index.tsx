@@ -31,6 +31,7 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(
     }, [indeterminate]);
 
     const handleRef = (el: HTMLInputElement) => {
+      //@ts-expect-error
       internalRef.current = el;
       if (typeof ref === "function") ref(el);
       else if (ref) ref.current = el;

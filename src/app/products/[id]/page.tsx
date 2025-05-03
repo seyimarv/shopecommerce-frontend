@@ -10,6 +10,7 @@ const Product = () => {
   const productHandle = params.id as string;
   const { data, isLoading } = useListProducts({
     queryParams: {
+      //@ts-expect-error
       handle: productHandle
     }
   });

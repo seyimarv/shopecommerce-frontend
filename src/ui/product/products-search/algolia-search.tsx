@@ -53,7 +53,7 @@ const Hit = ({ hit }: { hit: HttpTypes.StoreProduct }) => {
         >
           <div className="flex-shrink-0 h-15 w-15 relative mr-3">
             <Image
-              src={hit.thumbnail}
+              src={hit.thumbnail || ""}
               alt={hit.title}
               fill
               className="object-cover"

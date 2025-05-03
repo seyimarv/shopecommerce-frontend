@@ -9,16 +9,16 @@ import {
 import { HttpTypes } from "@medusajs/types";
 
 type AddressInput = {
-  first_name: string;
-  last_name: string;
-  address_1: string;
-  postal_code: string;
-  city: string;
-  province: string;
-  country_code: string;
-  phone: string;
+  // first_name: string;
+  // last_name: string;
+  // address_1: string;
+  // postal_code: string;
+  // city: string;
+  // province: string;
+  // country_code: string;
+  // phone: string;
   formData: FormData;
-  currentState: any;
+  // currentState: any;
 };
 
 type UpdateCustomerAddressInput = {
@@ -73,11 +73,7 @@ export const useAddCustomerAddress = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ currentState, formData }: AddressInput) => {
-      const isDefaultBilling =
-        (currentState.isDefaultBilling as boolean) || false;
-      const isDefaultShipping =
-        (currentState.isDefaultShipping as boolean) || false;
+    mutationFn: async ({ formData }: AddressInput) => {
 
       const address = {
         first_name: formData.get("first_name") as string,
@@ -88,8 +84,8 @@ export const useAddCustomerAddress = () => {
         postal_code: formData.get("postal_code") as string,
         country_code: formData.get("country_code") as string,
         phone: formData.get("phone") as string,
-        is_default_billing: isDefaultBilling,
-        is_default_shipping: isDefaultShipping,
+        // is_default_billing: isDefaultBilling,
+        // is_default_shipping: isDefaultShipping,
       };
 
       const headers = {

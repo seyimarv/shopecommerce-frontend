@@ -23,9 +23,7 @@ import isMaxQuantityInCart from "@/lib/utils/cart-helpers";
 interface Collection {
   id: string;
   title: string;
-  metadata?: {
-    cover_image?: string;
-  };
+  metadata?: any;
 }
 
 interface CardProps {
