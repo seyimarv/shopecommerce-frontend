@@ -24,7 +24,7 @@ interface Collection {
   id: string;
   title: string;
   metadata?: {
-    cover_image: string;
+    cover_image?: string;
   };
 }
 

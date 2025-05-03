@@ -73,6 +73,7 @@ export default function Home() {
                     collection={{
                       title,
                       metadata: metadata ?? undefined,
+                      id,
                     }}
                     className="w-full lg:h-90"
                     variety="collections"

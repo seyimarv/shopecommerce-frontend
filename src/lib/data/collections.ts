@@ -22,7 +22,6 @@ const fetchCollection = async (
   idOrHandle: string,
   isHandle = false
 ): Promise<HttpTypes.StoreCollection> => {
-  console.log(idOrHandle, isHandle);
   if (isHandle) {
     const { collections } = await sdk.client.fetch<{
       collections: HttpTypes.StoreCollection[];

@@ -14,7 +14,6 @@ const Hit = ({ hit }: { hit: HttpTypes.StoreProduct }) => {
   const { cheapestPrice } = getProductPrice({
     product: hit,
   })
-  console.log(hit)
   return (
     <>
       {/* <div className="w-16 h-16 flex-shrink-0 bg-gray-100 rounded overflow-hidden relative">

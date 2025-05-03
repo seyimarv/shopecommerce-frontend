@@ -4,8 +4,6 @@ import {
 } from "algoliasearch/lite"
 import { sdk } from "../../../config"
 
-console.log(sdk)
-
 export const searchClient: SearchClient = {
     ...(algoliasearch(
       process.env.NEXT_PUBLIC_ALGOLIA_APP_ID || "", 

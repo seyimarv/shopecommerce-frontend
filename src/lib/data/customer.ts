@@ -140,7 +140,6 @@ export const useDeleteCustomerAddress = () => {
 export const retrieveCustomer =
   async (): Promise<HttpTypes.StoreCustomer | null> => {
     const authHeaders = getAuthHeaders();
-    console.log(authHeaders);
     if (!authHeaders) return null;
 
     const headers = {
