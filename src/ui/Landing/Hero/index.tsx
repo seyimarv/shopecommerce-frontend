@@ -41,7 +41,7 @@ const HeroSection: React.FC<HeroProps> = ({ collections }) => {
         onMounted={() => setActiveIndex(0)}
       >
         <SplideTrack>
-          {collections?.map(({ title, metadata }: any, index: number) => (
+          {collections?.map(({ title, metadata, handle }: any, index: number) => (
             <SplideSlide key={index}>
               <div className="relative w-full h-[calc(100vh-14rem)] md:h-[calc(100vh-7rem)] overflow-hidden">
                 <AnimatePresence mode="wait">
@@ -65,7 +65,7 @@ const HeroSection: React.FC<HeroProps> = ({ collections }) => {
                 <div className="container px-4 md:px-0">
                   <div className="absolute bottom-20 md:bottom-40 flex flex-col gap-4 md:gap-8 items-start">
                     <h4 className="text-3xl md:text-5xl uppercase font-normal">{title}</h4>
-                    <Button className="py-2 md:py-3 min-w-[10rem] md:min-w-[14rem]" variant="secondary">
+                    <Button className="py-2 md:py-3 min-w-[10rem] md:min-w-[14rem]" variant="secondary" isLink href={`/collections/${handle}`}>
                       Shop Now
                     </Button>
                   </div>

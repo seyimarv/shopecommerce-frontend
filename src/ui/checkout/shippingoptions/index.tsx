@@ -45,6 +45,7 @@ const ShippingOptions = ({ disabled }: { disabled: boolean }) => {
   };
 
   const handleDoneEditing = () => {
+    router.refresh();
     router.push(`${pathname}?step=payment`);
   };
 

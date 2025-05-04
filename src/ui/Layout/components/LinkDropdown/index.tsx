@@ -23,7 +23,7 @@ const LinkDropdown: React.FC<LinkDropdownProps> = ({ links, path, title }) => {
       onChange={(option: Option) => setSelected(option)}
       hover
     >
-      <SelectTrigger className="border-none !p-0 !text-sm !py-[0rem]" as="a" href={path} title={title} hideIcon />
+      <SelectTrigger className="border-none !p-0 !text-sm !py-[0rem]" as={Link} href={path} title={title} hideIcon />
       <SelectContent className="max-h-[200px] !w-fit">
         {links.map((option) => (
           <SelectItem
