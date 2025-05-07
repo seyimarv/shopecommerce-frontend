@@ -260,7 +260,7 @@ export async function updateLineItem({
 
   await sdk.store.cart
     .updateLineItem(cartId, lineId, { quantity }, {})
-    .then(async () => { })
+    .then(async () => {  })
     .catch(medusaError);
 }
 
@@ -437,38 +437,44 @@ export const useAddToCart = () => {
 
 export const useUpdateLineItem = () => {
   const queryClient = useQueryClient();
+  const id = getCartId()
 
   return useMutation({
     mutationFn: ({ lineId, quantity }: { lineId: string; quantity: number }) =>
       updateLineItem({ lineId, quantity }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["cart"] });
+      queryClient.invalidateQueries({ queryKey: ["cart", id] });
     },
   });
 };
 
 export const useDeleteLineItem = () => {
   const queryClient = useQueryClient();
+  const id = getCartId()
 
   return useMutation({
     mutationFn: (lineId: string) => deleteLineItem(lineId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["cart"] });
+      queryClient.invalidateQueries({ queryKey: ["cart", id] });
+    },
+    onError: () => {
+      queryClient.invalidateQueries({ queryKey: ["cart", id] });
     },
   });
 };
 
 export const useRetrieveCart = (id?: string) => {
+  const cartId = id || getCartId();
   return useQuery({
-    queryKey: ["cart", id || getCartId()],
-    queryFn: () => retrieveCart(id),
-    // enabled: !!id || !!getCartId(),
+    queryKey: ["cart", cartId], 
+    queryFn: () => retrieveCart(cartId),
+    enabled: !!cartId, 
   });
 };
 
 export const useGetOrSetCart = (countryCode: string) => {
   return useQuery({
-    queryKey: ["cart", countryCode],
+    queryKey: ["cart", "byCountry", countryCode], 
     queryFn: () => getOrSetCart(countryCode),
   });
 };
@@ -478,11 +484,21 @@ export const useUpdateCart = (countryCode?: string) => {
 
   return useMutation({
     mutationFn: (data: HttpTypes.StoreUpdateCart) => updateCart(data, countryCode),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["cart"] });
+    onSuccess: (data) => {
+      const cartId = data?.id; 
+      if (cartId) {
+        queryClient.invalidateQueries({ queryKey: ["cart", cartId] });
+      } else {
+        queryClient.invalidateQueries({ queryKey: ["cart", getCartId()] });
+      }
     },
-    onError: async () => {
-      queryClient.invalidateQueries({ queryKey: ["cart"] });
+    onError: () => {
+      const cartId = getCartId(); 
+      if (cartId) {
+        queryClient.invalidateQueries({ queryKey: ["cart", cartId] });
+      } else {
+        queryClient.invalidateQueries({ queryKey: ["cart", cartId] }); 
+      }
     },
   });
 };
@@ -509,6 +525,9 @@ export const useSetShippingMethod = () => {
     mutationFn: ({ cartId, shippingMethodId }: { cartId: string; shippingMethodId: string }) =>
       setShippingMethod({ cartId, shippingMethodId }),
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["cart"] });
+    },
+    onError: () => {
       queryClient.invalidateQueries({ queryKey: ["cart"] });
     },
   });
@@ -611,7 +630,8 @@ export const usePlaceOrder = () => {
             shouldRecover = true;
           }
         } else {
-          initialErrorMessage = "An unknown error occurred. Please try again.";
+          initialErrorMessage = "An unknown error occurred.";
+          console.error("[usePlaceOrder] Unknown error type:", String(error));
         }
         if (shouldRecover) {
           console.log("Attempting cart recovery due to specific error...");

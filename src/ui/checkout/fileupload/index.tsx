@@ -47,12 +47,13 @@ const UploadImageForm: React.FC<UploadImageFormProps> = ({ cart }) => {
       onSubmit={handleSubmit}
     >
       {({ setFieldValue, errors, touched }) => (
-        <Form className=" max-w-md">
+        <Form className="w-full max-w-md mx-auto space-y-6 py-4">
           <div>
-            <label className="block mb-1 font-medium">
+            <label htmlFor="image-upload" className="block mb-2 text-sm font-medium text-gray-700">
               Upload proof of payment
             </label>
             <input
+              id="image-upload"
               type="file"
               accept="image/*"
               onChange={(event) => {
@@ -62,32 +63,35 @@ const UploadImageForm: React.FC<UploadImageFormProps> = ({ cart }) => {
                   setPreview(URL.createObjectURL(file));
                 }
               }}
-              className="block w-full border border-gray-300 rounded px-2 py-1"
+              className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 px-3 py-2"
             />
             {errors.image && touched.image && (
-              <p className="text-red-500 text-sm mt-1">{errors.image}</p>
+              <p className="text-red-500 text-xs mt-1">{errors.image}</p>
             )}
           </div>
 
-          {/* {isSubmitting && <p>Uploading...</p>} */}
-
           {preview && (
             <div className="mt-4">
-              <p className="font-medium mb-2">Preview:</p>
-              <Image
-                src={preview}
-                alt="Selected"
-                width={160}
-                height={160}
-                className="object-cover rounded border"
-              />
+              <p className="text-sm font-medium text-gray-700 mb-2">Preview:</p>
+              <div className="relative w-full max-h-60 overflow-hidden rounded-lg border border-gray-300">
+                <Image
+                  src={preview}
+                  alt="Selected payment proof preview"
+                  layout="responsive" 
+                  width={160} 
+                  height={160} 
+                  objectFit="contain" 
+                  className="rounded-lg" 
+                />
+              </div>
             </div>
           )}
 
           <Button
             type="submit"
-            className="max-w-md mx-auto my-5"
+            className="w-full py-3 mt-6 text-base"
             isLoading={isPending}
+            disabled={isPending}
           >
             I have made the payment
           </Button>

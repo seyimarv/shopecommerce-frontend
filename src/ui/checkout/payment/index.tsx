@@ -28,11 +28,11 @@ const PaymentOptions = () => {
 
   const isEditing = searchParams.get("step") === "payment";
 
-  if(!cart) return null
+  if (!cart) return null
 
 
   return (
-    <div className=" mb-5 border-gray-200 border-b-2 py-4">
+    <div className="py-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <h3 className="subtitle mb-4">Payment</h3>
@@ -55,7 +55,6 @@ const PaymentOptions = () => {
                   <p className="text-lg md:text-xl text-gray-700">Bank Name: Bank of America</p>
                   <p className="text-lg md:text-xl text-gray-700">Account Number: 1234567890</p>
                   <p className="text-lg md:text-xl text-gray-700">Routing Number: 1234567890</p>
-
                   <UploadImageForm cart={cart} />
                 </div>
               </Modal>
@@ -123,9 +122,8 @@ const PaymentOptions = () => {
                     </label>
                   ))}
                 </div>
-
-
-              </Form></>
+              </Form>
+            </>
           )}
 
         </Formik>

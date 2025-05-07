@@ -45,12 +45,10 @@ const ShippingOptions = ({ disabled }: { disabled: boolean }) => {
   };
 
   const handleDoneEditing = () => {
-    router.refresh();
     router.push(`${pathname}?step=payment`);
   };
 
   const isLoading = isLoadingOptions || isLoadingPrices || isLoadingCart
-  // Helper function to get price
   const getShippingOptionPrice = (option: HttpTypes.StoreCartShippingOption | { id: string; amount: number; price_type: "flat" }): string => {
     const price = option.price_type === "flat" ?
       option.amount : calculatedPrices[option.id]
@@ -90,7 +88,7 @@ const ShippingOptions = ({ disabled }: { disabled: boolean }) => {
         ) : (
           <>
             {
-              isLoading ? <AiOutlineLoading3Quarters className="text-2xl animate-spin" /> : (
+              (isLoading) ? <AiOutlineLoading3Quarters className="text-2xl animate-spin" /> : (
                 <div className="text-lg md:text-xl text-gray-600">
                   {shippingOptions.find(option => option.id === cart?.shipping_methods?.at(-1)?.shipping_option_id)?.name ||
                     cart?.shipping_methods?.at(-1)?.shipping_option_id} ({getShippingOptionPrice(

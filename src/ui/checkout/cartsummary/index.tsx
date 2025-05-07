@@ -1,19 +1,17 @@
 "use client";
 import { useState } from "react";
-import { CartWithInventory } from "@/lib/data/cart";
 import { convertToLocale } from "@/lib/utils/money";
 import DiscountCode from "../discount-code";
 import CheckoutItem from '../checkout-item';
 import { FiChevronDown, FiChevronUp } from 'react-icons/fi';
 import { useIsMobile } from "@/lib/hooks/useIsMobile";
+import { useRetrieveCart } from "@/lib/data/cart";
 
-interface CartSummaryProps {
-  cart: CartWithInventory | null;
-}
 
-const CartSummary = ({ cart }: CartSummaryProps) => {
+const CartSummary = () => {
   const [isOpen, setIsOpen] = useState(false);
   const isMobile = useIsMobile();
+  const { data: cart } = useRetrieveCart()
 
   return (
     <div className="shadow-sm rounded-md overflow-hidden">
