@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
 import { Formik, Form } from "formik";
-import Image from "next/image";
+// import Image from "next/image";
 import Button from "@/ui/common/components/button";
 import { CartWithInventory, usePlaceOrder } from "@/lib/data/cart";
 import { useRouter } from "next/navigation";
@@ -14,7 +14,7 @@ interface UploadImageFormProps {
 }
 
 const UploadImageForm: React.FC<UploadImageFormProps> = ({ cart }) => {
-  const [preview, setPreview] = useState<string | null>(null);
+  // const [preview, setPreview] = useState<string | null>(null);
   const router = useRouter();
 
   const { mutate, isPending } = usePlaceOrder();
@@ -46,7 +46,7 @@ const UploadImageForm: React.FC<UploadImageFormProps> = ({ cart }) => {
       initialValues={initialValues}
       onSubmit={handleSubmit}
     >
-      {({ setFieldValue, errors, touched }) => (
+      {({}) => (
         <Form className="w-full max-w-md mx-auto space-y-6 py-4">
           {/* <div>
             <label htmlFor="image-upload" className="block mb-2 text-sm font-medium text-gray-700">
