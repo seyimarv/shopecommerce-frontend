@@ -1,6 +1,6 @@
 "use client";
 
-import { useAddToCart } from "@/lib/data/cart";
+import { useAddToCart, useRetrieveCart } from "@/lib/data/cart";
 import Accordion from "@/ui/common/components/Accordion";
 import Button from "@/ui/common/components/button";
 import QuantitySelector from "@/ui/common/components/quantityselector";
@@ -11,10 +11,13 @@ import OptionSelect from "../product-actions/variant-select";
 import ProductPrice from "../product-price";
 import { GrFavorite } from "react-icons/gr";
 import ProductInfoTab from "./product-info";
+import CustomToast from "@/ui/common/components/custom-toast";
+import toast from "react-hot-toast";
+import { useIsMobile } from "@/lib/hooks/useIsMobile";
 
 interface ProductActionsProps {
   product: HttpTypes.StoreProduct;
-  onCartOpen: () => void;
+  onCartOpen?: () => void;
 }
 
 const optionsAsKeymap = (
@@ -31,7 +34,9 @@ const ProductActions = ({ product, onCartOpen }: ProductActionsProps) => {
   const [options, setOptions] = useState<Record<string, string | undefined>>(
     {}
   );
-  const { mutate: addToCartMutation, isPending, error } = useAddToCart();
+  const { mutate: addToCartMutation, isPending } = useAddToCart();
+  const isMobile = useIsMobile();
+  const { data: cart } = useRetrieveCart();
 
   // If there is only 1 variant, preselect the options
   useEffect(() => {
@@ -100,6 +105,26 @@ const ProductActions = ({ product, onCartOpen }: ProductActionsProps) => {
   const handleAddToCart = async () => {
     if (!selectedVariant?.id) return null;
 
+    if (cart && selectedVariant.manage_inventory) {
+      const inventoryQuantity = selectedVariant.inventory_quantity ?? 0;
+      const cartItem = cart?.items?.find(
+        (item) => item.variant_id === selectedVariant.id
+      );
+      const quantityInCart = cartItem?.quantity ?? 0;
+
+      if (inventoryQuantity < quantityInCart + quantity) {
+        const availableToAdd = inventoryQuantity - quantityInCart;
+        let message = "Maximum available quantity already in cart.";
+        if (availableToAdd > 0) {
+          message = `You can only add ${availableToAdd} more of this item.`
+        } else if (inventoryQuantity === 0) {
+          message = "This item is currently out of stock.";
+        }
+        toast.error(message);
+        return; // Stop execution
+      }
+    }
+
     addToCartMutation(
       {
         variantId: selectedVariant.id,
@@ -108,7 +133,19 @@ const ProductActions = ({ product, onCartOpen }: ProductActionsProps) => {
       },
       {
         onSuccess: () => {
-          onCartOpen();
+          if (isMobile) {
+            toast.custom((t) => (
+              <CustomToast
+                message="Product has been added to cart"
+                actionLink="/cart"
+                actionText="View Cart"
+                type="success"
+                onClose={() => toast.dismiss(t.id)}
+              />
+            ));
+          } else {
+            onCartOpen?.();
+          }
         }
       }
     );

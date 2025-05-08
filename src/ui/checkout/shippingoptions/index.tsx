@@ -8,7 +8,22 @@ import { convertToLocale } from "@/lib/utils/money";
 import { useRetrieveCart } from "@/lib/data/cart";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
-const ShippingOptions = ({disabled}: {disabled: boolean}) => {
+const ShippingOptions = ({ disabled }: { disabled: boolean }) => {
+  const { data: cart, isLoading: isLoadingCart } = useRetrieveCart()
+  const {
+    data: shippingOptionsData,
+    isLoading: isLoadingOptions
+  } = useShippingOptions(cart?.id)
+  const shippingOptions = shippingOptionsData?.shipping_options || []
+  const {
+    calculatedPrices,
+    isLoading: isLoadingPrices
+  } = useCalculatedPrices(cart?.id, shippingOptions)
+
+
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
   if (disabled) {
     return (
       <div className="flex flex-col gap-5 mb-5 border-gray-200 border-b-2 py-4">
@@ -21,11 +36,7 @@ const ShippingOptions = ({disabled}: {disabled: boolean}) => {
     );
   }
 
-  const { data: cart, isLoading: isLoadingCart } = useRetrieveCart()
 
-  const searchParams = useSearchParams();
-  const router = useRouter();
-  const pathname = usePathname();
 
   const isShipping = searchParams.get("step") === "shippingoption";
 
@@ -37,23 +48,7 @@ const ShippingOptions = ({disabled}: {disabled: boolean}) => {
     router.push(`${pathname}?step=payment`);
   };
 
-  // Fetch shipping options
-  const {
-    data: shippingOptionsData,
-    isLoading: isLoadingOptions
-  } = useShippingOptions(cart?.id)
-
-  const shippingOptions = shippingOptionsData?.shipping_options || []
-
-  // Fetch calculated prices
-  const {
-    calculatedPrices,
-    isLoading: isLoadingPrices
-  } = useCalculatedPrices(cart?.id, shippingOptions)
-
   const isLoading = isLoadingOptions || isLoadingPrices || isLoadingCart
-
-  // Helper function to get price
   const getShippingOptionPrice = (option: HttpTypes.StoreCartShippingOption | { id: string; amount: number; price_type: "flat" }): string => {
     const price = option.price_type === "flat" ?
       option.amount : calculatedPrices[option.id]
@@ -92,16 +87,16 @@ const ShippingOptions = ({disabled}: {disabled: boolean}) => {
           )
         ) : (
           <>
-          {
-            isLoading ? <AiOutlineLoading3Quarters className="text-2xl animate-spin" /> : (
-              <div className="text-lg md:text-xl text-gray-600">
-                {shippingOptions.find(option => option.id === cart?.shipping_methods?.at(-1)?.shipping_option_id)?.name || 
-                  cart?.shipping_methods?.at(-1)?.shipping_option_id} ({getShippingOptionPrice(
-                    shippingOptions.find(option => option.id === cart?.shipping_methods?.at(-1)?.shipping_option_id) || 
-                    { id: '', amount: 0, price_type: 'flat' as const }
-                  )})
-              </div>  
-            )}
+            {
+              (isLoading) ? <AiOutlineLoading3Quarters className="text-2xl animate-spin" /> : (
+                <div className="text-lg md:text-xl text-gray-600">
+                  {shippingOptions.find(option => option.id === cart?.shipping_methods?.at(-1)?.shipping_option_id)?.name ||
+                    cart?.shipping_methods?.at(-1)?.shipping_option_id} ({getShippingOptionPrice(
+                      shippingOptions.find(option => option.id === cart?.shipping_methods?.at(-1)?.shipping_option_id) ||
+                      { id: '', amount: 0, price_type: 'flat' as const }
+                    )})
+                </div>
+              )}
           </>
         )
       }

@@ -74,8 +74,8 @@ const ArrowButton: React.FC<ArrowButtonProps> = ({ children, className }) => (
 );
 
 const Testimonials: React.FC = () => {
-  const mainRef = useRef<Splide | null>(null);
-  const thumbsRef = useRef<Splide | null>(null);
+  const mainRef = useRef<any | null>(null);
+  const thumbsRef = useRef<any | null>(null);
   const [activeIndex, setActiveIndex] = useState<number | string>("");
 
   useEffect(() => {

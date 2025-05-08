@@ -55,7 +55,7 @@ export function Pagination({
   );
 
   const renderPageButtons = () => {
-    const buttons = [];
+    const buttons: JSX.Element[] = [];
 
     if (totalPages <= 7) {
       buttons.push(

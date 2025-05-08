@@ -1,19 +1,12 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { HttpTypes } from "@medusajs/types";
 import { sdk } from "../../../config";
 import medusaError from "../utils/medusa-error";
 import { useQuery } from "@tanstack/react-query";
 
 export const retrieveRegion = async (id: string) => {
-  // const next = {
-  //   ...(await getCacheOptions(["regions", id].join("-"))),
-  // }
-
   return sdk.client
     .fetch<{ region: HttpTypes.StoreRegion }>(`/store/regions/${id}`, {
       method: "GET",
-      // next,
-      // cache: "force-cache",
     })
     .then(({ region }) => region)
     .catch(medusaError);
@@ -53,7 +46,8 @@ export const getRegion = async (countryCode: string) => {
       : regionMap.get("us");
 
     return region;
-  } catch (e: any) {
+  } catch (e) {
+    console.log(e);
     return null;
   }
 };

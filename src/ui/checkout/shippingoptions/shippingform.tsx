@@ -1,7 +1,6 @@
 "use client";
 
 import { useRetrieveCart, useSetShippingMethod } from "@/lib/data/cart";
-import { getCheckoutStep } from "@/lib/utils/checkout";
 import Button from "@/ui/common/components/button";
 import {
   Select,

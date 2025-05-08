@@ -3,7 +3,6 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import Button from "@/ui/common/components/button";
 import { GrLinkNext } from "react-icons/gr";
-import { FaShoppingCart } from "react-icons/fa";
 import PreviewPrice from "./PreviewPrice";
 import Thumbnail from "../../../product/Thumbnail";
 import ProductModal from "../../../product/product-modal";
@@ -14,18 +13,17 @@ import { getProductPrice, subtractPrices } from "@/lib/utils/prices";
 import { isProductSoldOut } from "@/lib/utils/soldout";
 import { checkHasVariants } from "@/lib/utils/variants";
 import Link from "next/link";
-import { useAddToCart } from "@/lib/data/cart";
+import { useAddToCart, useRetrieveCart } from "@/lib/data/cart";
 import { LiaCartPlusSolid } from "react-icons/lia";
 import toast from 'react-hot-toast';
 import { useIsMobile } from "@/lib/hooks/useIsMobile";
 import CustomToast from "../custom-toast";
+import isMaxQuantityInCart from "@/lib/utils/cart-helpers";
 
 interface Collection {
   id: string;
   title: string;
-  metadata?: {
-    cover_image: string;
-  };
+  metadata?: any;
 }
 
 interface CardProps {
@@ -42,6 +40,7 @@ const Card: React.FC<CardProps> = (data) => {
   const [isHovered, setIsHovered] = useState(false);
   const { isOpen, openCart, closeCart } = useCart();
   const isMobile = useIsMobile();
+  const { data: cart } = useRetrieveCart()
 
   const {
     product,
@@ -56,13 +55,13 @@ const Card: React.FC<CardProps> = (data) => {
   const title = isCollection ? collection.title : product?.title;
   const thumbnail = isCollection
     ? collection.metadata?.cover_image
-    : product?.thumbnail;
+    : product?.thumbnail || product?.images?.[0]?.url;
 
   const hasVariants = product ? checkHasVariants(product) : false;
   const soldOut = product ? isProductSoldOut(product) : false;
   const { cheapestPrice } = product ? getProductPrice({ product }) : {};
 
-  const { mutate: addToCartMutation, isPending, error } = useAddToCart();
+  const { mutate: addToCartMutation, isPending } = useAddToCart();
 
   const allowAddToCart = (variant: HttpTypes.StoreProductVariant) => {
     if (variant && !variant.manage_inventory) {
@@ -89,6 +88,9 @@ const Card: React.FC<CardProps> = (data) => {
       if (!allowAddToCart(product.variants[0])) {
         return;
       }
+      if (cart && isMaxQuantityInCart(product.variants[0], cart)) {
+        return;
+      }
       addToCartMutation(
         {
           variantId,
@@ -97,7 +99,6 @@ const Card: React.FC<CardProps> = (data) => {
         {
           onSuccess: () => {
             if (isMobile) {
-              // On mobile, show toast with link to cart
               toast.custom((t) => (
                 <CustomToast
                   message="Product has been added to cart"
@@ -161,7 +162,7 @@ const Card: React.FC<CardProps> = (data) => {
           !hideButtons && product &&
           <div className="lg:hidden absolute bottom-4 right-2 z-10">
             {soldOut ? (
-              <div className="p-1 bg-red-50 border border-red-200 rounded-sm text-xs text-red-600">
+              <div className="p-1 bg-red-50 border border-red-200 rounded-sm text-xs text-red-600 uppercase">
                 <div>
                   Sold out
                 </div>

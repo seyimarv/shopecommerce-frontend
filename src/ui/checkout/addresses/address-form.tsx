@@ -15,6 +15,7 @@ import { CartWithInventory, useUpdateCart } from "@/lib/data/cart";
 import { countries } from "@/lib/utils/countries";
 import { useRetrieveCustomer } from "@/lib/data/customer";
 import AddressSelect from "./address-select";
+import Spinner from "@/ui/common/components/spinner";
 
 interface FormValues {
   first_name: string;
@@ -297,7 +298,11 @@ const AddressForm: React.FC<AddressFormProps> = ({
 
       ) : (
         <div>
-          {cart && cart.shipping_address && (
+          {(!cart || !cart.shipping_address) ? (
+            <div className="w-full h-full py-12">
+              <Spinner size={30} />
+            </div>
+          ) : (
             <div className="flex flex-wrap gap-6 md:gap-8 text-gray-600 tracking-wide">
               <div>
                 <h3 className="text-lg sm:text-xl text-black ">Shipping Details</h3>

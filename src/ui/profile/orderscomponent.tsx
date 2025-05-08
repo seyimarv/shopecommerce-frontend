@@ -15,7 +15,6 @@ const OrdersComponent = ({ isOverview }: OrdersComponentProps) => {
   const {
     data,
     isLoading: ordersLoading,
-    error: ordersError,
   } = useListOrders({
     limit: ITEMS_PER_PAGE,
     page: currentPage,

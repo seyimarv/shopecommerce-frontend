@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { Splide, SplideSlide, SplideRef } from "@splidejs/react-splide";
+import { Splide, SplideSlide } from "@splidejs/react-splide";
 import "@splidejs/react-splide/css";
 import {
   FaChevronRight,
@@ -13,15 +13,15 @@ import { useQuery } from "@tanstack/react-query";
 import { retrieveAnnouncements } from "@/lib/data/announcements";
 
 const Banner: React.FC = () => {
-  const { data, isLoading, error } = useQuery({
+  const { data } = useQuery({
     queryKey: ["announcements"],
     queryFn: retrieveAnnouncements,
   });
-  const splideRef = useRef<SplideRef>(null);
+  const splideRef = useRef<any>(null);
   const [autoPlay, setAutoPlay] = useState(true);
 
-  const goNext = () => splideRef.current?.splide.go("+1");
-  const goPrev = () => splideRef.current?.splide.go("-1");
+  const goNext = () => splideRef.current?.splide?.go("+1");
+  const goPrev = () => splideRef.current?.splide?.go("-1");
 
   const toggleAutoplay = () => {
     const splide = splideRef.current?.splide;

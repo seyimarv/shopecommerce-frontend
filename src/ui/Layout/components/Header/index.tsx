@@ -12,7 +12,6 @@ import CartDrawer from "../../../cart/cart-drawer";
 import ProductSearch from "@/ui/product/products-search";
 import { useRetrieveCart } from "@/lib/data/cart";
 import { useListRegions } from "@/lib/data/region";
-import { useRetrieveCustomer } from "@/lib/data/customer";
 import MobileNav from "./mobile-nav/mobile-nav";
 
 const Header: React.FC = () => {
@@ -53,15 +52,8 @@ const Header: React.FC = () => {
 
   const {
     data: cart,
-    isLoading: cartIsLoading,
-    error: cartError,
   } = useRetrieveCart();
 
-  const {
-    data: customer,
-    isLoading: customerIsLoading,
-    error: customerError,
-  } = useRetrieveCustomer();
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -95,9 +87,9 @@ const Header: React.FC = () => {
 
         {/* Desktop Navigation */}
         <nav className="hidden lg:flex h-[3.875rem] justify-between w-full gap-4 items-center container">
-          <div className="w-30">
+          <div className="w-30 h-full relative">
             <Link href="/">
-              <Image src="/logo.png" alt="logo" width={120} height={40} />
+              <Image src="/logo.png" alt="logo" fill className="object-cover" />
             </Link>
           </div>
           <ul className="flex gap-16 w-full justify-center items-center text-sm">

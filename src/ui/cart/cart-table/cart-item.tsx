@@ -42,8 +42,6 @@ const CartItem = ({ item, currencyCode, isMobile }: CartItemProps) => {
     );
 
     const handleQuantityChange = (newQuantity: number) => {
-        const maxInv = item.inventory_quantity;
-
         if (typeof newQuantity !== 'number' || isNaN(newQuantity)) {
             return;
         }
@@ -66,14 +64,12 @@ const CartItem = ({ item, currencyCode, isMobile }: CartItemProps) => {
         return (
             <div className="border-b border-gray-200 pt-2 pb-6 opacity-100 transition-opacity duration-300" style={{ opacity: isLoading ? 0.7 : 1 }}>
                 <div className="grid grid-cols-2 gap-4">
-                    {/* Product Info - Left Column */}
                     <div className="flex space-y-3">
-                        {/* Product Image and Title */}
                         <div className="flex gap-3 items-start">
-                            {item.thumbnail && (
+                            {(item.thumbnail || item?.images?.[0]?.url) && (
                                 <Link href={`/products/${item.product?.handle}`} className="relative w-16 h-16 flex-shrink-0">
                                     <Image
-                                        src={item.thumbnail}
+                                        src={item.thumbnail || item?.images?.[0]?.url || ""}
                                         alt={item.title || "Product image"}
                                         fill
                                         className="object-cover rounded-md"
@@ -126,10 +122,10 @@ const CartItem = ({ item, currencyCode, isMobile }: CartItemProps) => {
     return (
         <tr key={item.id} className="border-t border-gray-300 opacity-100 transition-opacity duration-300" style={{ opacity: isLoading ? 0.7 : 1 }}>
             <td className="p-4 flex gap-4 text-left">
-                {item.thumbnail && (
+                {(item.thumbnail || item?.images?.[0]?.url) && (
                     <Link href={`/products/${item.product?.handle}`} className="relative w-24 h-24">
                         <Image
-                            src={item.thumbnail}
+                            src={item.thumbnail || item?.images?.[0]?.url || ""}
                             alt={item.title || "Product image"}
                             fill
                             className="object-cover rounded-md"

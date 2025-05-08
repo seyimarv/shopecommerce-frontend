@@ -9,21 +9,21 @@ interface ThumbnailProps {
   image?: string | null;
   sale?: boolean;
   size?: "small" | "medium" | "large" | "full" | "square";
-  isFeatured?: boolean;
   className?: string;
   isHovered?: boolean;
+  images?: any[]
 }
 
 const Thumbnail: React.FC<ThumbnailProps> = ({
   image,
   size = "full",
-  isFeatured,
   className,
   isHovered,
+  images
 }) => {
   // Check if className contains aspect ratio
   const hasAspectRatio = className?.includes('aspect-');
-  
+  const initialImage = image || images?.[0]?.url
   return (
     <motion.div
       className={clsx("relative overflow-hidden rounded-sm", {
@@ -41,7 +41,7 @@ const Thumbnail: React.FC<ThumbnailProps> = ({
       animate={{ scale: isHovered ? 1.05 : 1 }}
       transition={{ duration: 0.3, ease: "easeOut" }}
     >
-      <ImageOrPlaceholder image={image} />
+      <ImageOrPlaceholder image={initialImage} />
     </motion.div>
   );
 };

@@ -1,11 +1,9 @@
 import { HttpTypes } from "@medusajs/types";
 import Divider from "../common/components/Divider";
-import OrdersList from "./order-list";
 import OrdersComponent from "./orderscomponent";
 
 type OverviewComponentProps = {
   customer: HttpTypes.StoreCustomer | null;
-  orders: HttpTypes.StoreOrder[] | null;
 };
 
 const getProfileCompletion = (customer: HttpTypes.StoreCustomer | null) => {
@@ -38,9 +36,7 @@ const getProfileCompletion = (customer: HttpTypes.StoreCustomer | null) => {
   return (count / 4) * 100;
 };
 
-const OverviewComponent = ({ customer, orders }: OverviewComponentProps) => {
-  console.log("Customer:", customer);
-  console.log("Orders:", orders);
+const OverviewComponent = ({ customer }: OverviewComponentProps) => {
 
   return (
     <div className=" flex flex-col gap-y-2 tracking-wide">

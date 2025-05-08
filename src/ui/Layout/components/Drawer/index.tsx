@@ -15,7 +15,6 @@ interface DrawerProps {
   overlayClassName?: string;
   contentAnimation?: Variants; // ✅ FIX: Explicitly use Variants
   overlayAnimation?: Variants; // ✅ FIX: Explicitly use Variants
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   style?: any;
 }
 

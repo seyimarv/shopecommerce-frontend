@@ -1,5 +1,13 @@
-import { redirect } from "next/navigation";
+"use client";
 
-export default function AccountPage() {
-  redirect("/account/overview");
+import OverviewComponent from "@/ui/profile/overviewcomponent";
+import { useRetrieveCustomer } from "@/lib/data/customer";
+
+export default function OverviewTemplate() {
+  const { data: customer } = useRetrieveCustomer();
+  return (
+    <>
+      <OverviewComponent customer={customer ?? null} />
+    </>
+  );
 }

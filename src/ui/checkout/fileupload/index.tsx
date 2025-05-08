@@ -1,10 +1,8 @@
-import React, { useState } from "react";
-import { Formik, Form, Field } from "formik";
-import * as Yup from "yup";
-import Image from "next/image";
-import { HttpTypes } from "@medusajs/types";
+import React from "react";
+import { Formik, Form } from "formik";
+// import Image from "next/image";
 import Button from "@/ui/common/components/button";
-import { usePlaceOrder } from "@/lib/data/cart";
+import { CartWithInventory, usePlaceOrder } from "@/lib/data/cart";
 import { useRouter } from "next/navigation";
 
 interface FormValues {
@@ -12,11 +10,11 @@ interface FormValues {
 }
 
 interface UploadImageFormProps {
-  cart: HttpTypes.StoreCart;
+  cart: CartWithInventory;
 }
 
 const UploadImageForm: React.FC<UploadImageFormProps> = ({ cart }) => {
-  const [preview, setPreview] = useState<string | null>(null);
+  // const [preview, setPreview] = useState<string | null>(null);
   const router = useRouter();
 
   const { mutate, isPending } = usePlaceOrder();
@@ -25,15 +23,12 @@ const UploadImageForm: React.FC<UploadImageFormProps> = ({ cart }) => {
     image: null,
   };
 
-  const validationSchema = Yup.object({
-    image: Yup.mixed().required("Image is required"),
-  });
-
-  const handleSubmit = (values: FormValues) => {
+  const handleSubmit = async (values: FormValues) => {
     mutate(
       {
         cartId: cart.id,
-        reciept: values.image!,
+        receipt: values.image || undefined,
+        cart: cart,
       },
       {
         onSuccess: (data) => {
@@ -49,16 +44,16 @@ const UploadImageForm: React.FC<UploadImageFormProps> = ({ cart }) => {
   return (
     <Formik
       initialValues={initialValues}
-      validationSchema={validationSchema}
       onSubmit={handleSubmit}
     >
-      {({ setFieldValue, values, errors, touched, isSubmitting }) => (
-        <Form className=" max-w-md">
-          <div>
-            <label className="block mb-1 font-medium">
+      {({}) => (
+        <Form className="w-full max-w-md mx-auto space-y-6 py-4">
+          {/* <div>
+            <label htmlFor="image-upload" className="block mb-2 text-sm font-medium text-gray-700">
               Upload proof of payment
             </label>
             <input
+              id="image-upload"
               type="file"
               accept="image/*"
               onChange={(event) => {
@@ -68,33 +63,33 @@ const UploadImageForm: React.FC<UploadImageFormProps> = ({ cart }) => {
                   setPreview(URL.createObjectURL(file));
                 }
               }}
-              className="block w-full border border-gray-300 rounded px-2 py-1"
+              className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 px-3 py-2"
             />
             {errors.image && touched.image && (
-              <p className="text-red-500 text-sm mt-1">{errors.image}</p>
+              <p className="text-red-500 text-xs mt-1">{errors.image}</p>
             )}
-          </div>
+          </div> */}
 
-          {/* {isSubmitting && <p>Uploading...</p>} */}
-
-          {preview && (
+          {/* {preview && (
             <div className="mt-4">
-              <p className="font-medium mb-2">Preview:</p>
-              <Image
-                src={preview}
-                alt="Selected"
-                width={160}
-                height={160}
-                className="object-cover rounded border"
-              />
+              <p className="text-sm font-medium text-gray-700 mb-2">Preview:</p>
+              <div className="relative w-full h-[10px] overflow-hidden rounded-lg border border-gray-300">
+                <Image
+                  src={preview}
+                  alt="Selected payment proof preview"
+                  layout="fill" 
+                  objectFit="cover" 
+                  className="rounded-lg" 
+                />
+              </div>
             </div>
-          )}
+          )} */}
 
           <Button
             type="submit"
-            className="max-w-md mx-auto my-5"
+            className="w-full py-3 mt-6 text-base"
             isLoading={isPending}
-            disabled={!values.image}
+            disabled={isPending}
           >
             I have made the payment
           </Button>

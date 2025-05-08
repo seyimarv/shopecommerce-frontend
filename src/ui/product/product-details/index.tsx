@@ -19,12 +19,12 @@ const ProductDetails = ({ product }: ProductDetailsProps) => {
         </div>
         <div className="w-full lg:w-1/2">
           <Details
-            product={product}
+            product={product!}
           />
         </div>
       </div>
       <div className="flex flex-col my-12 md:my-22 gap-12 md:gap-22 container px-4 md:px-6">
-        <RelatedProducts product={product} />
+        <RelatedProducts product={product!} />
         {/* <ProductList title="Recently viewed" products={mockProducts} /> */}
       </div>
     </div>

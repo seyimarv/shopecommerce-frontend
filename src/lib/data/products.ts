@@ -4,13 +4,13 @@ import { useQuery } from "@tanstack/react-query";
 import { getRegion, retrieveRegion } from "./region";
 import { SortOptions, sortProducts } from "../utils/sort-products";
 import { useRegion } from "../context/region-context";
+import { getAuthHeaders } from "./cookies";
 
 export const listProducts = async ({
   pageParam = 1,
   queryParams,
   countryCode = "gb",
   regionId,
-  metadata,
 }: {
   pageParam?: number;
   queryParams?: HttpTypes.FindParams & HttpTypes.StoreProductParams;
@@ -45,13 +45,10 @@ export const listProducts = async ({
     };
   }
 
-  // const headers = {
-  //   ...(await getAuthHeaders()),
-  // }
+  const headers = {
+    ...getAuthHeaders(),
+  }
 
-  // const next = {
-  //   ...(await getCacheOptions("products")),
-  // }
 
   const { products, count } = await sdk.client.fetch<{
     products: HttpTypes.StoreProduct[];
@@ -66,9 +63,7 @@ export const listProducts = async ({
         "*variants.calculated_price,+variants.inventory_quantity,+metadata,+tags",
       ...queryParams,
     },
-    //   headers,
-    //   next,
-    //   cache: "force-cache",
+    headers,
   });
   const nextPage = count > offset + limit ? pageParam + 1 : null;
   return {

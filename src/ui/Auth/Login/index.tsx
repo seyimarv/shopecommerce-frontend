@@ -22,7 +22,7 @@ const LoginSchema = Yup.object().shape({
 
 const Login = () => {
   const router = useRouter();
-  const { mutate: login, isPending, isError, error } = useLogin();
+  const { mutateAsync: loginAsync, isPending, isError, error } = useLogin();
 
   const formik = useFormik({
     initialValues: {
@@ -30,15 +30,16 @@ const Login = () => {
       password: "",
     },
     validationSchema: LoginSchema,
-    onSubmit: (values) => {
-      login({
-        email: values.email,
-        password: values.password
-      }, {
-        onSuccess: () => {
-          router.push("/account");
-        }
-      });
+    onSubmit: async (values) => {
+      try {
+        await loginAsync({
+          email: values.email,
+          password: values.password
+        });
+        router.push("/account");
+      } catch (err) {
+        console.error("Login failed:", err);
+      }
     },
   });
 

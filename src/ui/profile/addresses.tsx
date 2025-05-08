@@ -4,7 +4,7 @@ import { AddressCard } from "./addresscard";
 import AddAddress from "./addaddress";
 
 const AddressComponent = () => {
-  const { data: customer, isLoading, error } = useRetrieveCustomer();
+  const { data: customer } = useRetrieveCustomer();
 
   return (
     <div className="grid md:grid-cols-2 gap-4">

@@ -4,7 +4,7 @@ import EditProfile from "@/ui/profile/editprofile";
 import { useRetrieveCustomer } from "@/lib/data/customer";
 
 const ProfilePage = () => {
-  const { data: customer, isLoading, error } = useRetrieveCustomer();
+  const { data: customer } = useRetrieveCustomer();
   return (
     <div>
       <h3 className="text-3xl font-bold">Profile</h3>

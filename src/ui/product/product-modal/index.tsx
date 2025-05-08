@@ -7,7 +7,6 @@ import ProductActions from "../product-actions";
 import useCart from "@/lib/hooks/useCart";
 import CartDrawer from "@/ui/cart/cart-drawer";
 import { Drawer } from "@/ui/Layout/components/Drawer";
-import { IoMdClose } from 'react-icons/io';
 import { motion } from 'framer-motion';
 import { useIsMobile } from "@/lib/hooks/useIsMobile";
 
@@ -22,8 +21,9 @@ const ProductModal: React.FC<ProductModalProps> = ({
   onClose,
   productId
 }) => {
-  const { data, isLoading, error } = useListProducts({
+  const { data } = useListProducts({
     queryParams: {
+      // @ts-expect-error
       id: productId
     }
   });
@@ -34,7 +34,6 @@ const ProductModal: React.FC<ProductModalProps> = ({
 
   const isMobile = useIsMobile()
 
-  // Animation variants for mobile drawer content
   const contentVariants = {
     hidden: { opacity: 0, y: 20 },
     visible: {
@@ -50,7 +49,6 @@ const ProductModal: React.FC<ProductModalProps> = ({
 
   return (
     <>
-      {/* Desktop Modal */}
       {
         isMobile ? (
           <Drawer
@@ -67,20 +65,6 @@ const ProductModal: React.FC<ProductModalProps> = ({
                 initial="hidden"
                 animate="visible"
               >
-                {/* <div className="relative w-full h-64 mb-6">
-                  <Image
-                    src={product?.thumbnail || ""}
-                    alt={product?.title || "Product"}
-                    fill
-                    className="object-cover object-center rounded-md"
-                  />
-                </div>
-
-                <div className="mb-4">
-                  <p className="text-xs font-extralight uppercase mb-1">ShopHaul</p>
-                  <h3 className="text-xl uppercase font-medium">{product?.title}</h3>
-                </div> */}
-
                 {product && (
                   <div className="flex-1">
                     <ProductActions product={product} onCartOpen={openCart} onModalClose={onClose} />

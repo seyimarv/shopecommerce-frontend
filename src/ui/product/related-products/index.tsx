@@ -16,6 +16,7 @@ export default function RelatedProducts({
     // Create query params for related products
     const [queryParams, setQueryParams] = useState<HttpTypes.StoreProductParams>({
         limit: 12,
+        //@ts-expect-error
         is_giftcard: false
     });
 

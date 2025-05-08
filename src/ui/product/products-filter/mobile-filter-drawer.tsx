@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { Drawer } from "@/ui/Layout/components/Drawer";
 import { IoMdClose } from "react-icons/io";
 import { motion } from "framer-motion";

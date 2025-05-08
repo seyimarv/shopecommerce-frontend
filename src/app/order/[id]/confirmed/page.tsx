@@ -2,23 +2,33 @@
 
 import { useRetrieveOrder } from "@/lib/data/order";
 import WithSkeleton from "@/ui/common/components/Skeleton/with-skeleton";
+import PageSpinner from "@/ui/common/components/spinner/page-spinner";
 import OrderCompletedTemplate from "@/ui/order/order-completed-template";
 import { notFound, useParams } from "next/navigation";
+import { Suspense } from "react";
 
 const OrderConfirmedPage = () => {
   const params = useParams();
-  const { id } = params;
+  const idParam = params.id;
 
-  const { data: order, isPending, error } = useRetrieveOrder(id);
-  console.log(order);
+
+  const { data: order, isPending } = useRetrieveOrder(idParam as string);
+
+
+  if (typeof idParam !== 'string') {
+    return notFound();
+  }
+
   if (!order && !isPending) {
     return notFound();
   }
 
   return (
-    <WithSkeleton isLoading={isPending}>
-      {order && <OrderCompletedTemplate order={order} />}
-    </WithSkeleton>
+    <Suspense fallback={<PageSpinner />}>
+      <WithSkeleton isLoading={isPending}>
+        {order && <OrderCompletedTemplate order={order} />}
+      </WithSkeleton>
+    </Suspense>
   );
 };
 

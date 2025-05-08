@@ -1,8 +1,5 @@
 import Link from "next/link";
-import Divider from "@/ui/common/components/Divider";
-import GoogleIcon from "@/ui/common/icons/google-icon";
 import { ReactNode } from "react";
-import Button from "@/ui/common/components/button";
 
 interface AuthFormWrapperProps {
   title: string;

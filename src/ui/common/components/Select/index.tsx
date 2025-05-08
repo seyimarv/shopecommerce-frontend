@@ -1,6 +1,5 @@
 "use client";
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   createContext,
   useState,
@@ -13,6 +12,7 @@ import useOnClickOutside from "@/lib/hooks/useOnClickOutside";
 import { motion, AnimatePresence } from "framer-motion";
 import { Drawer } from "@/ui/Layout/components/Drawer";
 import { IoMdClose } from "react-icons/io";
+import Link from "next/link";
 
 export interface Option {
   value: string | number;
@@ -79,7 +79,7 @@ export const Select = ({
 
 interface SelectTriggerProps {
   className?: string;
-  as?: "button" | "a";
+  as?: "button" | typeof Link;
   href?: string;
   title?: string;
   placeholder?: string;
@@ -113,7 +113,7 @@ export const SelectTriggerBase = forwardRef<
       <Component
         ref={ref as any}
         className={`flex gap-1 py-2 md:py-[.6rem] px-3 md:px-4 border items-center min-w-[5.5rem] w-full rounded-lg justify-between cursor-pointer tracking-wider text-[11px] md:text-xs font-medium truncate ${className}`}
-        {...(href ? { href } : { onClick: props.onClick })}
+        {...({ ...(href ? { href } : { onClick: props.onClick }) } as any)}
       >
         <span className="truncate">{title || placeholder}</span>
         {!hideIcon && (
@@ -178,7 +178,7 @@ export const SelectContentBase = ({
 };
 
 export const SelectContent = ({ children, className }: SelectContentProps) => {
-  const { open, setOpen, selected, title } = useSelect();
+  const { open, setOpen, title } = useSelect();
 
   return (
     <>
@@ -193,7 +193,7 @@ export const SelectContent = ({ children, className }: SelectContentProps) => {
         isOpen={open}
         onClose={() => setOpen(false)}
         position="bottom"
-        className={`rounded-t-xl max-h-[80vh] ${className}`}
+        className={`rounded-t-xl max-h-[80vh] w-full !max-w-[500px] ${className}`}
         wrapperClassName="md:hidden"
       >
         <div className="p-4">

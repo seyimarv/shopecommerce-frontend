@@ -15,7 +15,7 @@ interface CurrencyPickerProps {
 
 export default function CurrencyPicker({ regions }: CurrencyPickerProps) {
   const { countryCode, setCountryCode, setStoredCountryCode } = useRegion();
-  const { mutate: updateCart, isPending } = useUpdateCart();
+  const { mutate: updateCart } = useUpdateCart(countryCode);
 
   const selectRegion = (countryCode: string) => {
     return regions?.find((region) =>
@@ -44,9 +44,9 @@ export default function CurrencyPicker({ regions }: CurrencyPickerProps) {
           region_id: selectedRegion?.id || '',
         },
         {
-          onSuccess: () => {
+          onSettled: () => {
             window.location.reload();
-          }
+          },
         }
       );
     }

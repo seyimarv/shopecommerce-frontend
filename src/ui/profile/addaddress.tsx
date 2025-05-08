@@ -29,7 +29,7 @@ const AddAddress = () => {
       }
 
       addAddress.mutate(
-        { currentState: {}, formData },
+        { formData },
         {
           onSuccess: () => {
             resetForm();

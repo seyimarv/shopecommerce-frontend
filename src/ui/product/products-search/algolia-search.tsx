@@ -14,7 +14,6 @@ const Hit = ({ hit }: { hit: HttpTypes.StoreProduct }) => {
   const { cheapestPrice } = getProductPrice({
     product: hit,
   })
-  console.log(hit)
   return (
     <>
       {/* <div className="w-16 h-16 flex-shrink-0 bg-gray-100 rounded overflow-hidden relative">
@@ -54,7 +53,7 @@ const Hit = ({ hit }: { hit: HttpTypes.StoreProduct }) => {
         >
           <div className="flex-shrink-0 h-15 w-15 relative mr-3">
             <Image
-              src={hit.thumbnail}
+              src={hit.thumbnail || ""}
               alt={hit.title}
               fill
               className="object-cover"

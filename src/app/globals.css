@@ -81,9 +81,14 @@ body {
   .subtitle {
     @apply text-xl sm:text-2xl md:text-3xl lg:text-3xl tracking-widest uppercase;
   }
+  .container {
+    padding-inline: 1.2rem !important;
+    max-width: 100% !important;
+  }
+
   @media (min-width: 768px) {
     .container {
-      padding-inline: 0.5rem;
+      padding-inline: 0.5rem !important;
     }
   }
 

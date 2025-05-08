@@ -1,8 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { FiCheckCircle } from "react-icons/fi";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { Formik, Form, Field } from "formik";
 import Modal from "@/ui/common/components/Modal";
 import UploadImageForm from "../fileupload";
@@ -21,43 +20,29 @@ const PaymentOptions = () => {
     (paymentSession: any) => paymentSession.status === "pending"
   )
 
-  const { mutate: initiatePaymentSession, isPending, error } = useInitiatePaymentSession()
+  const { mutate: initiatePaymentSession, isPending } = useInitiatePaymentSession()
 
   const { data: cartPaymentMethods } = useListCartPaymentMethod(cart?.region_id ?? '')
 
   const searchParams = useSearchParams();
-  // const router = useRouter();
-  // const pathname = usePathname();
 
   const isEditing = searchParams.get("step") === "payment";
 
-  // const handleEdit = () => {
-  //   router.push(`${pathname}?step=payment`);
-  // };
+  if (!cart) return null
 
-  // interface PaymentProps {
-  //   paymentOption: string;
-  // }
 
   return (
-    <div className=" mb-5 border-gray-200 border-b-2 py-4">
+    <div className="py-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <h3 className="subtitle mb-4">Payment</h3>
-          {/* {!isEditing && <FiCheckCircle />} */}
         </div>
-
-        {/* {!isEditing && (
-          <button className="cursor-pointer" onClick={handleEdit}>
-            Edit
-          </button>
-        )} */}
       </div>
       {isEditing && (
         <Formik
           initialValues={{ paymentOption: activeSession?.provider_id ?? "" }}
           onSubmit={(value) => {
-
+            console.log(value)
           }}
         >
           {({ values, setFieldValue }) => (
@@ -70,7 +55,6 @@ const PaymentOptions = () => {
                   <p className="text-lg md:text-xl text-gray-700">Bank Name: Bank of America</p>
                   <p className="text-lg md:text-xl text-gray-700">Account Number: 1234567890</p>
                   <p className="text-lg md:text-xl text-gray-700">Routing Number: 1234567890</p>
-
                   <UploadImageForm cart={cart} />
                 </div>
               </Modal>
@@ -138,15 +122,14 @@ const PaymentOptions = () => {
                     </label>
                   ))}
                 </div>
-
-
-              </Form></>
+              </Form>
+            </>
           )}
 
         </Formik>
       )}
       <div className="mt-4">
-        <PaymentButton cart={cart} disabled={isPending} />
+        <PaymentButton cart={cart} />
       </div>
 
     </div>
