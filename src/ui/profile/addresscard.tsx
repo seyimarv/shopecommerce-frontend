@@ -11,6 +11,7 @@ import Modal from "../common/components/Modal";
 import { Input } from "../common/components/input";
 import Button from "../common/components/button";
 import CountrySelect from "../checkout/addresses/country-select";
+import Spinner from "../common/components/spinner";
 
 type AddressProps = {
   address: HttpTypes.StoreCustomerAddress;
@@ -20,8 +21,8 @@ export const AddressCard = ({ address }: AddressProps) => {
   const { id, address_1, postal_code, city, country_code, phone, province, first_name, last_name } =
     address;
 
-  const { mutate: deleteAddress } = useDeleteCustomerAddress();
-  const { mutate: updateAddress } = useUpdateCustomerAddress();
+  const { mutate: deleteAddress, isPending: isDeletingAddress } = useDeleteCustomerAddress();
+  const { mutate: updateAddress, isPending: isUpdatingAddress } = useUpdateCustomerAddress();
 
   const [editModalOpen, setEditModalOpen] = useState(false);
 
@@ -33,6 +34,8 @@ export const AddressCard = ({ address }: AddressProps) => {
       province: province || "",
       country_code: country_code || "",
       phone: phone || "",
+      first_name: first_name || "",
+      last_name: last_name || "",
     },
     enableReinitialize: true,
     onSubmit: (values) => {
@@ -79,7 +82,16 @@ export const AddressCard = ({ address }: AddressProps) => {
             onClick={onDelete}
             className="flex items-center cursor-pointer"
           >
-            <IoTrashOutline className="mr-1" /> Remove
+            {isDeletingAddress ? (
+              <div className="flex items-center">
+                <Spinner />
+              </div>
+            ) : (
+              <>
+                <IoTrashOutline className="mr-1" /> Remove
+              </>
+            )
+            }
           </button>
         </div>
       </div>
@@ -201,7 +213,7 @@ export const AddressCard = ({ address }: AddressProps) => {
             >
               Cancel
             </Button>
-            <Button type="submit">Update</Button>
+            <Button type="submit" isLoading={isUpdatingAddress}>Update</Button>
           </div>
         </form>
       </Modal>

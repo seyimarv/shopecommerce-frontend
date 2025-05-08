@@ -468,7 +468,7 @@ export const useRetrieveCart = (id?: string) => {
   return useQuery({
     queryKey: ["cart", cartId], 
     queryFn: () => retrieveCart(cartId),
-    enabled: !!cartId, 
+    // enabled: !!cartId, 
   });
 };
 

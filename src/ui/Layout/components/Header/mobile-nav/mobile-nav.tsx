@@ -49,19 +49,21 @@ const MobileNav: React.FC<MobileNavProps> = ({
     <>
       <div className="lg:hidden w-full container">
         <div className="flex items-center justify-between py-2">
-          <MenuToggleButton
-            isOpen={mobileMenuOpen}
-            onClick={(e) => {
-              e.preventDefault();
-              setMobileMenuOpen?.(!mobileMenuOpen);
-            }}
-          />
-          <div className="flex-1 flex justify-center">
+          <div className="w-[20%]">
+            <MenuToggleButton
+              isOpen={mobileMenuOpen}
+              onClick={(e) => {
+                e.preventDefault();
+                setMobileMenuOpen?.(!mobileMenuOpen);
+              }}
+            />
+          </div>
+          <div className="flex-1 flex justify-center w-[100%]">
             <Link href="/" className="flex items-center">
               <Image src="/logo.png" alt="ShopHaul" width={100} height={32} />
             </Link>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex justify-end items-center gap-4 w-[20%]">
             <button
               onClick={() => setSearchOpen(true)}
               className="text-gray-800 p-1"
@@ -71,24 +73,24 @@ const MobileNav: React.FC<MobileNavProps> = ({
             </button>
 
 
-                        <Link
-                            href="/cart"
-                            className="relative text-gray-800 p-1"
-                            aria-label="Cart"
-                        >
-                            <CiShoppingCart size={22} />
-                            {cart && cart.items && cart.items.length > 0 && (
-                                <span className="absolute -top-1 -right-1 bg-gray-800 text-white w-4 h-4 flex items-center justify-center rounded-full text-xs font-medium">
-                                    {cart.items.length}
-                                </span>
-                            )}
-                        </Link>
-                    </div>
-                </div>
-            </div>
-            <MobileDrawer isOpen={mobileMenuOpen} onClose={() => setMobileMenuOpen?.(false)} />
-        </>
-    );
+            <Link
+              href="/cart"
+              className="relative text-gray-800 p-1"
+              aria-label="Cart"
+            >
+              <CiShoppingCart size={22} />
+              {cart && cart.items && cart.items.length > 0 && (
+                <span className="absolute -top-1 -right-1 bg-gray-800 text-white w-4 h-4 flex items-center justify-center rounded-full text-xs font-medium">
+                  {cart.items.length}
+                </span>
+              )}
+            </Link>
+          </div>
+        </div>
+      </div>
+      <MobileDrawer isOpen={mobileMenuOpen} onClose={() => setMobileMenuOpen?.(false)} />
+    </>
+  );
 
 };
 

@@ -48,7 +48,7 @@ const UploadImageForm: React.FC<UploadImageFormProps> = ({ cart }) => {
     >
       {({ setFieldValue, errors, touched }) => (
         <Form className="w-full max-w-md mx-auto space-y-6 py-4">
-          <div>
+          {/* <div>
             <label htmlFor="image-upload" className="block mb-2 text-sm font-medium text-gray-700">
               Upload proof of payment
             </label>
@@ -68,24 +68,22 @@ const UploadImageForm: React.FC<UploadImageFormProps> = ({ cart }) => {
             {errors.image && touched.image && (
               <p className="text-red-500 text-xs mt-1">{errors.image}</p>
             )}
-          </div>
+          </div> */}
 
-          {preview && (
+          {/* {preview && (
             <div className="mt-4">
               <p className="text-sm font-medium text-gray-700 mb-2">Preview:</p>
-              <div className="relative w-full max-h-60 overflow-hidden rounded-lg border border-gray-300">
+              <div className="relative w-full h-[10px] overflow-hidden rounded-lg border border-gray-300">
                 <Image
                   src={preview}
                   alt="Selected payment proof preview"
-                  layout="responsive" 
-                  width={160} 
-                  height={160} 
-                  objectFit="contain" 
+                  layout="fill" 
+                  objectFit="cover" 
                   className="rounded-lg" 
                 />
               </div>
             </div>
-          )}
+          )} */}
 
           <Button
             type="submit"
